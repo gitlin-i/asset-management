@@ -1,12 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Header from './component/Header';
+import Body from './component/Body';
 
 function App() {
   return (
-    <div className="App">
-      <p>hi~~</p>
-    </div>
+    <React.Fragment>
+      <Header />
+      <Body />
+    </React.Fragment>
+    
   );
 }
 
