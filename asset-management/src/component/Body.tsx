@@ -1,9 +1,15 @@
 import React from 'react'
 import Table from './Table'
 import { Assets, MyStock, Stock, calcAssetsPercentage, getAssetsCurrentValue } from '../domain/Domain'
+import PieChart from './PieChart'
+import {styled} from 'styled-components'
+import LineChart from './LineChart'
 import PieChart2 from './PieChart2'
-
-
+import { ObjectToNivoPieChartData, aInput } from '../utill/NivoPieChart'
+const StyledDiv = styled.div`
+  width:300px;
+  height:600px;
+`
 const Body : React.FC = () => {
   const someStock1 : MyStock = {
     code: '0101001',
@@ -28,7 +34,7 @@ const Body : React.FC = () => {
       someStock2
     ],
   }
-
+  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))
   return (
     <React.Fragment>
     <img src={process.env.PUBLIC_URL + '/JohnCliftonBogle.webp'} alt='saint'></img>
@@ -39,7 +45,11 @@ const Body : React.FC = () => {
     <p>종목 보유 현황</p>
     <hr />
     <Table assets={myAssets} />
-    <PieChart2 />
+
+    <StyledDiv>
+      <PieChart2 data={chartDataArray} />
+    </StyledDiv>
+
     </React.Fragment>
 
   )
