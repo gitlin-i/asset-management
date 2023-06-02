@@ -2,74 +2,10 @@
 //평가 금액 (Current Value) 
 //보유 수량 (Quantity Held)
 //매수 금액 (Purchase Amount)
-export interface Stock{
-    code: string;
-    price: number; // 자주 바뀜
-    name: string;
-    market: string;
-    country: string;
 
-}
+import { Price } from "./price";
+import { MyStock, Stock, isStock } from "./stock";
 
-export class Stock1{
-    private _code: string;
-    private _name: string;
-    private _price : number;
-    private _market?: string;
-    private _country?: string;
-
-    constructor(code: string, name: string, price: number, market?: string, country?: string  ){
-        this._code = code
-        this._name = name
-        this._price = price
-        this._market = market
-        this._country = country
-    }
-
-    get code() : string {
-        return this._code
-    }
-    get name() : string {
-        return this._name
-    }
-    get price() : number {
-        return this._price
-    }
-    set setPrice(val : number) {
-        if(val < 0) {
-            throw new Error("price가 음수입니다.")
-        }
-        this._price = val
-    }
-
-}
-export class MyStock1 extends Stock1 {
-
-    private _quantity: number;
-    private _averagePurchasePrice ?: number;
-
-    constructor(code: string,
-        name: string,
-        price: number,
-        quantity : number,
-        averagePurchasePrice ?: number,
-        market?: string, country?: string,   ){
-
-        super(code,name,price,market,country)
-        this._quantity = quantity
-        this._averagePurchasePrice = averagePurchasePrice
-    }
-    get quantity() :number {
-        return this._quantity
-    }
-    get averagePurchasePrice() : number {
-        if(this._averagePurchasePrice){
-            return this._averagePurchasePrice
-        }else{
-            return 0
-        }
-    }
-}
 export interface Cash {
     country: string;
     value: number;
@@ -79,27 +15,26 @@ export interface Coin{
     name: string;
 }
 
-export interface MyStock extends Stock{
-    quantity: number;
-    averagePurchasePrice ?: number;
-}
+
 export interface MyCoin extends Coin {
     quantity: number;
     averagePurchasePrice ?: number;
 }
 export interface Assets {
-    stocks ?: Array<MyStock | MyStock1>;
+    stocks ?: Array<MyStock>;
     cash?: Array<Cash>;
     coins?: Array<Coin>;
     [index : string] : Array<any> | undefined;
 }
 
-export interface Price {
-    code: string;
-    price: number;
-    [index : string] : number | string
-    ;
-}
+// export interface Price {
+//     code: string;
+//     value: number;
+//     [index : string] : number | string
+//     ;
+// }
+
+
 export interface User {
     assets: Assets;
 }
@@ -109,26 +44,40 @@ export interface User {
 
 
 //주식 현재가치 구하기
-export const calcCurrentValue = (myStock : MyStock | MyStock1, currentValue= 0) : number => {
+export const calcCurrentValue = (myStock : MyStock, currentValue= 0) : number => {
+    if (!myStock.quantity || !myStock.price) {
+        throw Error('값이 존재하지 않습니다.')
+    }
     if (currentValue){
         return myStock.quantity * currentValue
     }
     return myStock.quantity * myStock.price
 }
-//자산 현재가치 구하기 (일단 주식만)
-export const getAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>) => {
-    const stockCurrentValue = assets?.stocks?.reduce((acc,cur) => {
-        const aPrice = ArrayPrice?.find(price => price.code === cur.code)
-        if (aPrice){
-            return acc += calcCurrentValue(cur, aPrice.price )
-        }
-        return acc += calcCurrentValue(cur)
-    },0)
-
-    
-    return stockCurrentValue
+//자산 현재가치 구하기 (일단 주식만 구현)
+export const calcAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>) => {
+    if(assets?.stocks?.length === 0 && assets?.coins?.length === 0 && assets.cash?.length === 0){
+        return 0
+    }
+    let assetsValue = 0
+    if(assets?.stocks && assets?.stocks?.length > 0){
+        console.log(assets.stocks)
+        const stockCurrentValue = calcStocksCurrnetValue( assets?.stocks, ArrayPrice)
+        assetsValue += stockCurrentValue
+    }
+    return assetsValue
 }
 
+export const calcStocksCurrnetValue = (stocks : Array<MyStock>, prices ?: Array<Price>) :number => {
+    const stockCurrentValue = stocks.reduce((acc, aStock) => {
+        const aPrice = prices?.find(price => price.code === aStock.code)
+        if (aPrice){
+            return acc += calcCurrentValue( aStock, aPrice.value )
+        }
+        return acc += calcCurrentValue(aStock)
+    },0)
+
+    return stockCurrentValue
+}
 
 export const calcPercentage = (part :number, total: number , digit = 0) => {
     if (digit === 0 ){
@@ -142,7 +91,7 @@ export const calcPercentage = (part :number, total: number , digit = 0) => {
 //자산 현재 가치 비율 계산
 export const calcAssetsPercentage = (assets : Assets) :Array<Object>=> {
     const stocks = assets?.stocks?.slice() 
-    const total = getAssetsCurrentValue(assets)
+    const total = calcAssetsCurrentValue(assets)
 
     let resultArray : Array<{[key: string] : number}> = []
     if(total){
@@ -160,7 +109,26 @@ export const calcAssetsPercentage = (assets : Assets) :Array<Object>=> {
         }
         
     }
+
     return resultArray
 }
-
-
+export const convertInstanceToObject = (instance: any) :any => {
+    // const newObjcet = Object.assign({}, instance)
+    if(instance === null || typeof instance !== 'object'){
+        return instance
+    }
+    const newObjcet :any = {}
+    for(const property in instance) {
+        if(Object.prototype.hasOwnProperty.call(instance, property)){
+            const val = instance[property]
+            newObjcet[property] = convertInstanceToObject(val)
+        }
+    }
+    return newObjcet
+}
+export const convertObjectToStock = (obj: Object) : Stock | undefined => {
+    if (isStock(obj)) {
+        // const {code, name, price} = obj as {code : string, name: string,price: number | Price, market ?: string}
+    }
+    return undefined
+}

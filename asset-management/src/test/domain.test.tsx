@@ -1,46 +1,13 @@
-import { Assets, MyStock, calcPercentage, getAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, Stock1, MyStock1 } from "../domain/Domain"
-
-test('CurrentValue Testing...',() =>{
-    const someStock1 : MyStock = {
-        code: '0101001',
-        price: 12222,
-        name: '어떤 주식1',
-        market: 'KOSPI',
-        country: 'KO',
-        quantity: 31
-      }
-      const someStock2 : MyStock = {
-        code: '0101002',
-        price: 12232,
-        name: '어떤 주식2',
-        market: 'KOSPI',
-        country: 'KO',
-        quantity: 3,
-        averagePurchasePrice: 7000,
-      }
-      const myAssets : Assets= {
-        stocks: [
-          someStock1,
-          someStock2
-        ],
-      }
-    const result = calcCurrentValue(someStock1)
-    const result2 = calcCurrentValue(someStock2,12345)
-    const result3 = getAssetsCurrentValue(myAssets,)
-    const result4 = calcAssetsPercentage(myAssets)
-    expect(result).toBe(12222 *31)
-    expect(result2).toBe(12345 * 3)
-    expect(result3).toBe(31* 12222 + 3* 12232)
-    expect(result4).toStrictEqual({"0101001":91.17,"0101002":8.83})
-
-})
-
-test('Stock1 Testing...', ()=> {
+import { Assets, calcPercentage, calcAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, convertInstanceToObject, } from "../domain/Domain"
+import { Price } from "../domain/price"
+import { MyStock } from "../domain/stock"
+import { NivoPieChartData, ObjectToNivoPieChartData, aInput } from "../utill/NivoPieChart"
 
 
 
-  const stock1 : MyStock1 = new MyStock1('0101001','어떤 주식1', 12222,31, )
-  const stock2 : MyStock1 = new MyStock1('0101002','어떤 주식2', 12232,3 )
+test('Stock Testing...', ()=> { // code, name, price, quantity
+  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,31, )
+  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,3 )
   const myAssets : Assets= {
     stocks: [
       stock1,
@@ -48,33 +15,23 @@ test('Stock1 Testing...', ()=> {
     ],
   }
   /////
-  const resultnew = calcCurrentValue(stock1)
-  expect(resultnew).toBe(12222 *31)
+  const stockCurrentValue = calcCurrentValue(stock1)
+  expect(stockCurrentValue).toBe(12222 *31)
 
-  const resultnew2 = calcCurrentValue(stock2,12345)
-  expect(resultnew2).toBe(12345 * 3)
+  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
+  expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
 
-  const resultnew3 = getAssetsCurrentValue(myAssets,)
-  expect(resultnew3).toBe(31* 12222 + 3* 12232)
+  const assetsCurrentPrice = calcAssetsCurrentValue(myAssets,)
+  expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
 
-  // expect(result4).toStrictEqual({"0101001":91.17,"0101002":8.83})
+  const AssetsRatios = calcAssetsPercentage(myAssets)
+  const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
+  expect(AssetsRatios).toStrictEqual(resultArray)
 
-  // const result4 = calcAssetsPercentage(myAssets)
-
-  // const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
-  // const result = calcAssetsPercentage(myAssets)
-
-  // expect(calcAssetsPercentage(myAssets)).toStrictEqual(resultArray)
-  // expect(result.map((data)=>{
-  //   return data
-  // })).toStrictEqual([91.17,8.83])
-
-
+  expect(stock1.price).toBe(12222)
 })
 
-
-///////////////////////////////////////////////
-test('calc Testing...',()=>{
+test('Percentage Testing...',()=>{
   const a = 23
   const b = 77
   const c = 100
@@ -85,24 +42,46 @@ test('calc Testing...',()=>{
 
 })
 
-test('calcAssetsPercentage Testing...', ()=> {
-  const someStock1 : MyStock = {
-    code: '0101001',
-    price: 12222,
-    name: '어떤 주식1',
-    market: 'KOSPI',
-    country: 'KO',
-    quantity: 31
+test('Serialize Testing...', () => {
+  const stringObject = {
+    _code: "1021231",
+    _name: "뭔지 모를 주식1",
+    _price : new Price("1021231", 1231),
+    _quantity: 1,
   }
-  const someStock2 : MyStock = {
-    code: '0101002',
-    price: 12232,
-    name: '어떤 주식2',
-    market: 'KOSPI',
-    country: 'KO',
-    quantity: 3,
-    averagePurchasePrice: 7000,
+  const classObject = new MyStock("1021231","뭔지 모를 주식1", 1231, 1)
+
+  expect(JSON.stringify(classObject)).toBe(JSON.stringify(stringObject))
+})
+
+
+test('convertInstanceToObject Testing...',()=>{
+  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,31,undefined,'KOSPI','KO')
+  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,3,7000,'KOSPI','KO',)
+  const someStock3 : MyStock = new MyStock('0101003','어떤 주식3', 12232,3,7000,'KOSPI','KO',)
+  const newArr = [someStock1,someStock2, someStock3].map((stock) => {
+    return convertInstanceToObject(stock)
+  })
+  const obj = [
+    {"_code":"0101001","_name":"어떤 주식1","_price":{"_code":"0101001","_value":12222},"_market":"KOSPI","_country":"KO","_quantity":31,"_averagePurchasePrice":undefined
+  },
+    {"_code":"0101002","_name":"어떤 주식2","_price":{"_code":"0101002","_value":12232},"_market":"KOSPI","_country":"KO","_quantity":3,"_averagePurchasePrice":7000},
+    {"_code":"0101003","_name":"어떤 주식3","_price":{"_code":"0101003","_value":12232},"_market":"KOSPI","_country":"KO","_quantity":3,"_averagePurchasePrice":7000}
+  ]
+  expect(newArr).toStrictEqual(obj)
+})
+
+
+test('nivo Testing....', () => {
+
+
+  const nivoData : NivoPieChartData = {
+    id: "1234",
+    label: "somelabel",
+    value: 4321
   }
+  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,31,undefined,'KOSPI','KO')
+  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,3,7000,'KOSPI','KO',)
   const myAssets : Assets= {
     stocks: [
       someStock1,
@@ -110,15 +89,47 @@ test('calcAssetsPercentage Testing...', ()=> {
     ],
   }
 
-  const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
-  const result = calcAssetsPercentage(myAssets)
-
-  expect(calcAssetsPercentage(myAssets)).toStrictEqual(resultArray)
-  expect(result.map((data)=>{
-    return data
-  })).toStrictEqual([91.17,8.83])
-
-
+  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))
+  const literalObject = [
+    {
+      id: "어떤 주식1",
+      label: "어떤 주식1",
+      value: 91.17
+    },
+    {
+      id: "어떤 주식2",
+      label: "어떤 주식2",
+      value: 8.83
+    }
+  ]
+  expect(calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))).toStrictEqual(literalObject)
 })
 
 
+test("assets Testing...", ()=> {
+  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,31, )
+  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,3 )
+  const myAssets : Assets= {
+    stocks: [
+      stock1,
+      stock2,
+    ],
+    cash: [],
+    coins:[]
+  }
+  const stockCurrentValue = calcCurrentValue(stock1)
+  expect(stockCurrentValue).toBe(12222 *31)
+
+  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
+  expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
+
+  const assetsCurrentPrice = calcAssetsCurrentValue(myAssets,)
+  expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
+
+  const AssetsRatios = calcAssetsPercentage(myAssets)
+  const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
+  expect(AssetsRatios).toStrictEqual(resultArray)
+
+  
+
+})

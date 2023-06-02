@@ -1,5 +1,6 @@
 import React from 'react'
-import { Assets, MyStock, calcCurrentValue } from '../domain/Domain'
+import { Assets, calcCurrentValue } from '../domain/Domain'
+import { MyStock } from '../domain/stock';
 
 interface TableProps {
   assets: Assets;
