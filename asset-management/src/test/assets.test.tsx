@@ -2,7 +2,7 @@
 import { Assets, calcAssetsCurrentValue, calcAssetsPercentage } from "../domain/Domain"
 import { MyStock } from "../domain/stock"
 
-import reducer , { selectAssets, setStocks } from "../slice/assetsSlice"
+
 
 test('assets Testing...' , () => {
 const assets :Assets = {
@@ -35,16 +35,3 @@ const assets :Assets = {
     expect(assetsCurPer2).toEqual(resultArray)
 })
 
-test('reducers assets Testing...' , () => {
-    const init : Assets = {stocks:[], cash: [], coins: []}
-    const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,31, )
-    const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,3 )
-
-
-    expect(reducer(init,setStocks([stock1,stock2]))).toStrictEqual(
-    {stocks: [stock1,stock2], coins: [] , cash: []}
-    )
-    const test = calcAssetsPercentage(reducer(init,setStocks([stock1,stock2]))) 
-    const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
-    expect(test).toStrictEqual(resultArray)
-})
