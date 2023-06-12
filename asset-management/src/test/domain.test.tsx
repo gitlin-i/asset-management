@@ -1,13 +1,14 @@
-import { Assets, calcPercentage, calcAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, convertInstanceToObject, } from "../domain/Domain"
-import { Price } from "../domain/price"
+import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage,  Currency, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, } from "../domain/Domain"
+import { Cash } from "../domain/cash"
+import { MyCoin } from "../domain/coin"
 import { MyStock } from "../domain/stock"
 import { NivoPieChartData, ObjectToNivoPieChartData, aInput } from "../utill/NivoPieChart"
 
 
 
 test('Stock Testing...', ()=> { // code, name, price, quantity
-  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,31, )
-  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,3 )
+  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,Currency.KRW,31, )
+  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3 )
   const myAssets : Assets= {
     stocks: [
       stock1,
@@ -21,7 +22,7 @@ test('Stock Testing...', ()=> { // code, name, price, quantity
   const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
   expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
 
-  const assetsCurrentPrice = calcAssetsCurrentValue(myAssets,)
+  const assetsCurrentPrice = calcAllAssetsCurrentValue(myAssets,)
   expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
 
   const AssetsRatios = calcAssetsPercentage(myAssets)
@@ -42,35 +43,6 @@ test('Percentage Testing...',()=>{
 
 })
 
-test('Serialize Testing...', () => {
-  const stringObject = {
-    _code: "1021231",
-    _name: "뭔지 모를 주식1",
-    _price : new Price("1021231", 1231),
-    _quantity: 1,
-  }
-  const classObject = new MyStock("1021231","뭔지 모를 주식1", 1231, 1)
-
-  expect(JSON.stringify(classObject)).toBe(JSON.stringify(stringObject))
-})
-
-
-test('convertInstanceToObject Testing...',()=>{
-  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,31,undefined,'KOSPI','KO')
-  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,3,7000,'KOSPI','KO',)
-  const someStock3 : MyStock = new MyStock('0101003','어떤 주식3', 12232,3,7000,'KOSPI','KO',)
-  const newArr = [someStock1,someStock2, someStock3].map((stock) => {
-    return convertInstanceToObject(stock)
-  })
-  const obj = [
-    {"_code":"0101001","_name":"어떤 주식1","_price":{"_code":"0101001","_value":12222},"_market":"KOSPI","_country":"KO","_quantity":31,"_averagePurchasePrice":undefined
-  },
-    {"_code":"0101002","_name":"어떤 주식2","_price":{"_code":"0101002","_value":12232},"_market":"KOSPI","_country":"KO","_quantity":3,"_averagePurchasePrice":7000},
-    {"_code":"0101003","_name":"어떤 주식3","_price":{"_code":"0101003","_value":12232},"_market":"KOSPI","_country":"KO","_quantity":3,"_averagePurchasePrice":7000}
-  ]
-  expect(newArr).toStrictEqual(obj)
-})
-
 
 test('nivo Testing....', () => {
 
@@ -80,8 +52,8 @@ test('nivo Testing....', () => {
     label: "somelabel",
     value: 4321
   }
-  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,31,undefined,'KOSPI','KO')
-  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,3,7000,'KOSPI','KO',)
+  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,Currency.KRW,31)
+  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3,7000)
   const myAssets : Assets= {
     stocks: [
       someStock1,
@@ -107,8 +79,8 @@ test('nivo Testing....', () => {
 
 
 test("assets Testing...", ()=> {
-  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,31, )
-  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,3 )
+  const stock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,Currency.KRW,31)
+  const stock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3,7000)
   const myAssets : Assets= {
     stocks: [
       stock1,
@@ -123,7 +95,7 @@ test("assets Testing...", ()=> {
   const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
   expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
 
-  const assetsCurrentPrice = calcAssetsCurrentValue(myAssets,)
+  const assetsCurrentPrice = calcAllAssetsCurrentValue(myAssets,)
   expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
 
   const AssetsRatios = calcAssetsPercentage(myAssets)
@@ -131,5 +103,33 @@ test("assets Testing...", ()=> {
   expect(AssetsRatios).toStrictEqual(resultArray)
 
   
+})
+
+
+test('testRealData Testing...' ,() => {
+  const testData = testRealData
+  const target : MyStock | undefined = testData.stocks?.find((stock)=> {
+    return stock.code === "BYND"
+  } )
+  const targetCurrentValue = calcCurrentValue(target as MyStock)
+  const stocksValue = calcAssetArrayCurrentValue(testData.stocks as MyStock[])
+  const coinsValue = calcAssetArrayCurrentValue(testData.coins as MyCoin[],undefined,)
+  const cashValue = calcCashArrayCurrentValue(testData.cash as Cash[])
+  expect(targetCurrentValue).toBe(10.63 * 22 * 1300)
+  expect(stocksValue).toBe(10.63 * 22 * 1300
+      + 429.7900 * 1 * 1300
+      + 354.65 * 3 * 1300
+      + 36.8200 * 17 * 1300
+      + 42.790 * 2 * 1300
+      + 36700 * 16
+      + 39300 * 16
+      + 12410 * 138
+      + 12530 * 252
+      )
+  expect(coinsValue.toFixed(5)).toBe("2998432.45746")
+  expect(cashValue).toBe(2000000)
+
+  const allValue = calcAllAssetsCurrentValue(testData)
+  expect(allValue).toBe(stocksValue + coinsValue+ cashValue)
 
 })

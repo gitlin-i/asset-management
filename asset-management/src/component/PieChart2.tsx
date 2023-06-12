@@ -1,17 +1,33 @@
 import React from 'react'
 // install (please try to align the version of installed @nivo packages)
 // yarn add @nivo/pie
-import { ResponsivePie } from '@nivo/pie'
+import { PieCustomLayer, ResponsivePie } from '@nivo/pie'
 import { NivoPieChartData } from '../utill/NivoPieChart'
 
 interface PieChartProps {
-    data: NivoPieChartData[]
+    data: NivoPieChartData[];
+    title?: string; 
+    centerX?: number;
+    centerY?: number; 
 }
-const PieChart2 : React.FC<PieChartProps> = ({data}) => (
-    
-    <ResponsivePie
+
+const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
+    const centerTitleLayer : PieCustomLayer<NivoPieChartData> = ({centerX, centerY} ) => (
+        <text
+        x={centerX}
+        y={centerY}
+        textAnchor='middle'
+        dominantBaseline='central'
+        style={{ fontSize: '12px', fontWeight: 'bold' }}
+        >
+            {title}
+        </text>
+    )
+    return (<ResponsivePie
+        layers={['arcLinkLabels', 'arcs', 'arcLabels', 'legends',centerTitleLayer] }
         data={data}
-        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+        margin={{ top: 0, right: 20, bottom: 20, left: 80 }}
+        valueFormat=" >-,"
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
@@ -26,6 +42,7 @@ const PieChart2 : React.FC<PieChartProps> = ({data}) => (
                 ]
             ]
         }}
+        enableArcLinkLabels={false}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
         arcLinkLabelsThickness={2}
@@ -41,13 +58,13 @@ const PieChart2 : React.FC<PieChartProps> = ({data}) => (
             ]
         }}
         
-        
+        colors={{scheme :'category10'}}
         legends={[
             {
-                anchor: 'bottom',
-                direction: 'row',
+                anchor: 'left',
+                direction: 'column',
                 justify: false,
-                translateX: 0,
+                translateX: -56,
                 translateY: 56,
                 itemsSpacing: 0,
                 itemWidth: 100,
@@ -67,8 +84,8 @@ const PieChart2 : React.FC<PieChartProps> = ({data}) => (
                 ]
             }
         ]}
-    />
-)
+    />)
+}
 
 
 export default PieChart2

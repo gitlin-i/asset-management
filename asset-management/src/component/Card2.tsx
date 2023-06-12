@@ -1,25 +1,57 @@
+import { title } from 'process';
 import React from 'react'
 import { styled } from 'styled-components'
 interface CardProps {
     title ?: string;
     body ?: any;
     children ?: React.ReactNode;
+    color ?: string;
 }
-const StyledDiv = styled.div`
-    display: inline-block;
-    width:100%;
-    height:100%;
-    background-color:white;
-    border-color: gray;
-    border: solid 2px;
-    border-radius:0.5rem;
+const StyledDiv = styled.div<CardProps>`
+    width: 100%;
+    height: 100%;
+    max-height:100%;
+    background-color:${(props) => props.color || "white" };
+    border-radius:1rem;
+    display:flex;
+    flex-direction:column;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* &:hover{
+    background-color: #e6e6e6;
+  } */
+
+`
+const StyledHeader = styled.header`
+  border-radius : 0.5rem 0.5rem 0 0 ;
+  border-bottom: solid 2px gray;
+  width:100%;
+  height:3rem;
+  padding: 0.5rem;
+  padding-left: 1rem;
+  margin: 0;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+`
+const StyledBody = styled.div<CardProps>`
+  height : calc(100% -3rem); 
+  overflow: auto;
+
 `
 
 const Card2 : React.FC<CardProps> = (props) => {
-    const { title, children} = props
+    const { title,  children ,...rest} = props
   return (
-    <StyledDiv>
-        {children}
+    <StyledDiv {...rest}  >
+     {title &&
+      <StyledHeader >
+        {title}
+      </StyledHeader> }
+      <StyledBody>
+        {children}  
+      </StyledBody>
+        
     </StyledDiv>
   )
 }
