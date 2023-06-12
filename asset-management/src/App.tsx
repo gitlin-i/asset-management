@@ -1,17 +1,15 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Header from './component/Header';
-import Body from './component/Body';
-import MainLayout from './layout/MainLayout';
-import TestingLayout from './layout/TestingLayout';
+import MainPage from './component/MainPage';
+import SideBar from './component/SideBar';
 
 function App() {
   return (
     <React.Fragment>
       <Header />
-      <TestingLayout />
-      {/* <Body /> */}
+      <SideBar />
+      <MainPage />
     </React.Fragment>
     
   );

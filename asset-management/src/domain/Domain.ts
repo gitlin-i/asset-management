@@ -3,132 +3,160 @@
 //보유 수량 (Quantity Held)
 //매수 금액 (Purchase Amount)
 
+import { Cash } from "./cash";
+import { Coin, MyCoin } from "./coin";
 import { Price } from "./price";
 import { MyStock, Stock, isStock } from "./stock";
 
-export interface Cash {
-    country: string;
-    value: number;
-}
-export interface Coin{
-    code: string;
-    name: string;
-}
-
-
-export interface MyCoin extends Coin {
-    quantity: number;
-    averagePurchasePrice ?: number;
-}
 export interface Assets {
     stocks ?: Array<MyStock>;
     cash?: Array<Cash>;
-    coins?: Array<Coin>;
+    coins?: Array<MyCoin>;
     [index : string] : Array<any> | undefined;
 }
 
-// export interface Price {
-//     code: string;
-//     value: number;
-//     [index : string] : number | string
-//     ;
-// }
-
+export enum Currency {
+    KRW = "KRW",
+    USD = "USD",
+}
 
 export interface User {
     assets: Assets;
 }
 
+export const testRealData : Assets = {
+    stocks: [// 현재가 수량 매입가
+        new MyStock("BYND","비욘드 미트",10.63,Currency.USD,22,76.59),
+        new MyStock("IVV","ISHARES CORE S&P 500 ETF",429.7900,Currency.USD,1,439.1900),
+        new MyStock("QQQ","Invesco QQQ Trust Series 1",354.6500,Currency.USD,3,379.7200),
+        new MyStock("TQQQ","ProShares UltraPro QQQ",36.8200,Currency.USD,17,64.5158),
+        new MyStock("UPRO","ProShares UltraPro S&P500",42.7900,Currency.USD,2,60.2150), // 해외주식
+        new MyStock("228670","레이", 36700,Currency.KRW,16,32378.125),
+        new MyStock("293490", "카카오게임즈",39300,Currency.KRW,16,52000),
+        new MyStock("379800","KODEX 미국S&P500TR",12410,Currency.KRW,138,11080),
+        new MyStock("379810","KODEX 미국나스닥100TR",12530,Currency.KRW,252,11501),//국내주식
+    ],
+    coins : [
+        new MyCoin("ETH", "이더리움",2511000,Currency.KRW,1.19411886)
+    ],
+    cash:[
+        new Cash(2000000,Currency.KRW)
+    ]
+}
 
-
-
-
-//주식 현재가치 구하기
-export const calcCurrentValue = (myStock : MyStock, currentValue= 0) : number => {
-    if (!myStock.quantity || !myStock.price) {
+//주식,코인 현재가치 구하기
+export const calcCurrentValue = (myAsset : MyStock | MyCoin, currentValue= 0,currency= Currency.KRW,) : number => {
+    if (!myAsset.quantity || !myAsset.price) {
         throw Error('값이 존재하지 않습니다.')
     }
-    if (currentValue){
-        return myStock.quantity * currentValue
+    const nowValue = (currentValue) ?  myAsset.quantity * currentValue : myAsset.quantity * myAsset.price
+    
+    if (myAsset.currency === currency) {
+        return nowValue
     }
-    return myStock.quantity * myStock.price
+    return exchangeValue(nowValue, 1300)// rate hard coding
+    
 }
-//자산 현재가치 구하기 (일단 주식만 구현)
-export const calcAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>) => {
+//asset[] 의 현재가치
+export const calcAssetArrayCurrentValue = (assets : Array<MyStock | MyCoin>, newPrices ?: Array<Price>) :number => {
+    const assetsCurrentValue = assets.reduce((acc, asset) => {
+        const newPrice = newPrices?.find(price => price.code === asset.code)
+        if (newPrice){
+            return acc += calcCurrentValue( asset, newPrice.value )
+        }
+        return acc += calcCurrentValue(asset)
+    },0)
+
+    return assetsCurrentValue
+}
+//cash[] 의 현재가치
+export const calcCashArrayCurrentValue = (cash: Cash[] , currency = Currency.KRW) => {
+    const cashValue = cash.reduce((acc, aCash) => {
+        if(aCash.currency === currency){
+           return acc += aCash.value
+        } else {
+            return acc += exchangeValue(aCash.value,1300)
+        }
+    },0);
+    return cashValue
+} 
+// assets 전체 현재가치 구하기
+export const calcAllAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>) => {
     if(assets?.stocks?.length === 0 && assets?.coins?.length === 0 && assets.cash?.length === 0){
         return 0
     }
     let assetsValue = 0
     if(assets?.stocks && assets?.stocks?.length > 0){
-        console.log(assets.stocks)
-        const stockCurrentValue = calcStocksCurrnetValue( assets?.stocks, ArrayPrice)
+        const stockCurrentValue = calcAssetArrayCurrentValue( assets?.stocks, ArrayPrice)
         assetsValue += stockCurrentValue
+    }
+    if(assets?.coins && assets?.coins.length > 0){
+        const coinsCurrentValue = calcAssetArrayCurrentValue( assets?.coins , ArrayPrice)
+        assetsValue += coinsCurrentValue
+    }
+    if(assets?.cash && assets?.cash.length > 0){
+        const cashCurrentValue = calcCashArrayCurrentValue(assets.cash, Currency.KRW)
+        assets?.cash.reduce((acc, aCash) => {
+            if(aCash.currency === Currency.KRW){
+                return acc += aCash.value
+            } else {
+               const exchangedValue = exchangeValue(aCash.value, 1300)//rate hard coding
+               return acc += exchangedValue
+            }
+            
+        },0)
+        assetsValue += cashCurrentValue
     }
     return assetsValue
 }
-
-export const calcStocksCurrnetValue = (stocks : Array<MyStock>, prices ?: Array<Price>) :number => {
-    const stockCurrentValue = stocks.reduce((acc, aStock) => {
-        const aPrice = prices?.find(price => price.code === aStock.code)
-        if (aPrice){
-            return acc += calcCurrentValue( aStock, aPrice.value )
-        }
-        return acc += calcCurrentValue(aStock)
-    },0)
-
-    return stockCurrentValue
+//환전
+export const exchangeValue = (targetValue : number, exchangeRate: number, digit=0) => {
+    // return Math.round((targetValue * exchangeRate) * (10 ** digit)) / (10 ** digit)
+    return roundNumber(targetValue * exchangeRate, digit)
 }
-
+//소수점 
+export const roundNumber = (x: number, digit = 0) => {
+    return Math.round(x * (10 ** digit)) / (10 ** digit)
+}
+//비율
 export const calcPercentage = (part :number, total: number , digit = 0) => {
-    if (digit === 0 ){
-        return  (part / total) * 100
-    } else {
-        return Math.round(((part / total ) * 100) * (10 ** digit) )  / (10 ** digit) 
-    }
-    
+    return roundNumber((part / total) * 100, digit)
 }
 
 //자산 현재 가치 비율 계산
-export const calcAssetsPercentage = (assets : Assets) :Array<Object>=> {
+export const calcAssetsPercentage = (assets : Assets) : Array<Object>=> {
     const stocks = assets?.stocks?.slice() 
-    const total = calcAssetsCurrentValue(assets)
+    const coins = assets?.coins?.slice()
+    const cash = assets?.cash?.slice()
+    const total = calcAllAssetsCurrentValue(assets)
 
     let resultArray : Array<{[key: string] : number}> = []
-    if(total){
-        const ratios = stocks?.map((stock) => {
-            const nowVal = calcCurrentValue(stock)
-            const ratio = calcPercentage(nowVal, total,2)
-            return ratio
-        })
-        if (ratios && stocks){
-            resultArray = stocks?.map((stock,index) => {
-                const nameWithRatio : {[key: string] : number} = {}
-                nameWithRatio[stock.name] = ratios[index]
-                return nameWithRatio
-            })
-        }
-        
+    // if(total){
+    //     const ratios = stocks?.map((stock) => {
+    //         const nowVal = calcCurrentValue(stock)
+    //         const ratio = calcPercentage(nowVal, total,2)
+    //         return ratio
+    //     })
+    //     if (ratios && stocks){
+    //         resultArray = stocks?.map((stock,index) => {
+    //             const nameWithRatio : {[key: string] : number} = {}
+    //             nameWithRatio[stock.name] = ratios[index]
+    //             return nameWithRatio
+    //         })
+    //     }
+    if (total && stocks){
+        const stockRatio = calcPercentage(calcAssetArrayCurrentValue(stocks), total)
+        resultArray.push({"stocks": stockRatio})
+    }
+    if (total && coins){
+        const coinsRatio = calcPercentage(calcAssetArrayCurrentValue(coins), total)
+        resultArray.push({"coins": coinsRatio})
+    }
+    if (total && cash){
+        const cashRatio = calcPercentage(calcCashArrayCurrentValue(cash), total)
+        resultArray.push({"cash": cashRatio})
     }
 
     return resultArray
 }
-export const convertInstanceToObject = (instance: any) :any => {
-    // const newObjcet = Object.assign({}, instance)
-    if(instance === null || typeof instance !== 'object'){
-        return instance
-    }
-    const newObjcet :any = {}
-    for(const property in instance) {
-        if(Object.prototype.hasOwnProperty.call(instance, property)){
-            const val = instance[property]
-            newObjcet[property] = convertInstanceToObject(val)
-        }
-    }
-    return newObjcet
-}
-export const convertObjectToStock = (obj: Object) : Stock | undefined => {
-    if (isStock(obj)) {
-        // const {code, name, price} = obj as {code : string, name: string,price: number | Price, market ?: string}
-    }
-    return undefined
-}
+//

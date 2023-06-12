@@ -1,23 +1,15 @@
+import { Currency } from "./Domain";
 import { Price } from "./price";
 
 export class Stock{
     private _code: string;
     private _name: string;
     private _price : Price;
-    private _market?: string;
-    private _country?: string;
 
-    constructor(code: string, name: string, price: number | Price, market?: string, country?: string  ){
+    constructor(code: string, name: string, price: number , currency: Currency ){
         this._code = code
         this._name = name
-        
-        this._market = market
-        this._country = country
-        if(typeof price === 'number') {
-            this._price= new Price(code, price)
-        } else {
-            this._price = price
-        }
+        this._price = new Price(code, price, currency)
     }
 
     get code() : string {
@@ -28,6 +20,9 @@ export class Stock{
     }
     get price() : number {
         return this._price.value
+    }
+    get currency() : Currency  {
+        return this._price.currency
     }
     set setPrice(val : number) {
         this._price.setValue = val
@@ -43,13 +38,13 @@ export class MyStock extends Stock {
         code: string,
         name: string,
         price: number,
+        currency: Currency,
         quantity : number,
-        averagePurchasePrice ?: number,
-        market?: string, country?: string,   ){
+        averagePurchasePrice ?: number,){
 
-        super(code,name,price,market,country)
-        this._quantity = quantity
-        this._averagePurchasePrice = averagePurchasePrice
+            super(code,name,price,currency)
+            this._quantity = quantity
+            this._averagePurchasePrice = averagePurchasePrice
     }
     get quantity() :number {
         return this._quantity
