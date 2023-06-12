@@ -27,8 +27,9 @@ const StyledHeader = styled.header`
   width:100%;
   height:3rem;
   padding: 0.5rem;
+  padding-left: 1rem;
   margin: 0;
-  
+  font-weight: bold;
   display: flex;
   align-items: center;
 
@@ -36,7 +37,6 @@ const StyledHeader = styled.header`
 const StyledBody = styled.div<CardProps>`
   height : calc(100% -3rem); 
   overflow: auto;
-
 
 `
 

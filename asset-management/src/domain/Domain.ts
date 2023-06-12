@@ -20,6 +20,7 @@ export enum Currency {
     USD = "USD",
 }
 
+
 export interface User {
     assets: Assets;
 }
@@ -131,19 +132,7 @@ export const calcAssetsPercentage = (assets : Assets) : Array<Object>=> {
     const total = calcAllAssetsCurrentValue(assets)
 
     let resultArray : Array<{[key: string] : number}> = []
-    // if(total){
-    //     const ratios = stocks?.map((stock) => {
-    //         const nowVal = calcCurrentValue(stock)
-    //         const ratio = calcPercentage(nowVal, total,2)
-    //         return ratio
-    //     })
-    //     if (ratios && stocks){
-    //         resultArray = stocks?.map((stock,index) => {
-    //             const nameWithRatio : {[key: string] : number} = {}
-    //             nameWithRatio[stock.name] = ratios[index]
-    //             return nameWithRatio
-    //         })
-    //     }
+
     if (total && stocks){
         const stockRatio = calcPercentage(calcAssetArrayCurrentValue(stocks), total)
         resultArray.push({"stocks": stockRatio})
@@ -158,5 +147,19 @@ export const calcAssetsPercentage = (assets : Assets) : Array<Object>=> {
     }
 
     return resultArray
+}
+
+export const CurrencyMark = (currency : Currency) : string => {
+    switch(currency){
+        case Currency.KRW : {
+            return "₩"
+        }
+        case Currency.USD : {
+            return "$"
+        }
+        default : {
+            return "NONE"
+        }
+    }
 }
 //
