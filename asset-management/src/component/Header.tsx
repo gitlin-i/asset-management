@@ -1,6 +1,10 @@
 import React from 'react'
+import Button from './Button'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { modalState } from '../atom/atom'
 
 const Header : React.FC = () => {
+
   return (
 <nav className="navbar navbar-expand-lg bg-light">
   <div className="container-fluid">
@@ -13,6 +17,9 @@ const Header : React.FC = () => {
         <li className="nav-item">
           <a className="nav-link active" aria-current="page" href="#">Home</a>
         </li>
+
+        
+        
         <li className="nav-item">
           <a className="nav-link" href="#">Link</a>
         </li>

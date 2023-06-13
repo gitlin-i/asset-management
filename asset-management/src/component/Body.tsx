@@ -133,7 +133,7 @@ const Body : React.FC = () => {
     </StyledDiv3>
 
     <StyledDiv2>
-      <Button option='primary' onClick={handleClick}>set</Button>
+      <Button $primary onClick={handleClick}>set</Button>
     </StyledDiv2>
     
 

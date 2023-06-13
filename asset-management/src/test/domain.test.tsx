@@ -26,7 +26,9 @@ test('Stock Testing...', ()=> { // code, name, price, quantity
   expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
 
   const AssetsRatios = calcAssetsPercentage(myAssets)
-  const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
+  const resultArray = [{
+    "stocks" : 100,
+  }]
   expect(AssetsRatios).toStrictEqual(resultArray)
 
   expect(stock1.price).toBe(12222)
@@ -64,15 +66,10 @@ test('nivo Testing....', () => {
   const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))
   const literalObject = [
     {
-      id: "어떤 주식1",
-      label: "어떤 주식1",
-      value: 91.17
+      id: "stocks",
+      label: "stocks",
+      value: 100
     },
-    {
-      id: "어떤 주식2",
-      label: "어떤 주식2",
-      value: 8.83
-    }
   ]
   expect(calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))).toStrictEqual(literalObject)
 })
@@ -99,7 +96,7 @@ test("assets Testing...", ()=> {
   expect(assetsCurrentPrice).toBe(31* 12222 + 3* 12232)
 
   const AssetsRatios = calcAssetsPercentage(myAssets)
-  const resultArray = [{"어떤 주식1": 91.17} , {"어떤 주식2": 8.83}]
+  const resultArray = [{"stocks":100},{"coins":0},{"cash":0}]
   expect(AssetsRatios).toStrictEqual(resultArray)
 
   
