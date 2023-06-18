@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       - run: ls -all
-      - run: cd assets-management
+      - run: cd asset-management
       
       # Install project dependencies
       - name: Install dependencies
@@ -62,7 +62,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
+      - run: ls -all
+      - run: cd asset-management
       # Install project dependencies and build
       - name: Install dependencies
         run: yarn
