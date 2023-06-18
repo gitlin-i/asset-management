@@ -16,17 +16,20 @@ jobs:
         node-version: ['18.x']
     steps:
       - uses: actions/checkout@v3
-        
+
       # Initialize Node.js
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       
+      - run: ls -all
+      - run: cd assets-management
+      
       # Install project dependencies
       - name: Install dependencies
-        run: yarn
-        
+        run: yarn  
+
       # Build project
       - name: Run build
         run: yarn build
