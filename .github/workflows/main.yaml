@@ -23,19 +23,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       
-      - run: ls -all
-      - run: cd asset-management
-      - run: ls -all
       # Install project dependencies
       - name: Install dependencies
-        run: yarn  
-
+        run: |
+          cd asset-management
+          yarn
       # Build project
       - name: Run build
-        run: yarn build
+        run: |
+          cd asset-management
+          yarn build
       # Test project
       - name: Testing...
-        run : yarn test
+        run : |
+          cd asset-management
+          yarn test
         
   
   deploy:
