@@ -29,6 +29,9 @@ jobs:
           cd asset-management
           yarn
           yarn build
+          
+        env:
+          CI: ""
 
       # Test project
       - name: Testing...
@@ -68,6 +71,8 @@ jobs:
           cd asset-management
           yarn
           yarn build
+        env:
+          CI: ""
 
 
       # Install AWS CLI 2
