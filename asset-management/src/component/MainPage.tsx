@@ -11,7 +11,8 @@ import Section from './Section'
 import Card2 from './Card2'
 import Item from './Item'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { assetsState } from '../atom/atom'
+import { assetsState, modalState } from '../atom/atom'
+import Button from './Button'
 
 const StyledMain = styled.main`
   display:flex;
@@ -63,8 +64,9 @@ const StyledUl = styled.ul`
 ////////////
 const MainPage = () => {
   const assets = useRecoilValue(assetsState)
-
-  const targetRatio : aInput[]= [
+  const [modal,setModal] = useRecoilState(modalState)
+  const targetRatio : aInput[]= 
+  [
     {"ETF" : 50 },
     {"코인" : 30 },
     {"개별주" :20 },
@@ -78,9 +80,9 @@ const MainPage = () => {
     <StyledMain>
       <Section>
         <Card2 title='포트폴리오 구성'>
-        <StyledDiv>
-              <PieChart2 data={targetRatioForChart} title='목표 비율'></PieChart2>
-        </StyledDiv>
+          <StyledDiv>
+                <PieChart2 data={targetRatioForChart} title='목표 비율'></PieChart2>
+          </StyledDiv>
           <StyledDiv>
             <PieChart2 data={assetsRatioForChart} title='현재 비율'></PieChart2>
           </StyledDiv>
@@ -119,7 +121,14 @@ const MainPage = () => {
         </Card2>
       </Section>
 
-      <Section />
+      <Section >
+        <Button $primary onClick={() => {setModal((prev)=>({
+          ...prev,
+          isModalOpen: true,
+          title: "로그인",
+          content: "login",
+        }))}}>모달 열기</Button>
+      </Section>
       <Section />
     </StyledMain>
   )

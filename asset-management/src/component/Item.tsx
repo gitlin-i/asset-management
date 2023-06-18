@@ -44,12 +44,29 @@ const StyledImg = styled.img`
     height: 100%;
     object-fit: cover;
 `
-
-const UpText = styled.h5`
+const TextBox = styled.div`
+    height: 3rem;
+    display: inline-flex;
+    flex-direction:column;
+    justify-content:space-between;
+    vertical-align:top;
+    margin-left:0.5rem;
+`
+const UpText = styled.p`
     display:inline-block;
     position:relative;
     margin: 0;
-    max-height:18px;
+
+    max-height:24px;
+
+    white-space: nowrap; 
+    overflow-x:hidden;
+    text-overflow: ellipsis; 
+
+    @media screen and (max-width: 420px) {
+        max-width: 7rem;
+    }
+
 `
 const DownText = styled.p`
     display: inline-block;
@@ -76,14 +93,7 @@ const Right = styled(Left)`
     right:2rem;
 
 `
-const TextBox = styled.div`
-    height: 3rem;
-    display: inline-flex;
-    flex-direction:column;
-    justify-content:space-between;
-    vertical-align:top;
-    margin-left:0.5rem;
-`
+
 const Item : React.FC<ItemProps> = (props) => {
     const {image,leftdownText,leftupText,rightmiddleText} = props
   return (

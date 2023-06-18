@@ -3,6 +3,7 @@ import './App.css';
 import Header from './component/Header';
 import MainPage from './component/MainPage';
 import SideBar from './component/SideBar';
+import Modal from './component/Modal';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Header />
       <SideBar />
       <MainPage />
+      <Modal />
     </React.Fragment>
     
   );
