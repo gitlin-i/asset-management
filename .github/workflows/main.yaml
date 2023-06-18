@@ -25,7 +25,7 @@ jobs:
       
       - run: ls -all
       - run: cd asset-management
-      
+      - run: ls -all
       # Install project dependencies
       - name: Install dependencies
         run: yarn  
