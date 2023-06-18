@@ -31,7 +31,7 @@ const assets :Assets = {
     expect(assetsCurVal2).toBe(31* 12222 + 3* 12232)
 
     const assetsCurPer2 = calcAssetsPercentage(myAssets)
-    const resultArray = [{"stocks": 100} , {"coins": 0},]
+    const resultArray = [{"stocks": 100} , {"coins": 0},{"cash":0}]
     expect(assetsCurPer2).toEqual(resultArray)
 })
 
