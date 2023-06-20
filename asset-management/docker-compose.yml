@@ -1,0 +1,7 @@
+
+services:
+  react-app:
+    image: jindev24/assets
+    ports:
+      - "80:80"
+
