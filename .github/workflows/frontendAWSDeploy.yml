@@ -2,10 +2,12 @@ name: frontend/AWSDeploy
 
 # Docker Image가 새로 저장되면 실행
 on:
-  workflow_run:
-    workflows: [frontendDocker]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+defaults:
+  run:
+    working-directory: ./asset-management
 
 env:
   EB_DEPLOYMENT_PACKAGE: docker-compose.yml
@@ -15,7 +17,7 @@ jobs:
   awsDeploy:
     name: CD Pipeline
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: dockerCompose download
         uses: actions/checkout@v3
@@ -23,7 +25,7 @@ jobs:
           sparse-checkout: |
             ./asset-management/docker-compose.yml
           sparse-checkout-cone-mode: false
-
+      - run: ls -a
       # Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
