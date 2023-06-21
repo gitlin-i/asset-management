@@ -21,10 +21,7 @@ jobs:
     steps:
       - name: dockerCompose download
         uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            ./asset-management/docker-compose.yml
-          sparse-checkout-cone-mode: false
+
       - run: ls -a
       # Configure AWS credentials
       - name: Configure AWS credentials
