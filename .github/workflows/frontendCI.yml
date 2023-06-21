@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: ./asset-management
+
 jobs:
   buildAndTest:
     name: Ci pipeline
@@ -25,16 +29,13 @@ jobs:
       
       # Install project dependencies and Build project
       - name: Install dependencies and build
-        run: |
-          cd asset-management
-          yarn
-          yarn build
+        run: yarn
+
+      - run: yarn build
         env:
           CI: ""
             #경고 무시
       # Test project
       - name: Testing...
-        run : |
-          cd asset-management
-          yarn test
+        run : yarn test
      
