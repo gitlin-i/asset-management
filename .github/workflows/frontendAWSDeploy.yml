@@ -37,6 +37,6 @@ jobs:
           application_name: ${{ env.EB_APPLICATION_NAME }}
           environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
           region: ${{ secrets.AWS_REGION }}
-          deployment-package: ./asset-management/docker-compose.yml
+          deployment-package: asset-management/docker-compose.yml
           version_label: myApp.${{github.sha}}
           
