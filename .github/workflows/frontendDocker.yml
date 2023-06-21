@@ -28,10 +28,11 @@ jobs:
         with:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
-
+      - run: ls -a
       - name: Docker Build and Push
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/assets
 
