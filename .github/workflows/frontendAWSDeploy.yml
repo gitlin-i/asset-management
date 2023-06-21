@@ -5,9 +5,7 @@ on:
   push:
     branches:
       - main
-defaults:
-  run:
-    working-directory: ./asset-management
+
 
 env:
   EB_ENVIRONMENT_NAME: Assets-env
@@ -28,24 +26,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          
-      # Install AWS CLI 2
-      # - name: Install AWS CLI 2
-      #   run: |
-      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      #     unzip awscliv2.zip
-      #     which aws
-      #     sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
-      # - name: Install AWS CLI
-      #   run: |
-      #     pip install --upgrade pip
-      #     pip install awscli
-
-      # - name: Deploy to EB
-      #   run: |
-      #     aws elasticbeanstalk create-application-version --region ${{ env.AWS_REGION }} --application-name <application_name> --version-label <version_label> --source-bundle S3Bucket=<s3_bucket>,S3Key=<s3_key>
-      #     aws elasticbeanstalk update-environment --region ${{ env.AWS_REGION }} --environment-name <environment_name> --version-label <version_label>
       # Deploy to Elastic Beanstalk
       - run: ls -a
       - name: Deploy to EB
@@ -56,6 +37,6 @@ jobs:
           application_name: ${{ env.EB_APPLICATION_NAME }}
           environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
           region: ${{ secrets.AWS_REGION }}
-          deployment-package: ./docker-compose.yml
+          deployment-package: ./asset-management/docker-compose.yml
           version_label: myApp.${{github.sha}}
           
