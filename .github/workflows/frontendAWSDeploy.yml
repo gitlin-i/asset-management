@@ -11,7 +11,7 @@ defaults:
     working-directory: ./asset-management
 
 env:
-  EB_DEPLOYMENT_PACKAGE : docker-compose.yml
+  EB_DEPLOYMENT_PACKAGE : asset-management/docker-compose.yml
   EB_ENVIRONMENT_NAME: Assets-env
   EB_APPLICATION_NAME: assets
 jobs:
