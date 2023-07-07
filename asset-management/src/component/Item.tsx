@@ -8,6 +8,7 @@ export interface ItemProps{
     leftupText ?:string | number;
     leftdownText?:string | number;
     rightmiddleText?: string | number;
+    altText ?: string;
 }
 const StyledItem = styled.li`
     list-style : none;
@@ -43,6 +44,17 @@ const StyledImg = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover;
+`
+const StyledText = styled.div`
+    background-color: green;
+    color: white;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    
 `
 const TextBox = styled.div`
     height: 3rem;
@@ -95,7 +107,7 @@ const Right = styled(Left)`
 `
 
 const Item : React.FC<ItemProps> = (props) => {
-    const {image,leftdownText,leftupText,rightmiddleText} = props
+    const {image,leftdownText,leftupText,rightmiddleText, altText: altImage} = props
   return (
     <StyledItem>
         <Left>
@@ -103,6 +115,11 @@ const Item : React.FC<ItemProps> = (props) => {
             <ImageLayout>
                 <StyledImg src={image} />
             </ImageLayout>}
+            {!image && altImage &&
+                <ImageLayout>
+                    <StyledText>{altImage}</StyledText>
+                </ImageLayout>
+            }
             <TextBox>
                 <UpText>{leftupText}</UpText>
                 <DownText>{leftdownText}</DownText>

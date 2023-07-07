@@ -7,28 +7,24 @@ on:
     types:
       - completed
 
+defaults:
+  run:
+    working-directory: ./asset-management
+
 env:
-  EB_DEPLOYMENT_PACKAGE: docker-compose.yml
+  EB_DEPLOYMENT_PACKAGE : asset-management/docker-compose.yml
   EB_ENVIRONMENT_NAME: Assets-env
   EB_APPLICATION_NAME: assets
 jobs:
   awsDeploy:
     name: CD Pipeline
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: dockerCompose download
         uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            ./asset-management/docker-compose.yml
-          sparse-checkout-cone-mode: false
-      # Install AWS CLI 2
-      # - name: Install AWS CLI 2
-      #   run: |
-      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      #     unzip awscliv2.zip
-      #     which aws
-      #     sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
       # Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -37,9 +33,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
       # Deploy to Elastic Beanstalk
-
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -48,4 +42,6 @@ jobs:
           application_name: ${{ env.EB_APPLICATION_NAME }}
           environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
           region: ${{ secrets.AWS_REGION }}
-          deployment-package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
+          deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
+          version_label: assetAppFE.${{ github.sha }}
+          

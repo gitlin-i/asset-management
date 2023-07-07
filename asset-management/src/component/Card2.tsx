@@ -23,20 +23,23 @@ const StyledDiv = styled.div<CardProps>`
 `
 const StyledHeader = styled.header`
   border-radius : 0.5rem 0.5rem 0 0 ;
-  border-bottom: solid 2px gray;
+  /* border-bottom: solid 2px gray; */
   width:100%;
   height:3rem;
+
   padding: 0.5rem;
-  padding-left: 1rem;
+  padding-left: 1.5rem;
   margin: 0;
   font-weight: bold;
+  font-size:20px;
   display: flex;
   align-items: center;
-
+  margin-bottom:1rem;
 `
 const StyledBody = styled.div<CardProps>`
   height : calc(100% -3rem); 
   overflow: auto;
+
 
 `
 

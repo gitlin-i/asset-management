@@ -1,16 +1,19 @@
 name: frontendDocker
 
-# main branch에 push 되면 실행
+# CI 통과시
 on:
-  push:
-    branches:
-      - main
-
+  workflow_run:
+    workflows: [frontendCI]
+    types:
+      - completed
+defaults:
+  run:
+    working-directory: ./asset-management
 jobs:
-
   Docker:
     name: DockerImageBuildandPush (CI)
     runs-on : ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,10 +30,10 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
 
-      - name: Docker Build and Push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/assets
+
+      - name: Docker build
+        run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/assets .
+
+      - name: Docker Push Reigistry
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/assets
 
