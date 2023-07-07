@@ -1,18 +1,19 @@
 name: frontendDocker
 
-# main branch에 push 되면 실행
+# CI 통과시
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [frontendCI]
+    types:
+      - completed
 defaults:
   run:
     working-directory: ./asset-management
 jobs:
-
   Docker:
     name: DockerImageBuildandPush (CI)
     runs-on : ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

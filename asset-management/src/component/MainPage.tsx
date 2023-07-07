@@ -80,12 +80,16 @@ const MainPage = () => {
     <StyledMain>
       <Section>
         <Card2 title='포트폴리오 구성'>
-          <StyledDiv>
-                <PieChart2 data={targetRatioForChart} title='목표 비율'></PieChart2>
-          </StyledDiv>
+          {
+            targetRatio &&
+            <StyledDiv>
+              <PieChart2 data={targetRatioForChart} title='목표 비율'></PieChart2>
+            </StyledDiv>
+          }
+          { assetsRatio &&
           <StyledDiv>
             <PieChart2 data={assetsRatioForChart} title='현재 비율'></PieChart2>
-          </StyledDiv>
+          </StyledDiv>}
         </Card2>
       </Section>
 
@@ -94,12 +98,10 @@ const MainPage = () => {
           <StyledUl>
             <Item leftupText="내 총 자산" rightmiddleText={ calcAllAssetsCurrentValue(assets).toLocaleString() + CurrencyMark(Currency.KRW)} />
             <Item leftupText="주식 합계" rightmiddleText={ calcAssetArrayCurrentValue(assets.stocks as MyStock[]).toLocaleString() + CurrencyMark(Currency.KRW)} />
-            <Item leftupText="코인 합계" rightmiddleText={calcAssetArrayCurrentValue(assets.coins as MyCoin[]).toLocaleString() + CurrencyMark(Currency.KRW) } />
+            <Item leftupText="코인 합계" rightmiddleText={ calcAssetArrayCurrentValue(assets.coins as MyCoin[]).toLocaleString() + CurrencyMark(Currency.KRW) } />
             <Item leftupText="현금 합계" rightmiddleText={ calcCashArrayCurrentValue(assets.cash as Cash[]).toLocaleString() + CurrencyMark(Currency.KRW)} />
           </StyledUl>
-
         </Card2>
-
       </Section>
 
       <Section>
