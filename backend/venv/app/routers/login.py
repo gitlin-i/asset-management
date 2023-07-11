@@ -1,6 +1,6 @@
 
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from domain.schema.user import User1
 router = APIRouter(
@@ -87,5 +87,14 @@ async def read_user_me(current_user: Annotated[User1,Depends(get_current_user)])
 @router.get("/login_test")
 async def read_login_test(token: Annotated[str, Depends(oauth2_scheme)]):
     return {"token": token}
+
+
+@router.post("")
+async def login_session(userId : Annotated[str, Form()], password: Annotated[str,Form()]):
+    return {
+        userId: userId,
+        password: password,
+        "testfield": "1234"
+    }
 
 

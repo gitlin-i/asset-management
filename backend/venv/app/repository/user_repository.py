@@ -6,10 +6,11 @@ class UserRepositorty():
     def __init__(self,session :Session) -> None:
         self.db = session
 
-    def read_user_by_id(self,id) -> model | None:
+    def read_user_by_id(self,id) -> schema | None:
         stmt = select(model).where(model.id == id)
         try:
             user = self.db.scalar(stmt)
+            
         except :
             raise RuntimeError("something wrong.")
 

@@ -1,50 +1,81 @@
 import React from 'react'
-import Button from './Button'
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { modalState } from '../atom/atom'
+import { styled } from 'styled-components'
+const StyledNav = styled.nav`
+  width:100%;
+  height: 3rem;
+  background-color: ${props => props.theme.color.background};
+  display: flex;
+  padding:0.5rem 1rem 0 2rem;
+`
+const Area = styled.div`
+  width:100%;
+  height:100%;
+`
 
+const LeftArea = styled(Area)`
+  flex-grow:1;
+  flex-shrink:1;
+
+`
+const StyledA = styled.a`
+  display: inline-flex;
+  align-items: center;
+  /* background-color:red; */
+  gap:1rem;
+  font-size: 1.5rem;
+  color: black;
+  &:hover {
+    color: black;
+  }
+  text-decoration: none;
+  & > span:first-child {
+    margin-left: 1rem;
+    font-size: 2rem;
+  }
+
+`
+const MiddleArea = styled(Area)`
+  flex-grow:1;
+  flex-shrink:1.25;
+  background-color:orange;
+`
+const RightArea = styled(Area)`
+  flex-grow:1;
+  flex-shrink:1;
+  background-color:blue;
+`
+const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
+  
+`
 const Header : React.FC = () => {
 
   return (
-<nav className="navbar navbar-expand-lg bg-light">
-  <div className="container-fluid">
-    <a className="navbar-brand" href="#">자산관리</a>
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
+    <StyledNav>
+      <LeftArea>
+        <StyledA href='#'>
+          <Icon>
+            account_balance
+          </Icon>
+          <span>자산 관리</span>
+        </StyledA>
 
-        
-        
-        <li className="nav-item">
-          <a className="nav-link" href="#">Link</a>
-        </li>
-        <li className="nav-item dropdown">
-          <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul className="dropdown-menu">
-            <li><a className="dropdown-item" href="#">Action</a></li>
-            <li><a className="dropdown-item" href="#">Another action</a></li>
-            <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link disabled">Disabled</a>
-        </li>
-      </ul>
-      <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-        <button className="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+      </LeftArea>
+      <MiddleArea>
+        페이지 제목
+      </MiddleArea>
+      <RightArea>
+        <Icon>
+          settings
+        </Icon>
+        <Icon>
+          light_mode
+        </Icon>
+        <Icon>
+          account_circle
+        </Icon>
+
+      </RightArea>
+    </StyledNav>
   )
 }
 

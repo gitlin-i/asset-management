@@ -28,14 +28,14 @@ const LoginContent = () => {
   };
   return (
     <React.Fragment>
-      <form action='http://localhost:8000/login' method='post' onSubmit={handleSubmit}>
+      <form action='http://localhost:8000/login3' method='post'>
         <label htmlFor='userId'>ID</label>
         <input type='text' id="userId" name='userId'required onChange={handleInputChange}/>
 
-        <label htmlFor='password'>password</label>
-        <input type='text' id="password" name='password' required onChange={handleInputChange}/>
+        <label htmlFor='userPassword'>password</label>
+        <input type='text' id="userPassword" name='userPassword' required onChange={handleInputChange}/>
         <div>
-          <text>{formData.userId + ": " + formData.password}</text>
+          <p>{formData.userId + ": " + formData.password}</p>
         </div>
         
         <Button $primary type='submit'> 제출 </Button>

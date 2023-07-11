@@ -13,11 +13,11 @@ interface ButtonProps {
 
 const StyledButton = styled.button<ButtonProps>`
   position: relative;
-  background-color: ${props => props.$primary ? "#038cfc" : "white" };
+  background-color: ${props => props.$primary ? props.theme.color.primary : "white" };
   font-size: 1rem;
-  color: ${props => props.$primary ? "white" : "#18a8b8"};
+  color: ${props => props.$primary ? "white" : props.theme.color.secondary};
   border: ${props => props.$secondary? "solid":"none"};
-  border-color: ${props => props.$secondary? "#18a8b8": "white" };
+  border-color: ${props => props.$secondary? props.theme.color.secondary: "white" };
   border-radius: 1rem;
   padding: 1rem 2rem;
   cursor: pointer;

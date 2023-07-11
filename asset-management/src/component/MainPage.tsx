@@ -21,14 +21,14 @@ const StyledMain = styled.main`
   row-gap: 1rem;
   width: 100%;
   height:100%;
-  background-color: #dfdfdf;
+  background-color: ${props => props.theme.color.background};
   vertical-align:top;
   padding:1rem;
 
   @media screen and (min-width: 768px){
 
     display: grid;
-    height:100vh;
+    height:calc(100vh - 56px);
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 1rem;

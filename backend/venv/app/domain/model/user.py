@@ -17,5 +17,5 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(64))
     
     def __repr__(self) -> str:
-        return "User(id = {}, name = {})".format(self.id, self.name)
+        return "UserModel(id = {}, name = {}, password = {})".format(self.id, self.name, self.password)
     
