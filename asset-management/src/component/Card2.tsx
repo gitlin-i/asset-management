@@ -15,7 +15,7 @@ const StyledDiv = styled.div<CardProps>`
     border-radius:1rem;
     display:flex;
     flex-direction:column;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); */
     /* &:hover{
     background-color: #e6e6e6;
   } */
@@ -40,6 +40,19 @@ const StyledBody = styled.div<CardProps>`
   height : calc(100% -3rem); 
   overflow: auto;
 
+  &::-webkit-scrollbar-track {
+    border-radius: 0.125rem;
+    background-color: white;
+  }
+  &::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 0.125rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.125rem;
+    background-color: gray;
+  }
 
 `
 

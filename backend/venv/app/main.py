@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine,SessionLocal
-from routers import test, login, user,login3, login2
+from routers import test,  user,login3, login2, login4, login
 from domain.model.test import Base
 from domain.model.user import Base as Base2
 from domain.model.web_session import Base as Base3
@@ -33,10 +33,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(test.router)
-app.include_router(login.router)
+
 app.include_router(user.router)
+app.include_router(login.router)
 app.include_router(login2.router)
 app.include_router(login3.router)
+app.include_router(login4.router)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}

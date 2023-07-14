@@ -11,48 +11,6 @@ import secrets
 router = APIRouter(
     prefix="/login3"
 )
-def get_db() -> Session :
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@router.post("")
-async def login_session(userId : Annotated[str, Form()], userPassword : Annotated[str, Form()], response: Response,
-                        db : Session = Depends(get_db)
-                        ):
-
-    user = UserService.find_user(db, userId)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="없는 유저"
-        )
-    is_login_succeed = UserService.verify_password(userPassword, user.password.encode("utf-8"))
-
-    if not is_login_succeed:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="비번 틀림"
-        )
-    
-    user_session = WebSessionService.register_web_session(userId)
-    
-
-    response.set_cookie(key="user_session", value=user_session)
-    return {
-        "message": "쿠키 안을 봐봐.",
-        "userSession" : "user_session"
-    } 
-
-@router.get("/cookie")
-async def get_username_by_cookie(user_session : Annotated[str, Cookie()] = None):
-    current_user_id = WebSessionService.read_current_user_id(user_session)
-    return {
-        "userId" : current_user_id
-    }
 
 ############################# HTTP
 

@@ -4,19 +4,36 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './theme';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import DashBoardPage from './component/page/DashBoardPage';
+import NotFoundPage from './component/page/NotFoundPage';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        path: "",
+        element:  <DashBoardPage />
+      }
+    ]
+  },
+]);
+
 root.render(
   <React.StrictMode>
 
     <RecoilRoot>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-      
+      <RouterProvider router={router} />
     </RecoilRoot>
       
 

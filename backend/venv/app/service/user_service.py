@@ -32,7 +32,6 @@ class UserService(UserBase):
     def find_user(db : Session ,id : str) -> User:
         try:
             user = UserRepositorty(session=db).read_user_by_id(id)
-
         except:
             raise RuntimeError(user)
         

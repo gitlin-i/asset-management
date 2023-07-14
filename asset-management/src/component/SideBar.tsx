@@ -7,11 +7,10 @@ const StyledSide = styled.aside`
         display:inline-block;        
     }
     width:20%;
+    position:relative;
     height:calc(100vh - 56px);
     background-color: ${props => props.theme.color.background};
     padding: 1rem 0;
-
-    
 `
 const MenuLayout = styled.div`
   margin: 0 0 0 2rem;
@@ -20,7 +19,7 @@ const MenuLayout = styled.div`
   display: flex;
   flex-direction: column;
   gap : 1rem;
-  background-color: white;
+  background-color: ${props => props.theme.color.card};
   border-radius:1rem;
   box-shadow : ${props => props.theme["box-shadow"]};
   transition : all 0.3s ease;
@@ -29,6 +28,10 @@ const MenuLayout = styled.div`
   }
   padding-top:2rem;
   
+  & > a:last-child {
+    margin-top: auto;
+    bottom: 2rem;
+  }
 `
 
 const StyledA = styled.a`
@@ -40,21 +43,21 @@ const StyledA = styled.a`
   /* justify-content: center; */
   margin-left: 2rem;
   height:3rem;
-  gap: 1rem;
+  /* gap: 1rem; */
   transition : all 0.3s ease;
   &:hover{
-    color: ${props => props.theme.color.secondary };
+    color: ${props => props.theme.color.primary };
   }
 
   &:active{
-    color: ${props => props.theme.color.secondary };
+    color: ${props => props.theme.color.primary };
     background-color:  ${props => props.theme.color.background };
     margin-left: 0;
     width: 100%;
   }
   
   &:active::before{
-    background-color: ${props => props.theme.color.secondary };
+    background-color: ${props => props.theme.color.primary };
     content: '';
     width:8px;
     height:29px;
@@ -62,71 +65,81 @@ const StyledA = styled.a`
     left: 0;
   }
   &:hover > span:first-child{
-    transition : all 0.3s ease;
     margin-left : 0.6rem;
+
   }
   &:active > span:first-child{
     margin-left : 2rem;
   }
-  & > span:first-child {
-    font-size:1.8rem;
-  }
-  & > span {
-    font-size:1rem;
-  }
-
-  &:last-child{
-
+  & > span:last-child{
+    margin-left: 1rem;
+    font-size: 1.2rem;
   }
 `
 const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
-  
+  font-size:2rem;
+  transition : all 0.3s ease;
 `
 const SideBar = () => {
+  const menuItemData = {
+    icon: "dashboard",
+    presentName: "대시보드",
+    href: "#"
+  }
+  const menuItemData2 = {
+    icon: "universal_currency_alt",
+    presentName: "주식",
+    href: "#"
+  }
+  const menuItemData3 = {
+    icon: "toll",
+    presentName: "코인",
+    href: "#"
+  }
+  const menuItemData4 = {
+    icon: "money",
+    presentName: "현금",
+    href: "#"
+  }
+  const menuItemData5 = {
+    icon: ["arrow_Forward","account_balance_wallet"],
+    presentName: "입금",
+    href: "#"
+  }
+  const menuItemData6 = {
+    icon: ["arrow_back","account_balance_wallet"],
+    presentName: "출금",
+    href: "#"
+  }
+  const menuItemData7 = {
+    icon: "person",
+    presentName: "내 정보",
+    href: "#"
+  }
+  const mapToItem = (menuItem: {icon: string | Array<string> ,presentName: string , href:string}) => {
+    return (
+      <StyledA href={menuItem.href} key={menuItem.presentName}>
+        {typeof menuItem.icon === 'string' &&
+          <Icon>
+            {menuItem.icon}
+          </Icon>}
+        { Array.isArray(menuItem.icon) && 
+          menuItem.icon.map((icon) => {
+            return (
+            <Icon key={icon}>
+              {icon}
+            </Icon>)
+          })
+        }
+        <span>{menuItem.presentName}</span>
+      </StyledA>
+    )
+  }
+
   return (
     <StyledSide>
       <MenuLayout >
-        <StyledA href='#'>
-          <Icon>
-            dashboard
-          </Icon>
-          <span>
-            대시보드
-          </span>
-        </StyledA>
-        <StyledA href='#'>
-          <Icon>
-            universal_currency_alt
-          </Icon>
-          <span>
-            주식
-          </span>
-        </StyledA>
-        <StyledA href='#'>
-          <Icon>
-            toll
-          </Icon>
-          <span>
-            코인
-          </span>
-        </StyledA>
-        <StyledA href='#'>
-          <Icon>
-            money
-          </Icon>
-          <span>
-            현금
-          </span>
-        </StyledA>
-
-        <StyledA href='#'>
-          <Icon>
-            person
-          </Icon>
-          <span>
-            내 정보
-          </span>
-        </StyledA>
+      {[menuItemData, menuItemData2, menuItemData3, menuItemData4,menuItemData5,menuItemData6,menuItemData7].map(mapToItem)}
 
       </MenuLayout>
     </StyledSide>

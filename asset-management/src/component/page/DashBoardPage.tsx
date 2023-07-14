@@ -1,18 +1,18 @@
 
 import { styled } from 'styled-components'
-import PieChart2 from '../component/PieChart2'
-import { MyStock } from '../domain/stock'
-import { Currency, CurrencyMark, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetsPercentage, calcCashArrayCurrentValue, calcPercentage, roundNumber, testRealData } from '../domain/Domain'
-import { ObjectToNivoPieChartData, aInput, changeDataToItem } from '../utill/NivoPieChart'
-import AssetsInput from '../component/AssetsInput'
-import { MyCoin } from '../domain/coin'
-import { Cash } from '../domain/cash'
-import Section from './Section'
-import Card2 from './Card2'
-import Item from './Item'
+import PieChart2 from '../PieChart2'
+import { MyStock } from '../../domain/stock'
+import { Currency, CurrencyMark, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetsPercentage, calcCashArrayCurrentValue, calcPercentage, roundNumber, testRealData } from '../../domain/Domain'
+import { ObjectToNivoPieChartData, aInput, changeDataToItem } from '../../utill/NivoPieChart'
+import AssetsInput from '../AssetsInput'
+import { MyCoin } from '../../domain/coin'
+import { Cash } from '../../domain/cash'
+import Section from '../Section'
+import Card2 from '../Card2'
+import Item from '../Item'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { assetsState, modalState } from '../atom/atom'
-import Button from './Button'
+import { assetsState, modalState } from '../../atom/atom'
+import Button from '../Button'
 
 const StyledMain = styled.main`
   display:flex;
@@ -24,8 +24,8 @@ const StyledMain = styled.main`
   background-color: ${props => props.theme.color.background};
   vertical-align:top;
   padding:1rem;
-
-  @media screen and (min-width: 768px){
+//768px
+  @media screen and (min-width: ${props => props.theme.breakPoint.t}){
 
     display: grid;
     height:calc(100vh - 56px);
@@ -62,7 +62,7 @@ const StyledUl = styled.ul`
 `
 
 ////////////
-const MainPage = () => {
+const DashBoardPage = () => {
   const assets = useRecoilValue(assetsState)
   const [modal,setModal] = useRecoilState(modalState)
   const targetRatio : aInput[]= 
@@ -136,4 +136,4 @@ const MainPage = () => {
   )
 }
 
-export default MainPage
+export default DashBoardPage

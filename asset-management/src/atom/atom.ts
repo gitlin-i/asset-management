@@ -1,5 +1,6 @@
 import {atom} from "recoil"
 import { Assets } from "../domain/Domain"
+import { lightTheme } from "../theme"
 export const assetsState = atom<Assets>({
     key: "assetsState",
     default: {
@@ -16,4 +17,9 @@ export const modalState = atom({
         content : "",
         title : "",
     }
+})
+
+export const themeState = atom({
+    key: "themeState",
+    default: lightTheme
 })
