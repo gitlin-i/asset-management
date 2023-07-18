@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import Header from './component/Header';
-import DashBoardPage from './component/page/DashBoardPage';
+import MainPage from './component/page/MainPage';
 import SideBar from './component/SideBar';
 import Modal from './component/Modal';
 import { ThemeProvider } from 'styled-components';

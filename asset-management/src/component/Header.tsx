@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { keyframes, styled } from 'styled-components'
 import ThemeChangeButton from './ThemeChangeButton'
+import { useRecoilState } from 'recoil'
+import { modalState } from '../atom/atom'
 const StyledNav = styled.nav`
   width:100%;
   height: 56px;
@@ -58,7 +60,7 @@ const RightArea = styled(Area)`
 const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
 
 `
-const AccountIcon = styled.button.attrs({className: "material-symbols-rounded"})`
+const AccountIconButton = styled.button.attrs({className: "material-symbols-rounded"})`
   display: inline-flex;
   padding: 0;
   margin: 0;
@@ -95,42 +97,19 @@ const moveAnimaition = keyframes`
 interface animate {
   $ani: boolean;
 }
-const LightAndDarkIcon =styled.button.attrs({className: "material-symbols-rounded" })<animate>`
-  margin-right:1rem;
-  font-size: 2rem;
-  background-color: ${props => props.theme.color.background};
-  border: none;
-  &:hover{
-    background-color: ${props => props.theme.color.shadow};
-  }
-  border-radius: 1rem;
-
-  animation: ${props => props.$ani ? moveAnimaition : ""} 1s ease ; 
-
-`
 
 
 const Header : React.FC = () => {
 
-  const [isDark, setDark] = useState(false)
-  const [isAnimation, setAnimation] = useState(false)
-  const handleClick = () => {
-    console.log("애니메이션 재생")
-    setAnimation(true)
-    setTimeout(() => {
-      setDark(!isDark)
-      setAnimation(false)
-      console.log("애니메이션 끝")
+  const [modal, setModal] = useRecoilState(modalState)
 
-    },800)
-    
-  }
-  const lightOrDark = () => {
-      if(isDark) {
-        return "dark_mode"
-      }
-      return "light_mode"
-    }
+
+  const handleClick = () => {setModal((prev)=>({
+    ...prev,
+    isModalOpen: true,
+    title: "로그인",
+    content: "login",
+  }))}
 
   return (
     <StyledNav>
@@ -150,10 +129,9 @@ const Header : React.FC = () => {
 
       <RightArea>
 
-
-        <AccountIcon>
+        <AccountIconButton onClick={handleClick}>
           account_circle
-        </AccountIcon>
+        </AccountIconButton>
 
         <AccountInfo>
           hello! Kim.

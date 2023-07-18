@@ -26,7 +26,7 @@ const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
     return (<ResponsivePie
         layers={['arcLinkLabels', 'arcs', 'arcLabels', 'legends',centerTitleLayer] }
         data={data}
-        margin={{ top: 0, right: 20, bottom: 20, left: 80 }}
+        margin={{ top: 40, right: 20, bottom: 20, left: 80 }}
         valueFormat=" >-,"
         innerRadius={0.5}
         padAngle={0.7}
@@ -42,6 +42,7 @@ const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
                 ]
             ]
         }}
+        sortByValue={true}
         enableArcLinkLabels={false}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
@@ -61,11 +62,11 @@ const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
         colors={{scheme :'category10'}}
         legends={[
             {
-                anchor: 'left',
+                anchor: 'top-left',
                 direction: 'column',
                 justify: false,
                 translateX: -56,
-                translateY: 56,
+                translateY: -20,
                 itemsSpacing: 0,
                 itemWidth: 100,
                 itemHeight: 18,

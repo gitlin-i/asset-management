@@ -1,6 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
 
+interface SideBarItem {
+  icon: string | Array<string> ;
+  presentName: string;
+  href : string;
+}
 const StyledSide = styled.aside`
     display:none;
     @media screen and (min-width: 1024px){
@@ -34,7 +40,7 @@ const MenuLayout = styled.div`
   }
 `
 
-const StyledA = styled.a`
+const StyledLink = styled(Link)`
   display: flex;
   position: relative;
   color: ${props => props.theme.color.unactive};
@@ -80,26 +86,27 @@ const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
   font-size:2rem;
   transition : all 0.3s ease;
 `
-const SideBar = () => {
-  const menuItemData = {
+const SideBar : React.FC = () => {
+  
+  const menuItemData : SideBarItem = {
     icon: "dashboard",
     presentName: "대시보드",
-    href: "#"
+    href: "/"
   }
   const menuItemData2 = {
     icon: "universal_currency_alt",
     presentName: "주식",
-    href: "#"
+    href: "/stock"
   }
   const menuItemData3 = {
     icon: "toll",
     presentName: "코인",
-    href: "#"
+    href: "/coin"
   }
   const menuItemData4 = {
     icon: "money",
     presentName: "현금",
-    href: "#"
+    href: "/cash"
   }
   const menuItemData5 = {
     icon: ["arrow_Forward","account_balance_wallet"],
@@ -116,9 +123,9 @@ const SideBar = () => {
     presentName: "내 정보",
     href: "#"
   }
-  const mapToItem = (menuItem: {icon: string | Array<string> ,presentName: string , href:string}) => {
+  const mapToLink = (menuItem: SideBarItem) => {
     return (
-      <StyledA href={menuItem.href} key={menuItem.presentName}>
+      <StyledLink to={menuItem.href} key={menuItem.presentName}>
         {typeof menuItem.icon === 'string' &&
           <Icon>
             {menuItem.icon}
@@ -132,14 +139,14 @@ const SideBar = () => {
           })
         }
         <span>{menuItem.presentName}</span>
-      </StyledA>
+      </StyledLink>
     )
   }
 
   return (
     <StyledSide>
       <MenuLayout >
-      {[menuItemData, menuItemData2, menuItemData3, menuItemData4,menuItemData5,menuItemData6,menuItemData7].map(mapToItem)}
+      {[menuItemData, menuItemData2, menuItemData3, menuItemData4,menuItemData5,menuItemData6,menuItemData7].map(mapToLink)}
 
       </MenuLayout>
     </StyledSide>

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import Card2  from '../component/Card2';
+import Card  from '../component/Card';
 import Test from '../component/Test';
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof Card2> = {
+const meta: Meta<typeof Card> = {
   title: 'Assets/Card2',
-  component: Card2,
+  component: Card,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
@@ -15,7 +15,7 @@ const meta: Meta<typeof Card2> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Card2>;
+type Story = StoryObj<typeof Card>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 export const NoneProp: Story = {
@@ -28,28 +28,28 @@ export const OneChildren : Story = {
     color : "yellow",
   },
   render: (args) => (
-    <Card2 {...args}>
+    <Card {...args}>
       <p>hi</p>
-    </Card2>
+    </Card>
   ),
 
 }
 
 export const Title : Story = {
   render: () => (
-    <Card2 title='안녕하세요.'>
+    <Card title='안녕하세요.'>
 
-    </Card2>
+    </Card>
   ),
 
 }
 
 export const example : Story = {
   render: () => (
-    <Card2 title='적절한 예시'>
+    <Card title='적절한 예시'>
       <p> 안녕하세요. </p>
 
-    </Card2>
+    </Card>
   )
 }
 

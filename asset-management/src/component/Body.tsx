@@ -1,9 +1,9 @@
 import React from 'react'
 import Table from './Table'
-import { Assets,  calcAllAssetsCurrentValue,  calcAssetsPercentage, Currency } from '../domain/Domain'
+import { Assets,  calcAllAssetsCurrentValue,  calcAssetsPercentage, Currency, Ratio } from '../domain/Domain'
 import {styled} from 'styled-components'
 import PieChart2 from './PieChart2'
-import { ObjectToNivoPieChartData, aInput } from '../utill/NivoPieChart'
+import { ObjectToNivoPieChartData } from '../utill/NivoPieChart'
 import Button from './Button'
 import { MyStock } from '../domain/stock'
 import { useRecoilState } from 'recoil'
@@ -101,8 +101,8 @@ const Body : React.FC = () => {
     ],
   }
   
-  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))
-  const chartDataArray2 = calcAssetsPercentage(myAssets3).map(obj => ObjectToNivoPieChartData(obj as aInput))
+  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as Ratio))
+  const chartDataArray2 = calcAssetsPercentage(myAssets3).map(obj => ObjectToNivoPieChartData(obj as Ratio))
   return (
     <React.Fragment>
     {/* <img src={process.env.PUBLIC_URL + '/JohnCliftonBogle.webp'} alt='saint'></img> */}

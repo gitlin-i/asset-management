@@ -53,7 +53,7 @@ export const MyResponsiveLine : React.FC<LineChartProps> = ({ data /* see data t
         useMesh={true}
         legends={[
             {
-                anchor: 'bottom-right',
+                anchor: 'top-left',
                 direction: 'column',
                 justify: false,
                 translateX: 100,

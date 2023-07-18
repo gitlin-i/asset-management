@@ -7,12 +7,12 @@ export interface ItemProps{
     image ?: string;
     leftupText ?:string | number;
     leftdownText?:string | number;
-    rightmiddleText?: string | number;
-    altText ?: string;
+    rightUpText ?: string | number;
+    rightDownText ?: string | number;
+    altImageByText ?: string;
 }
 const StyledItem = styled.li`
     list-style : none;
-
     height:100%;
     min-height:2rem;
     border-radius: 1rem;
@@ -64,7 +64,7 @@ const TextBox = styled.div`
     vertical-align:top;
     margin-left:0.5rem;
 `
-const UpText = styled.p`
+const UpText = styled.span`
     display:inline-block;
     position:relative;
     margin: 0;
@@ -80,7 +80,7 @@ const UpText = styled.p`
     }
 
 `
-const DownText = styled.p`
+const DownText = styled.span`
     display: inline-block;
     position: relative;
     font-size:12px;
@@ -88,13 +88,7 @@ const DownText = styled.p`
     margin: 0;
     
 ` 
-const MiddleText = styled.p`
-    display:inline-block;
-    position:relative;
-    margin: 0;
-    max-height:18px;
-    
-`
+
 const Left = styled.div`
     height: 3rem;
     margin-left:1rem;
@@ -103,11 +97,12 @@ const Right = styled(Left)`
     margin:0;
     position:relative;
     right:2rem;
+    text-align:right;
 
 `
 
 const Item : React.FC<ItemProps> = (props) => {
-    const {image,leftdownText,leftupText,rightmiddleText, altText: altImage} = props
+    const {image,leftdownText,leftupText,rightUpText, rightDownText, altImageByText} = props
   return (
     <StyledItem>
         <Left>
@@ -115,18 +110,21 @@ const Item : React.FC<ItemProps> = (props) => {
             <ImageLayout>
                 <StyledImg src={image} />
             </ImageLayout>}
-            {!image && altImage &&
+            {!image && altImageByText &&
                 <ImageLayout>
-                    <StyledText>{altImage}</StyledText>
-                </ImageLayout>
-            }
+                    <StyledText>{altImageByText}</StyledText>
+                </ImageLayout>}
+                
             <TextBox>
                 <UpText>{leftupText}</UpText>
                 <DownText>{leftdownText}</DownText>
             </TextBox>
         </Left>
         <Right>
-            <MiddleText>{rightmiddleText}</MiddleText>
+            <TextBox>
+                <UpText>{rightUpText}</UpText>
+                <DownText>{rightDownText}</DownText>
+            </TextBox>
         </Right>
     </StyledItem>
   )

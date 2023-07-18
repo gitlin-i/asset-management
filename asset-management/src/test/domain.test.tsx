@@ -1,8 +1,8 @@
-import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage,  Currency, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, } from "../domain/Domain"
+import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage,  Currency, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, Ratio, } from "../domain/Domain"
 import { Cash } from "../domain/cash"
 import { MyCoin } from "../domain/coin"
 import { MyStock } from "../domain/stock"
-import { NivoPieChartData, ObjectToNivoPieChartData, aInput } from "../utill/NivoPieChart"
+import { NivoPieChartData, ObjectToNivoPieChartData } from "../utill/NivoPieChart"
 
 
 
@@ -63,7 +63,7 @@ test('nivo Testing....', () => {
     ],
   }
 
-  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))
+  const chartDataArray = calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as Ratio))
   const literalObject = [
     {
       id: "stocks",
@@ -71,7 +71,7 @@ test('nivo Testing....', () => {
       value: 100
     },
   ]
-  expect(calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as aInput))).toStrictEqual(literalObject)
+  expect(calcAssetsPercentage(myAssets).map(obj => ObjectToNivoPieChartData(obj as Ratio))).toStrictEqual(literalObject)
 })
 
 

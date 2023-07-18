@@ -37,6 +37,7 @@ const StyledHeader = styled.header`
   margin-bottom:1rem;
 `
 const StyledBody = styled.div<CardProps>`
+
   height : calc(100% -3rem); 
   overflow: auto;
 
@@ -56,7 +57,7 @@ const StyledBody = styled.div<CardProps>`
 
 `
 
-const Card2 : React.FC<CardProps> = (props) => {
+const Card : React.FC<CardProps> = (props) => {
     const { title,  children ,...rest} = props
   return (
     <StyledDiv {...rest}  >
@@ -72,4 +73,5 @@ const Card2 : React.FC<CardProps> = (props) => {
   )
 }
 
-export default Card2
+export default Card
+

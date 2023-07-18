@@ -1,5 +1,5 @@
 import {atom} from "recoil"
-import { Assets } from "../domain/Domain"
+import { Assets, Ratio } from "../domain/Domain"
 import { lightTheme } from "../theme"
 export const assetsState = atom<Assets>({
     key: "assetsState",
@@ -22,4 +22,20 @@ export const modalState = atom({
 export const themeState = atom({
     key: "themeState",
     default: lightTheme
+})
+
+export type TargetRatios = {
+    assets: Ratio[],
+    stocks?: Ratio[],
+    coins?: Ratio[],
+    cash?: Ratio[]
+}
+export const targetRatioState = atom<TargetRatios>({
+    key: "targetRatioState",
+    default : {
+        assets: [],
+        stocks: [],
+        coins: [],
+        cash: [],
+    }
 })

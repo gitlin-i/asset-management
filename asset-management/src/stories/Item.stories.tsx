@@ -33,7 +33,7 @@ export const addImage: Story = {
       image: process.env.PUBLIC_URL + '/JohnCliftonBogle.webp',
       leftdownText : 22,
       leftupText: "비욘드 미트",
-      rightmiddleText : 10.63,
+      rightUpText : 10.63,
       
     },
     render: (args) => (
@@ -41,7 +41,7 @@ export const addImage: Story = {
           <Item image={args.image} 
           leftupText={args.leftupText}
           leftdownText={args.leftdownText}
-          rightmiddleText={args.rightmiddleText}></Item>
+          rightUpText={args.rightUpText}></Item>
         </StyledUl>
     ),
 
@@ -56,7 +56,7 @@ export const NoneImage: Story = {
           <Item 
           leftupText={args.leftupText}
           leftdownText={args.leftdownText}
-          rightmiddleText={args.rightmiddleText}></Item>
+          rightUpText={args.rightUpText}></Item>
         </StyledUl>
     )
 };

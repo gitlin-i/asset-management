@@ -1,24 +1,21 @@
 import Item from "../component/Item";
 import { MyCoin } from "../domain/coin";
 import { MyStock } from "../domain/stock";
-import { CurrencyMark } from "../domain/Domain";
-export interface aInput {
-    [key: string] : number;
-}
+import { CurrencyMark, Ratio } from "../domain/Domain";
+
 
 export interface NivoPieChartData {
     id: string;
     label: string;
     value: number;
-
 }
 
-export const ObjectToNivoPieChartData = (obj : aInput) : NivoPieChartData => {
+export const ObjectToNivoPieChartData = (obj : Ratio) : NivoPieChartData => {
 
     const key = Object.keys(obj)
     const id = key[0]
     const val = obj[id]
-    const nivoPieChartData : NivoPieChartData = {
+    const nivoPieChartData : NivoPieChartData =  {
         id: id,
         label: id,
         value: val,
@@ -31,5 +28,6 @@ export const changeDataToItem = (asset : MyCoin | MyStock) => {
     return <Item key={asset.code} image={process.env.PUBLIC_URL + '/JohnCliftonBogle.webp'}
     leftupText={asset.name}
     leftdownText={"보유수량: " + asset.quantity.toLocaleString()}
-    rightmiddleText={asset.price.toLocaleString() + CurrencyMark(asset.currency)} />
+    rightUpText={"평가 금액: " + (asset.price * asset.quantity).toLocaleString() + CurrencyMark(asset.currency)}
+    rightDownText={"현재가: " + asset.price.toLocaleString() + CurrencyMark(asset.currency)} />
 }

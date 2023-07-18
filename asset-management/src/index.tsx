@@ -8,7 +8,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import DashBoardPage from './component/page/DashBoardPage';
+import MainPage from './component/page/MainPage';
 import NotFoundPage from './component/page/NotFoundPage';
 
 const root = ReactDOM.createRoot(
@@ -23,8 +23,21 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element:  <DashBoardPage />
-      }
+        element:  <MainPage />
+      },
+      {
+        path: "/stock",
+        element:  <MainPage category='stock' />
+      },
+      {
+        path: "/coin",
+        element:  <MainPage category='coin' />
+      },
+      {
+        path: "/cash",
+        element:  <MainPage category='cash' />
+      },
+      
     ]
   },
 ]);
