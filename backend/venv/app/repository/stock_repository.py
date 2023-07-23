@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
-
+from database import SessionLocal
+from sqlalchemy import select
 class Repository(metaClass= ABCMeta):
     @abstractmethod
     def read():
@@ -15,5 +16,7 @@ class Repository(metaClass= ABCMeta):
         pass
 
 class StockRepository(Repository):
-    def read(code):
-        return
+    def read(market, stock_code):
+        with SessionLocal() as session:
+            stmt = select()
+            session.begin()

@@ -25,7 +25,7 @@ export const themeState = atom({
 })
 
 export type TargetRatios = {
-    assets: Ratio[],
+    assets?: Ratio[],
     stocks?: Ratio[],
     coins?: Ratio[],
     cash?: Ratio[]

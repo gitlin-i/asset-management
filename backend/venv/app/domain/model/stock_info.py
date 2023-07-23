@@ -7,8 +7,8 @@ class Base(DeclarativeBase):
 
 class StockInfo(Base):
     __tablename__ = "stock_info"
-    market: Mapped[str] = mapped_column(String(6),primary_key=True)
     code : Mapped[str] = mapped_column(String(10),primary_key=True)
+    market: Mapped[str] = mapped_column(String(6),primary_key=True)
     name : Mapped[str] = mapped_column(String(64))
 
     

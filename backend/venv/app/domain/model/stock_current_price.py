@@ -6,14 +6,14 @@ from datetime import datetime
 class Base(DeclarativeBase):
     pass
 
-class StockCurrentValue(Base):
-    __tablename__ = "stock_current_value"
-    market: Mapped[str] = mapped_column(String(6),primary_key=True)
+class StockCurrentPrice(Base):
+    __tablename__ = "stock_current_price"
     code : Mapped[str] = mapped_column(String(10),primary_key=True)
-    value : Mapped[str] = mapped_column(int)
+    market: Mapped[str] = mapped_column(String(6),primary_key=True)
+    price : Mapped[str] = mapped_column(int)
 
 
     
     def __repr__(self) -> str:
-        return "StockInfo(market = {}, code = {}, name = {})".format(self.market, self.code, self.name)
+        return "StockPrice(market = {}, code = {}, name = {})".format(self.market, self.code)
     

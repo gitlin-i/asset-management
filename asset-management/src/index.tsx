@@ -27,11 +27,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/stock",
-        element:  <MainPage category='stock' />
+        element:  <MainPage category='stocks' />
       },
       {
         path: "/coin",
-        element:  <MainPage category='coin' />
+        element:  <MainPage category='coins' />
       },
       {
         path: "/cash",

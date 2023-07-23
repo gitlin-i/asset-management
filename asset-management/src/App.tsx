@@ -8,6 +8,7 @@ import { ThemeProvider } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { themeState } from './atom/atom';
 import { Outlet } from 'react-router-dom';
+import BottomNav from './component/BottomNav';
 function App() {
   const theme = useRecoilValue(themeState)
   return (
@@ -17,6 +18,7 @@ function App() {
         <SideBar />
         <Outlet />
         <Modal />
+        <BottomNav />
       </ThemeProvider>
     </React.Fragment>
     

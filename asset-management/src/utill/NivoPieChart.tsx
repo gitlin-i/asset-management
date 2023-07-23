@@ -27,7 +27,7 @@ export const ObjectToNivoPieChartData = (obj : Ratio) : NivoPieChartData => {
 export const changeDataToItem = (asset : MyCoin | MyStock) => {
     return <Item key={asset.code} image={process.env.PUBLIC_URL + '/JohnCliftonBogle.webp'}
     leftupText={asset.name}
-    leftdownText={"보유수량: " + asset.quantity.toLocaleString()}
+    
     rightUpText={"평가 금액: " + (asset.price * asset.quantity).toLocaleString() + CurrencyMark(asset.currency)}
     rightDownText={"현재가: " + asset.price.toLocaleString() + CurrencyMark(asset.currency)} />
 }

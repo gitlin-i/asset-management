@@ -7,7 +7,7 @@ from routers import test,  user,login3, login2, login4, login
 from domain.model.test import Base
 from domain.model.user import Base as Base2
 from domain.model.web_session import Base as Base3
-
+from domain.schema.stock import StockPrice
 Base.metadata.create_all(engine)
 Base2.metadata.create_all(engine)
 Base3.metadata.create_all(engine)
@@ -39,17 +39,15 @@ app.include_router(login.router)
 app.include_router(login2.router)
 app.include_router(login3.router)
 app.include_router(login4.router)
+app.include_router(stock)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
+dummy_db = {
+    "BYND" : 123456,
+    "293490": 987,
+}
 
-@app.get("/stock/current_price")
-async def stock(code : str):
 
-    # price = StockService.getStockCurrentPrice(code)
-    return {
-        "stockCode" : code,
-        "price" : 2000
-    }
 

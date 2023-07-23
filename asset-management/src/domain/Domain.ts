@@ -13,7 +13,7 @@ export interface Assets {
     stocks ?: Array<MyStock>;
     cash?: Array<Cash>;
     coins?: Array<MyCoin>;
-    [index : string] : Array<any> | undefined;
+    [index : string] : Array<Cash | MyCoin | MyStock> | undefined;
 }
 export interface Ratio {
     [key: string] : number;
@@ -27,6 +27,11 @@ export interface Ratios {
 export enum Currency {
     KRW = "KRW",
     USD = "USD",
+}
+export enum MarketToCurrency{
+    KOSDAQ = "KRW",
+    KOSPI = "KRW",
+    NASDAQ = "USD"
 }
 
 export const testTargetRatios : TargetRatios = {
@@ -163,6 +168,23 @@ export const testRealData : Assets = {
     ]
 }
 
+export const mappingText = (category : string | undefined) => {
+    let text
+    switch(category){
+        case "stocks":
+            text = "주식"
+            break
+        case "coins":
+            text = "코인"
+            break
+        case "cash":
+            text = "현금"
+            break
+        default:
+            text = "자산"
+    }
+    return text
+}
 //주식,코인 현재가치 구하기
 export const calcCurrentValue = (myAsset : MyStock | MyCoin, currentValue= 0,currency= Currency.KRW,) : number => {
     if (!myAsset.quantity || !myAsset.price) {

@@ -1,19 +1,30 @@
 import { Currency } from "./Domain";
+import { Price } from "./price";
 
 export class Cash {
-    private _value : number;
-    private _currency : Currency;
+
+    private _price : Price;
+
     constructor(value: number , currency : Currency){
-        if (value <0) {
-            throw Error ("value가 음수가 될 수 없습니다.")
-        }
-        this._value = value
-        this._currency = currency
+        this._price = new Price(currency,value,currency)
+
     }
     get value() : number {
-        return this._value
+        return this._price.value
     }
     get currency() : Currency {
-        return this._currency
+        return this._price.currency
+    }
+    get price(): number {
+        return this._price.value
+    }
+    get code(): string {
+        return this._price.code
+    }
+    get name(): string {
+        return this._price.currency
+    }
+    get quantity() : null{
+        return null
     }
 }

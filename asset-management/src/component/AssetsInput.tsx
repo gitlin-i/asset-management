@@ -79,6 +79,9 @@ const AssetsInput : React.FC = () => {
             coins: [],
         })
     }
+    const handleClick4 = () => {
+
+    }
   return (
     <StyledDiv>
         <H2>
@@ -97,6 +100,7 @@ const AssetsInput : React.FC = () => {
         <button type="button" className="btn btn-primary" onClick={handleClick}>입력</button>
         <button type="button" className="btn btn-primary" onClick={handleClick2}>테스트 데이터 리코일 저장</button>
         <button type="button" className="btn btn-primary" onClick={handleClick3}>초기화</button>
+        <button type="button" className="btn btn-primary" onClick={handleClick4}>데이터 불러오기</button>
         {/* <P>{JSON.stringify(assetsInput)}</P> */}
         <br />
         <P>{JSON.stringify(myAssets)}</P>

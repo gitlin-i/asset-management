@@ -4,25 +4,20 @@ import PieChart2 from '../PieChart2'
 import { Currency, CurrencyMark, Ratio, stockTargetRatio, testTargetRatio, testTargetRatios } from '../../domain/Domain'
 import { ObjectToNivoPieChartData, changeDataToItem } from '../../utill/NivoPieChart'
 import AssetsInput from '../AssetsInput'
-
 import Section from '../Section'
 import Card from '../Card'
-import Item from '../Item'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { assetsState, modalState, targetRatioState } from '../../atom/atom'
-import Button from '../Button'
-import { assetsCurrentValue, assetsRatio, cashCurrentValue, coinsCurrentValue, stocksCurrentValue, stocksRatio } from '../../selector/selector'
-import TotalMyAssetsCard from '../Card/TotalMyAssetsCard'
+import { assetsCurrentValue, assetsRatio, cashCurrentValue, cashRatio, coinsCurrentValue, coinsRatio, stocksCurrentValue, stocksRatio } from '../../selector/selector'
 
-import TotalMyStocksCard from '../Card/TotalMyStocksCard'
-import TotalMyCoinsCard from '../Card/TotalMyCoinsCard'
-import TotalMyCashCard from '../Card/TotalMyCashCard'
 import RatioChartCard from '../Card/RatioChartCard'
 import { useEffect } from 'react'
+import TotalAssetsCard from '../Card/TotalAssetsCard'
+import { QueryClient } from '@tanstack/react-query'
+
 
 interface MainPageProps {
-  category ?: "stock" | "coin" | "cash"
-
+  category ?: "stocks" | "coins" | "cash" 
 }
 
 const StyledMain = styled.main`
@@ -83,64 +78,67 @@ const MainPage : React.FC<MainPageProps> = (props) => {
   const assets = useRecoilValue(assetsState)
   const assetsCurRatio = useRecoilValue(assetsRatio)
   const stocksCurRatio = useRecoilValue(stocksRatio)
+  const coinsCurRatio = useRecoilValue(coinsRatio)
+  const cashCurRatio = useRecoilValue(cashRatio)
+  const assetsCurVal = useRecoilValue(assetsCurrentValue)
+  const stocksCurVal = useRecoilValue(stocksCurrentValue)
+  const coinsCurVal = useRecoilValue(coinsCurrentValue)
+  const cashCurVal = useRecoilValue(cashCurrentValue)
   const [targetRatios, setTargetRatios] = useRecoilState(targetRatioState)
+  
+  ///
+  const queryClient = new QueryClient()
+  
+  let currentVal,currentRatio
+  switch(category) {
+    case 'stocks' :
+      currentVal = stocksCurVal
+      currentRatio = stocksCurRatio
+      break;
+    case 'coins' :
+      currentVal = coinsCurVal
+      currentRatio = coinsCurRatio
+      break;
+    case 'cash' : 
+      currentVal = cashCurVal
+      currentRatio = cashCurRatio
+      break;
+    default :
+    currentVal = [
+      {"자산" : assetsCurVal},
+      {"주식": stocksCurVal},
+      {"코인": coinsCurVal},
+      {"현금": cashCurVal}
+    ]
+    currentRatio = assetsCurRatio
+  }
   useEffect(()=>{
-
   setTargetRatios((prev)=> ({
-    
     ...testTargetRatios
   }))
-  console.log(targetRatios)
+
+
   },[])
   
 
-  let contents : [] | Array<{key: string , content : JSX.Element}> = []
-  switch(category) {
-    case 'stock' :
-      contents = [
-        {key: "TotalStocksCard" , content: <TotalMyStocksCard />},
-        {key: "StocksTargetRatioCard" ,content : <RatioChartCard ratios={targetRatios.stocks as Ratio[]} title='목표 비율' /> },
-        {key: "MyAssetsRatioCard" ,content : <RatioChartCard ratios={stocksCurRatio as Ratio[]} title='내 주식 비율' /> },
-      ]
-      break;
-
-    case 'coin' :
-      contents = [
-        {key: "TotalCoinsCard", content: <TotalMyCoinsCard />},
-        {key: "CoinTargetRatioCard" ,content : <RatioChartCard ratios={targetRatios.coins as Ratio[]} title='목표 비율' /> },
-        {key: "MyAssetsRatioCard" ,content : <RatioChartCard ratios={assetsCurRatio as Ratio[]} title='내 자산 비율' /> },
-      ]
-      break;
-    case 'cash' : 
-      contents = [
-        {key: "TotalCashCard", content: <TotalMyCashCard />},
-        {key: "CashTargetRatioCard" ,content : <RatioChartCard ratios={targetRatios.cash as Ratio[]} title='목표 비율' /> },
-        {key: "MyAssetsRatioCard" ,content : <RatioChartCard ratios={assetsCurRatio as Ratio[]} title='내 자산 비율' /> },
-      ]
-      break;
-    default :
-      contents = [
-        {key: "TotalMyAssetsCard", content: <TotalMyAssetsCard/>},
-        {key: "AssetsTargetRatioCard" ,content : <RatioChartCard ratios={targetRatios.assets as Ratio[]} title='목표 비율' /> },
-        {key: "MyAssetsRatioCard" ,content : <RatioChartCard ratios={assetsCurRatio as Ratio[]} title='내 자산 비율' /> },
-      ]
-  }
-
-
+  
   return (
     <StyledMain>
-      {contents.map((content) => {
-        return (
-          <Section key={content.key}>
-            {content.content}
-          </Section>
-        )
-      })}
-
-
 
       <Section>
-        <Card title='자산 목록'>
+        <TotalAssetsCard targetKey={category} targetData={category ? assets[category] : undefined} totalValue={currentVal}/>
+      </Section>
+
+      <Section>
+        <RatioChartCard title={"목표 비율"} ratios={category ? targetRatios[category] : targetRatios.assets} />
+      </Section>
+
+      <Section>
+        <RatioChartCard title={"현재 비율"} ratios={currentRatio} />
+      </Section>
+
+      <Section>
+        <Card title='현재가'>
             <H5>주식</H5>
             <StyledUl>
               {assets.stocks?.map(changeDataToItem)}

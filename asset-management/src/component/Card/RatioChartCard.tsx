@@ -1,14 +1,14 @@
 import React from 'react'
 import Card from '.'
 import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
-import { useRecoilValue } from 'recoil'
-import { assetsRatio } from '../../selector/selector'
+
 import styled from 'styled-components'
 import PieChart2 from '../PieChart2'
 import { Ratio } from '../../domain/Domain'
 interface RatioChart {
-    ratios : Ratio[];
+    ratios ?: Ratio[];
     title?: string;
+    
 }
 
 const WrappingDiv = styled.div`
@@ -33,7 +33,7 @@ const StyledDiv = styled.div`
 
 const RatioChartCard : React.FC<RatioChart> = (props) => {
     const {ratios,title} = props
-    const targetRatioForChart = ratios.map(ratio => ObjectToNivoPieChartData(ratio))
+    const targetRatioForChart = ratios?.map(ratio => ObjectToNivoPieChartData(ratio))
 
   return (
     <Card title={title}>
@@ -41,7 +41,7 @@ const RatioChartCard : React.FC<RatioChart> = (props) => {
       ratios &&
       <WrappingDiv>
         <StyledDiv>
-          <PieChart2 data={targetRatioForChart} ></PieChart2>
+          <PieChart2 data={targetRatioForChart!} ></PieChart2>
        </StyledDiv>
       </WrappingDiv>
 

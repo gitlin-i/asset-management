@@ -26,7 +26,7 @@ const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
     return (<ResponsivePie
         layers={['arcLinkLabels', 'arcs', 'arcLabels', 'legends',centerTitleLayer] }
         data={data}
-        margin={{ top: 40, right: 20, bottom: 20, left: 80 }}
+        margin={{ top: 40, right: 20, bottom: 30, left: 80 }}
         valueFormat=" >-,"
         innerRadius={0.5}
         padAngle={0.7}

@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { assetsState } from "../atom/atom";
-import { calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetArrayPercentage, calcAssetsPercentage, calcCashArrayCurrentValue } from "../domain/Domain";
+import { Currency, Ratio, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetArrayPercentage, calcAssetsPercentage, calcCashArrayCurrentValue, calcCurrentValue, calcPercentage, exchangeValue } from "../domain/Domain";
 
 export const assetsCurrentValue = selector({
     key: "assetsCurrentValue",
@@ -62,7 +62,7 @@ export const stocksRatio = selector({
         const {stocks} = get(assetsState)
         if (stocks) {
             const stocksRatio = calcAssetArrayPercentage(stocks)
-            console.log(stocksRatio)
+            
             return stocksRatio
         }
         
@@ -70,10 +70,35 @@ export const stocksRatio = selector({
 })
 export const coinsRatio = selector({
     key: "coinsRatio",
-    get : ({get}) => {
+    get : ({get}) : Ratio[] | undefined => {
         const {coins} = get(assetsState)
         if (coins) {
             return calcAssetArrayPercentage(coins)
+        }
+    }
+})
+
+export const cashRatio = selector({
+    key: "cashRatio",
+    get : ({get}) : Ratio[] | undefined=> {
+        const {cash} = get(assetsState)
+        
+        if (cash) {
+            
+            const total = calcCashArrayCurrentValue(cash)
+            const ratios =cash.map((aCash) => {
+                let ratio
+                if (aCash.currency === Currency.KRW){
+                    ratio = calcPercentage(aCash.value,total)
+                } else {
+                    ratio = calcPercentage(exchangeValue(aCash.value,1300), total)
+                }
+                
+                return {
+                    [aCash.code] : ratio
+                }
+            })
+            return ratios
         }
     }
 })
