@@ -38,11 +38,15 @@ client = TestClient(app)
 
 
 def test_stock():
-    response = client.get("/stock/current-price?code=123,BYND,293490&market=kosdaq")
+    response = client.get("/stock/current-price?code=test&market=kosdaq")
     assert response.status_code == 200
     assert response.json() == {
-        "status" : "success",
-        "output" : [],
+        "output" : [{
+            "code": "TEST",
+            "market":"KOSDAQ",
+            "name":"테스트",
+
+        },],
         "fail" : []
     }
 

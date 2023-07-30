@@ -75,7 +75,8 @@ const StyledUl = styled.ul`
 ////////////
 const MainPage : React.FC<MainPageProps> = (props) => {
   const {category} = props
-  const assets = useRecoilValue(assetsState)
+  
+  const [assets,setAssets] = useRecoilState(assetsState)
   const assetsCurRatio = useRecoilValue(assetsRatio)
   const stocksCurRatio = useRecoilValue(stocksRatio)
   const coinsCurRatio = useRecoilValue(coinsRatio)
@@ -113,9 +114,9 @@ const MainPage : React.FC<MainPageProps> = (props) => {
     currentRatio = assetsCurRatio
   }
   useEffect(()=>{
-  setTargetRatios((prev)=> ({
-    ...testTargetRatios
-  }))
+    setTargetRatios((prev)=> ({
+      ...testTargetRatios
+    }))
 
 
   },[])

@@ -5,13 +5,19 @@ from sqlalchemy import String
 class Base(DeclarativeBase):
     pass
 
-class StockInfo(Base):
+class StockInfoModel(Base):
     __tablename__ = "stock_info"
-    code : Mapped[str] = mapped_column(String(10),primary_key=True)
-    market: Mapped[str] = mapped_column(String(6),primary_key=True)
+    code : Mapped[str] = mapped_column(String(16),primary_key=True)
+    market: Mapped[str] = mapped_column(String(10),primary_key=True)
     name : Mapped[str] = mapped_column(String(64))
 
     
-    def __repr__(self) -> str:
-        return "StockInfo(market = {}, code = {}, name = {})".format(self.market, self.code, self.name)
     
+    def __eq__(self, other):
+        if isinstance(other, StockInfoModel):
+            return (
+                self.market == other.market
+                and self.code == other.code
+                and self.name == other.name
+            )
+        return False

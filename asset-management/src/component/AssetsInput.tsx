@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { assetsState } from '../atom/atom'
 import { MyStock, Stock } from '../domain/stock'
 import { Currency, testRealData } from '../domain/Domain'
 import { MyCoin } from '../domain/coin'
+import { getFakePrice } from './Api'
 
 const StyledDiv = styled.div`
     outline: auto;
@@ -43,7 +44,31 @@ const AssetsInput : React.FC = () => {
         price: 0,
     })
     const [myAssets , setMyAssets] = useRecoilState(assetsState)
-    
+    const [data, setData] = useState<{output : Array<Stock> | [] , fail_input: Array<string> | [] }>({output: [], fail_input: []})
+    useEffect(()=>{
+        if(data.output.length > 0){
+
+            const newMyStockArray : Array<MyStock> | undefined = myAssets.stocks?.map((myStock: MyStock) => {
+                const targetObj : Stock | undefined = data.output.find(newPriceStock => newPriceStock.code === myStock.code)
+                return targetObj ?
+                new MyStock(targetObj.code,
+                    targetObj?.name,
+                    targetObj?.price,
+                    targetObj?.currency,
+                    myStock.quantity,
+                    myStock.averagePurchasePrice) : myStock
+
+            })
+
+            setMyAssets((prev) => ({
+                ...prev,
+                stocks: newMyStockArray
+            }))
+            
+        }
+    }, [data])
+
+
     const handleInputChange = (e : React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const {name , value} = e.target
         setAssetsInput((preValue ) => ({
@@ -79,8 +104,11 @@ const AssetsInput : React.FC = () => {
             coins: [],
         })
     }
-    const handleClick4 = () => {
+    
+    const handleClick4 = async () => {
+        const newData = await getFakePrice()
 
+        setData(newData.data)
     }
   return (
     <StyledDiv>
@@ -104,6 +132,8 @@ const AssetsInput : React.FC = () => {
         {/* <P>{JSON.stringify(assetsInput)}</P> */}
         <br />
         <P>{JSON.stringify(myAssets)}</P>
+        <br />
+        <p>{JSON.stringify(data)}</p>
     </StyledDiv>
   )
 }

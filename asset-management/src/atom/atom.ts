@@ -9,7 +9,6 @@ export const assetsState = atom<Assets>({
         coins: [],
     }
 })
-
 export const modalState = atom({
     key: "modalState",
     default: {

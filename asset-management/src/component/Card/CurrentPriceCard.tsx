@@ -56,7 +56,7 @@ const CurrentPriceCard : React.FC<CurrentPriceCardProps> = (props) => {
 
         <H5>{title}</H5>
         <StyledUl>
-          {assets.cash?.map(changeDataToItem)}
+          {/* {assets.cash?.map(changeDataToItem)} */}
         </StyledUl>
       
     </Card>
