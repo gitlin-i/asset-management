@@ -1,17 +1,18 @@
+from typing import Optional
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, TIMESTAMP
-from sqlalchemy import func
+from sqlalchemy import func, text
 from datetime import datetime
 from domain.schema.stock import getCurrency
-class Base(DeclarativeBase):
-    pass
+from database import Base
+from sqlalchemy.dialects.mysql import DECIMAL
 
 class StockCurrentPriceModel(Base):
     __tablename__ = "stock_current_price"
     code : Mapped[str] = mapped_column(String(16),primary_key=True)
     market: Mapped[str] = mapped_column(String(10),primary_key=True)
-    price : Mapped[int]  = mapped_column(default=0)
-    updated_date : Mapped[datetime] = mapped_column(TIMESTAMP,insert_default=func.now(),onupdate=func.now())
+    price : Mapped[DECIMAL]  = mapped_column(DECIMAL(precision=13,scale=4))
+    updated_date : Mapped[datetime] = mapped_column(TIMESTAMP,server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
     
     
     def __eq__(self, other):

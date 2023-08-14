@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+
+from sqlalchemy.orm import sessionmaker,DeclarativeBase
 
 DBMS = "mysql+mysqldb"
 USER_NAME = "test"
@@ -13,4 +13,5 @@ engine = create_engine(SQL_ALCHEMY_DATABASE_URL,echo=True)
 
 SessionLocal = sessionmaker(engine,autoflush=False,autocommit=False)
 
-
+class Base(DeclarativeBase):
+    pass

@@ -1,34 +1,27 @@
 import json
 from fastapi import FastAPI
-from fastapi.security import OAuth2PasswordBearer
+
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine,SessionLocal
 from routers import user,login3, login2, login4, login, stock
 
-from domain.model.user import Base as Base2
-from domain.model.web_session import Base as Base3
-from domain.model.stock_info import Base as Base4
-from domain.model.stock_current_price import Base as Base5
+from domain.model.my_cash import Base as MyCashBase
+from domain.model.my_stock import Base as MyStockBase
+from domain.model.my_coin import Base as MyCoinBase
+from domain.model.stock_current_price import Base as StockCurrentPriceBase
+from domain.model.user import Base as UserBase
+from domain.model.web_session import Base as WebSessionBase
+from domain.model.stock_info import Base as StockInfoBase
+from sqlalchemy.orm import DeclarativeBase
+from database import Base
+
+model_base_list :list[Base] = [MyCashBase, MyCoinBase, MyStockBase, StockCurrentPriceBase, UserBase, WebSessionBase,StockInfoBase]
+
+for model_base in model_base_list:
+    model_base.metadata.create_all(engine)
 
 
-Base2.metadata.create_all(engine)
-Base3.metadata.create_all(engine)
-Base4.metadata.create_all(engine)
-Base5.metadata.create_all(engine)
-app = FastAPI()
-
-def get_db() :
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-origin =  [
-    "http://localhost:3000",
-    "http://localhost",
-]
 
 def getTokenDict():
     file_path = "./temp/AT.txt"
@@ -39,6 +32,12 @@ def getTokenDict():
 
 tokenDict : dict = getTokenDict()
 
+app = FastAPI()
+
+origin =  [
+    "http://localhost:3000",
+    "http://localhost",
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origin,
@@ -54,31 +53,7 @@ app.add_middleware(
 # app.include_router(login3.router)
 # app.include_router(login4.router)
 app.include_router(stock.router)
-# dummy_db = {
-#     "BYND" : 123456,
-#     "293490": 987,
-# }
-@app.get("/")
-async def root():
-    return {
-        "output" : [
-            {
-                "code" : "BYND",
-                "name" : "비욘드미트",
-                "market" : "NASDAQ",
-                "price" : "15.17",
-                "currency" : "USD"
-            },
-            {
-                "code" : "228670",
-                "name" : "레이",
-                "market" : "KOSDAQ",
-                "price" : "39250",
-                "currency" : "KRW"
-            }
-        ],
-        "fail_input" : []
-    }
+
 
 
 

@@ -1,20 +1,13 @@
-from abc import ABCMeta, abstractmethod, abstractstaticmethod
+
 import json
 from typing import List
-from domain.schema.stock import Market,StockPrice, StockPriceResponseOfKorInvAPI,StockPriceListOutPut
-from domain.model.stock_info import StockInfoModel
-from domain.model.stock_current_price import StockCurrentPriceModel
-from datetime import datetime, timedelta
-from repository.stock_repository import StockInfoRepository,StockCurPriceRepository
-from functools import reduce
-from api import get_domestic_stock_current_price
+from domain.schema.stock import StockPrice, StockPriceResponseOfKorInvAPI,StockPriceListOutPut,StockPriceWithDate
+from domain.schema.market import Market
+from datetime import timedelta
+from repository.stock_repository import StockCurPriceRepository
+from external_api.korea_investment_api import get_stock_current_price
+from pydantic import validate_arguments,parse_obj_as
 
-
-# class Service(metaclass= ABCMeta):
-    
-#     @abstractstaticmethod
-#     def current_price():
-#         pass
 
 def getTokenDict() -> dict:
     file_path = "./temp/AT.txt"
@@ -23,46 +16,61 @@ def getTokenDict() -> dict:
 
     return tokenDict
 
-
 class StockService:
     
     tokenDict = getTokenDict()
+    STANDARD_TIMEDELTA_FOR_OLD_DATA = timedelta(days=1)
 
-    def current_price(stock_codes : List[str], market : Market) ->StockPriceListOutPut:
-        if not isinstance(stock_codes, list):
-            raise TypeError("current-price에 list입력")
-        
-        def price_read_from_db(stock_code: str) -> StockPrice | str :
-            stock_current_price = StockCurPriceRepository.read(stock_code, market)
-            return StockPrice(**stock_current_price[0].__dict__) if stock_current_price is not None else stock_code
-        
-        def price_read_from_api(stock_code:str | StockPrice) -> StockPrice | None:
-            if isinstance(stock_code,StockPrice):
-                return stock_code
-            
-            if(market in [Market.KRX]):
-                
-                json_response  = get_domestic_stock_current_price(StockService.tokenDict,stock_code)
-                print("#12312",json_response)
-                
-                mapped_json = StockPriceResponseOfKorInvAPI(**json_response)
-                print(mapped_json)
-                if (mapped_json.rt_cd != '0'):
-                    return None
-                
-                target_stock_price = StockPrice(code=stock_code, market=market.value,price= mapped_json.output.price)
-                is_created = StockCurPriceRepository.create(target_stock_price)
+    @classmethod
+    @validate_arguments
+    def price_read_from_db(cls,stock_code: str,market: Market) -> StockPriceWithDate | None :
+        stock_current_price = StockCurPriceRepository.read(stock_code, market)
+        return StockPriceWithDate(**stock_current_price[0].__dict__) if stock_current_price is not None else None
+    
+    @classmethod
+    @validate_arguments
+    def price_read_from_api(cls, stock_code:str, market:Market ) -> StockPrice | None:
+        json_response = get_stock_current_price(StockService.tokenDict,stock_code,market)
 
-                return target_stock_price
+        mapped_json = StockPriceResponseOfKorInvAPI(**json_response)
+        if (mapped_json.rt_cd != '0'): #read_fail
             return None
-            
-        stock_price_read_from_db = [price_read_from_db(stock_code) for stock_code in stock_codes]
+        target_stock_price = StockPrice(code=stock_code, market=market.value,price= mapped_json.output.price)
+        return target_stock_price
+    
+    @classmethod
+    @validate_arguments
+    def current_price(cls,stockcode:str, market:Market) -> StockPrice | None:
+
+        stock_price_from_db : StockPriceWithDate = cls.price_read_from_db(stockcode,market)
+
+        if isinstance(stock_price_from_db,StockPriceWithDate) and not stock_price_from_db.isOld(cls.STANDARD_TIMEDELTA_FOR_OLD_DATA):
+            return StockPrice(**stock_price_from_db.dict())
         
-        stock_price_read_from_db_api = [price_read_from_api(stock_price_or_stock_code) for stock_price_or_stock_code in stock_price_read_from_db ]
+        stock_price_from_api : StockPrice = cls.price_read_from_api(stockcode,market)
+
+        if stock_price_from_api is None:
+            return None
+        elif stock_price_from_db is None:
+            StockCurPriceRepository.create(stock_price_from_api)
+        else:
+            StockCurPriceRepository.update(stock_price_from_api)
+
+        return stock_price_from_api
+    
+    @classmethod
+    @validate_arguments
+    def current_price_list(cls, stock_codes : List[str], market : Market) ->StockPriceListOutPut:
         
-        fail_codes = [ stock_codes[i] for i, stock_price in enumerate(stock_price_read_from_db_api) if stock_price is None]
+        stock_price_with_none = [cls.current_price(stock_code,market) for stock_code in stock_codes]
+        fail_codes = [ stock_codes[i] for i, stock_price in enumerate(stock_price_with_none) if stock_price is None]
         
         return {
-            "output": [ stock_price for stock_price in stock_price_read_from_db_api if stock_price is not None],
+            "output": [ stock_price for stock_price in stock_price_with_none if stock_price is not None],
             "fail_input": fail_codes
         }
+    
+
+    
+
+

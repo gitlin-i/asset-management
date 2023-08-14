@@ -1,17 +1,17 @@
 
-from abc import ABCMeta, abstractstaticmethod
+from abc import ABCMeta, abstractmethod
 
 
-class Repository(metaclass= ABCMeta):
-    @abstractstaticmethod
+class Repository(metaclass= ABCMeta):  
+    @abstractmethod
     def read():
         pass
-    @abstractstaticmethod
+    @abstractmethod
     def update():
         pass
-    @abstractstaticmethod
+    @abstractmethod
     def create():
         pass
-    @abstractstaticmethod
+    @abstractmethod
     def delete():
         pass

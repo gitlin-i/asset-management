@@ -1,9 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
+from database import Base
 
-
-class Base(DeclarativeBase):
-    pass
 
 class StockInfoModel(Base):
     __tablename__ = "stock_info"

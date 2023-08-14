@@ -1,12 +1,12 @@
 
+from typing import Annotated
 from fastapi import APIRouter, Query
 
 from service.stock_service import StockService
-from domain.schema.stock import StockPriceListOutPut
-from domain.schema.market import Market
+from domain.schema.stock import StockPriceListOutPut, Market
 
 router = APIRouter(
-    prefix="/stock"
+    prefix="/coin"
 )
 
 
