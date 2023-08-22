@@ -1,10 +1,14 @@
+from contextlib import asynccontextmanager
 import json
-from fastapi import FastAPI
+import asyncio
+import os
+from fastapi import FastAPI,BackgroundTasks
 
 from fastapi.middleware.cors import CORSMiddleware
 
+
 from database import engine,SessionLocal
-from routers import user,login3, login2, login4, login, stock
+from routers import stock, coin, exchange
 
 from domain.model.my_cash import Base as MyCashBase
 from domain.model.my_stock import Base as MyStockBase
@@ -13,26 +17,23 @@ from domain.model.stock_current_price import Base as StockCurrentPriceBase
 from domain.model.user import Base as UserBase
 from domain.model.web_session import Base as WebSessionBase
 from domain.model.stock_info import Base as StockInfoBase
-from sqlalchemy.orm import DeclarativeBase
+from domain.model.exchange_rate import Base as CurrentExchangeRateBase
+from service.exchange_service import ExchangeService
+
 from database import Base
 
-model_base_list :list[Base] = [MyCashBase, MyCoinBase, MyStockBase, StockCurrentPriceBase, UserBase, WebSessionBase,StockInfoBase]
+model_base_list :list[Base] = [MyCashBase, MyCoinBase, MyStockBase, StockCurrentPriceBase, UserBase, WebSessionBase,StockInfoBase,CurrentExchangeRateBase]
 
 for model_base in model_base_list:
     model_base.metadata.create_all(engine)
 
+@asynccontextmanager
+async def lifespan(app : FastAPI):
+    ExchangeService.init_exchange_rate()
+    yield
 
 
-def getTokenDict():
-    file_path = "./temp/AT.txt"
-    with open(file_path,"r") as f:
-        tokenDict = json.load(f)
-
-    return tokenDict
-
-tokenDict : dict = getTokenDict()
-
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 origin =  [
     "http://localhost:3000",
@@ -45,15 +46,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# app.include_router(test.router)
 
-# app.include_router(user.router)
-# app.include_router(login.router)
-# app.include_router(login2.router)
-# app.include_router(login3.router)
-# app.include_router(login4.router)
 app.include_router(stock.router)
-
-
-
-
+app.include_router(coin.router)
+app.include_router(exchange.router)

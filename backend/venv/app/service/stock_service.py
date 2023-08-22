@@ -30,24 +30,27 @@ class StockService:
     @classmethod
     @validate_arguments
     def price_read_from_api(cls, stock_code:str, market:Market ) -> StockPrice | None:
-        json_response = get_stock_current_price(StockService.tokenDict,stock_code,market)
 
-        mapped_json = StockPriceResponseOfKorInvAPI(**json_response)
-        if (mapped_json.rt_cd != '0'): #read_fail
+        json_response = get_stock_current_price(StockService.tokenDict,stock_code,market)
+        api_response = StockPriceResponseOfKorInvAPI(**json_response)
+        
+        if api_response.rt_cd != '0': #read_fail (api가 정상처리되지 못한 경우)
             return None
-        target_stock_price = StockPrice(code=stock_code, market=market.value,price= mapped_json.output.price)
-        return target_stock_price
+        if api_response.output.price == "0" or not api_response.output.price :  # (api가 정상처리 되었다고 하나 값이 "0" 이거나 Falsy값인 경우)
+            return None
+        stock_price = StockPrice(code=stock_code, market=market.value,price= api_response.output.price)
+        return stock_price
     
     @classmethod
     @validate_arguments
-    def current_price(cls,stockcode:str, market:Market) -> StockPrice | None:
+    def current_price(cls,stock_code:str, market:Market) -> StockPrice | None:
 
-        stock_price_from_db : StockPriceWithDate = cls.price_read_from_db(stockcode,market)
+        stock_price_from_db : StockPriceWithDate = cls.price_read_from_db(stock_code,market)
 
         if isinstance(stock_price_from_db,StockPriceWithDate) and not stock_price_from_db.isOld(cls.STANDARD_TIMEDELTA_FOR_OLD_DATA):
             return StockPrice(**stock_price_from_db.dict())
         
-        stock_price_from_api : StockPrice = cls.price_read_from_api(stockcode,market)
+        stock_price_from_api : StockPrice = cls.price_read_from_api(stock_code,market)
 
         if stock_price_from_api is None:
             return None
@@ -60,15 +63,15 @@ class StockService:
     
     @classmethod
     @validate_arguments
-    def current_price_list(cls, stock_codes : List[str], market : Market) ->StockPriceListOutPut:
+    def current_price_list(cls, stock_codes : List[str], market : Market) -> StockPriceListOutPut:
         
         stock_price_with_none = [cls.current_price(stock_code,market) for stock_code in stock_codes]
         fail_codes = [ stock_codes[i] for i, stock_price in enumerate(stock_price_with_none) if stock_price is None]
         
-        return {
-            "output": [ stock_price for stock_price in stock_price_with_none if stock_price is not None],
-            "fail_input": fail_codes
-        }
+        return StockPriceListOutPut(
+            output = [ stock_price for stock_price in stock_price_with_none if stock_price is not None],
+            fail_input = fail_codes
+        )
     
 
     

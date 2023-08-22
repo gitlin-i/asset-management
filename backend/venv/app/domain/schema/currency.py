@@ -10,3 +10,6 @@ class Currency(AutoName):
     KRW = auto()
     USD = auto()
     JPY = auto()
+
+
+    

@@ -21,11 +21,21 @@ class StockBase(BaseModel):
         orm_mode = True
         allow_mutation :False
 
+    @validator("code","market",pre=True)
+    def force_upper_case(cls, v:str):
+        return v.upper()
+
 class StockInfo(StockBase):
     name: str
 
 class StockPrice(StockBase):
     price: Decimal
+
+    @validator("price")
+    def price_gt_0(cls, v:Decimal):
+        if v <= 0:
+            raise ValueError("price is grater than 0. check this value.")
+        return v
 
     _is_in_db_decimal_range_price = validator("price",allow_reuse=True)(is_in_db_decimal_range(integer_range=9,decimal_digits_range=4))
 
@@ -46,11 +56,12 @@ class StockPriceListOutPut(BaseModel):
     output : List[StockPrice] | List[None]
     fail_input : List[str] | List[None]
 
+
 class DomesticStockPriceResponseDetail(BaseModel):
     # market: str = Field(alias="rprs_mrkt_kor_name")
     price: str = Field(alias="stck_prpr")
 class OverseasStockPriceResponseDetail(BaseModel):
-    price: str = Field(alias="last")
+    price: Optional[str] = Field(alias="last")
 
 class StockPriceResponseOfKorInvAPI(BaseModel):
     output: Optional[DomesticStockPriceResponseDetail | OverseasStockPriceResponseDetail]
