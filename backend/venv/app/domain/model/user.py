@@ -8,7 +8,7 @@ class Base(DeclarativeBase):
     updated_date : Mapped[datetime] = mapped_column(insert_default=func.now())
     pass
 
-class User(Base):
+class UserModel(Base):
     __tablename__ = "user"
     
 

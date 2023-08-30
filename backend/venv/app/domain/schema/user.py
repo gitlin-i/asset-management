@@ -1,25 +1,26 @@
-from pydantic import BaseModel
-
-#test
-class User1(BaseModel):
-    username: str
-    name: str | None = None
-    email: str | None = None
-    disable: bool | None = None
-
+from bcrypt import gensalt, hashpw
+from pydantic import BaseModel, SecretBytes, validator
 
 class User(BaseModel):
     id: str
     name: str
-    def __repr__(self):
-        print("id: {}, name: {}".format(self.id, self.name))
+
     #orm_mode 필수
     class Config:
         orm_mode = True
 
 class UserIn(User):
-    password: str 
-    pass
+    password : str | bytes
 
-class UserOut(User):
-    pass
+    @validator('password')
+    def hash_password(v):
+        if isinstance(v, str):
+            encoded_password = v.encode("utf-8")
+            salt = gensalt()
+            hashed_passowrd = hashpw(encoded_password, salt)
+            return hashed_passowrd
+        return v 
+    
+
+class UserSecret(User):
+    password: SecretBytes

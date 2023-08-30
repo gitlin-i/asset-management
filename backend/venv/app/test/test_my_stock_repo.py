@@ -1,7 +1,9 @@
 from repository.my_stock_repository import MyStockRepository
 from domain.schema.stock import MyStock
+from pytest import fixture
 
-def test_my_stock_repo():
+@fixture
+def my_stock_test_list():
     user_id = "test1"
     data = {
         "code": "TEST",
@@ -19,43 +21,42 @@ def test_my_stock_repo():
     }
     test_my_stock = MyStock(**data)
     test_my_stock2 = MyStock(**data2)
-    #create
-    result = MyStockRepository.create(user_id=user_id, my_stock=test_my_stock )
-    result2 = MyStockRepository.create(user_id=user_id, my_stock=test_my_stock2 )
-    assert result == True
-    assert result2 == True
+    create_result = MyStockRepository.create(user_id=user_id, my_stock=test_my_stock )
+    create_result2 = MyStockRepository.create(user_id=user_id, my_stock=test_my_stock2 )
 
+    assert create_result == True
+    assert create_result2 == True
+
+    yield user_id, [test_my_stock,test_my_stock2]
+
+    delete_result = MyStockRepository.delete(user_id=user_id, my_stock=test_my_stock )
+    delete_result2 = MyStockRepository.delete(user_id=user_id, my_stock=test_my_stock2 )
+    assert delete_result == True
+    assert delete_result2 == True
+
+def test_my_stock_repo(my_stock_test_list):
+    user_id , test_list = my_stock_test_list
+    test_list.sort(key= lambda my_stock: my_stock.code)
     #read
-    result3 = MyStockRepository.read(user_id=user_id)
+    read_result = MyStockRepository.read(user_id=user_id)
+    mapping_1 = [MyStock(**my_stock[0].__dict__) for my_stock in read_result] 
     
-    mapping_1 = [MyStock(**my_stock[0].__dict__) for my_stock in result3] 
-    print(mapping_1)
-    expected_result = [
-        MyStock(**data),
-        MyStock(**data2)
-    ]
-    assert mapping_1 == expected_result
+    assert mapping_1 == test_list
     #update
-    data3 = {
+    update_data = {
         "code": "TEST1234",
         "market": "KRX",
         "name" : "테스트1234!@",
         "quantity": 1.123,
         "average_purchase_price" : 789.1
     }
-    test_my_stock3 = MyStock(**data3)
-    result4 = MyStockRepository.update(user_id=user_id,my_stock=test_my_stock3)
-    result5 = MyStockRepository.read(user_id=user_id)
-    mapping_2 = [MyStock(**my_stock[0].__dict__) for my_stock in result5] 
-    expected_result2 = [
-        MyStock(**data),
-        MyStock(**data3)
-    ]
-    assert result4 == True
-    assert mapping_2 == expected_result2
-    
-    #delete
-    result6 = MyStockRepository.delete(user_id=user_id,my_stock= test_my_stock)
-    result7 = MyStockRepository.delete(user_id=user_id,my_stock= test_my_stock3)
-    assert result6 == True
-    assert result7 == True
+    update_my_stock = MyStock(**update_data)
+    update_result = MyStockRepository.update(user_id=user_id,my_stock=update_my_stock)
+    read_result2 = MyStockRepository.read(user_id=user_id)
+    mapping_2 = [MyStock(**my_stock[0].__dict__) for my_stock in read_result2] 
+
+    update_test_list = [ my_stock for my_stock in test_list if update_my_stock.code != my_stock.code]
+    update_test_list.append(update_my_stock)
+    update_test_list.sort(key= lambda my_stock: my_stock.code)
+    assert update_result == True
+    assert mapping_2 == update_test_list

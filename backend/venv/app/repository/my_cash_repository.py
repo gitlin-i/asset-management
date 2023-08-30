@@ -1,4 +1,4 @@
-from sqlalchemy import Row, Sequence,select, update
+from sqlalchemy import Row, Sequence, delete, insert,select, update
 from repository.repository import Repository
 from pydantic import validate_arguments
 from domain.schema.cash import MyCash
@@ -36,7 +36,25 @@ class MyCashRepository(Repository):
             result = True
         return result
     
+    @classmethod
+    @validate_arguments
+    def create_bulk(cls,user_id :str ,my_cash_list: list[MyCash]) -> bool:
+        result = False
+        try:
+            with SessionLocal() as session:
+                with session.begin(): 
 
+                    stmt = insert(MyCashModel).values(user_id=user_id)
+                    session.execute(stmt, my_cash_list)
+        except AttributeError as e:
+            print("속성 에러, 매개변수 타입 확인 : ", e)
+            raise e
+        except IntegrityError as e:
+            print("중복 키, 이미 키가 존재함.",e)
+            raise e
+        else:
+            result = True
+        return result
 
     @classmethod
     @validate_arguments
@@ -72,4 +90,21 @@ class MyCashRepository(Repository):
         else:
             result = True
         return result
+
+    @classmethod
+    @validate_arguments
+    def delete_bulk(cls, user_id : str,my_cash_currency_codes: list[str] ) -> bool: 
+        result = False
+        try: 
+            with SessionLocal() as session:
+                with session.begin():
+                    stmt = delete(MyCashModel).where(MyCashModel.user_id == user_id).where(MyCashModel.currency.in_(my_cash_currency_codes))
+                    session.execute(stmt)
+        except UnmappedInstanceError as e:
+            print("존재하지 않는 인스턴스: ", e)
+            raise e
+        else:
+            result = True
+        return result
+
 

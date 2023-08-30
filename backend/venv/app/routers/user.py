@@ -9,21 +9,14 @@ router = APIRouter(
     prefix="/user"
 )
 
-def get_db() :
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("",response_model= UserOut )
-async def create_user(user : UserIn, db: Session = Depends(get_db)):
-    result = UserService().register_user(db,user)
+async def create_user(user : UserIn):
+    result = UserService().register_user(user)
     return result
 
 @router.get("", response_model= UserOut) 
-async def read_user_by_id(id: str, db: Session = Depends(get_db)) :
-    result = UserService().find_user(db,id)
+async def read_user_by_id(id: str) :
+    result = UserService().find_user(id)
     if result is None:
         raise HTTPException(status_code=404, detail="User not found")
     return result

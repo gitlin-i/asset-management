@@ -1,40 +1,53 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import Row, select
 from domain.model.web_session import WebSession as model
 from domain.schema.web_session import WebSession as schema
 from uuid import UUID
+from database import SessionLocal
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import UnmappedInstanceError
+
 class WebSessionRepositorty:
-    def __init__(self, session :Session) -> None:
-        self.store = session
 
-    def create_web_session(self, web_session: schema):
+    @classmethod
+    def create(cls, web_session: schema):
+        result = False
         try:
-            mapped_web_session = model(**web_session.dict())
-            self.store.add(mapped_web_session)
-            self.store.commit()
-            result = mapped_web_session
-        except:
-            result = None
-            raise RuntimeError("생성 실패")
-        return result
-
-
-    def read_web_session(self, web_session_uuid : UUID):
-        stmt = select(model).where(model.uuid == web_session_uuid)
-        web_session = self.store.scalar(stmt)
-        return web_session
-
-
-    def delete_web_session(self, web_session_uuid : UUID):
-        try:
-
-            target_session = self.store.get(model,web_session_uuid)
-            self.store.delete(target_session)
-            self.store.commit()
-            result = target_session
-        except:
-            result = None
-            raise RuntimeError("삭제 실패")
+            with SessionLocal() as session:
+                with session.begin(): 
+                    mapped_model = model(**web_session.dict())
+                    session.add(mapped_model)
+        except AttributeError as e:
+            print("속성 에러, 매개변수 타입 확인 : ", e)
+            raise e
+        except IntegrityError as e:
+            print("중복 키, 이미 키가 존재함.",e)
+            raise e
+        else:
+            result = True
         return result
     
+
+    @classmethod
+    def read(cls, uuid: UUID) -> Row[model] | None:
+        with SessionLocal() as session:
+            stmt = select(model).where(model.uuid == uuid)
+            result = session.execute(stmt)
+            return result.one_or_none()
+
+
+    @classmethod
+    def delete(cls, uuid: UUID) -> bool: 
+        result = False
+        try: 
+            with SessionLocal() as session:
+                with session.begin():
+                    target = session.get(model,uuid)
+                    session.delete(target)
+        except UnmappedInstanceError as e:
+            print("존재하지 않는 인스턴스: ", e)
+            raise e
+        else:
+            result = True
+        return result
 

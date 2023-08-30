@@ -26,7 +26,7 @@ class StockBase(BaseModel):
         return v.upper()
 
 class StockInfo(StockBase):
-    name: str
+    name: str 
 
 class StockPrice(StockBase):
     price: Decimal
@@ -55,7 +55,9 @@ class MyStock(StockBase):
 class StockPriceListOutPut(BaseModel):
     output : List[StockPrice] | List[None]
     fail_input : List[str] | List[None]
-
+class StockInfoListOutPut(BaseModel):
+    output : List[StockInfo] | List[None]
+    fail_input : List[str] | List[None]
 
 class DomesticStockPriceResponseDetail(BaseModel):
     # market: str = Field(alias="rprs_mrkt_kor_name")
@@ -65,6 +67,13 @@ class OverseasStockPriceResponseDetail(BaseModel):
 
 class StockPriceResponseOfKorInvAPI(BaseModel):
     output: Optional[DomesticStockPriceResponseDetail | OverseasStockPriceResponseDetail]
+    rt_cd : str #0은 성공 그 외 실패
+    msg_cd: str
+    msg1: str
+class StockInfoResponseDetail(BaseModel):
+    name: str = Field(alias="prdt_name")
+class StockInfoReponseOfKorInvAPI(BaseModel):
+    output: Optional[StockInfoResponseDetail]
     rt_cd : str #0은 성공 그 외 실패
     msg_cd: str
     msg1: str

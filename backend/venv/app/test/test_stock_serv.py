@@ -4,7 +4,8 @@ from main import app
 from service.stock_service import StockService
 from domain.schema.stock import StockPriceListOutPut, StockPrice, StockPriceResponseOfKorInvAPI
 from domain.schema.market import Market
-from pytest import mark
+from repository.stock_repository import StockCurPriceRepository
+from pytest import fixture, mark
 
 client = TestClient(app)
 input_data = ["TEST","ㅂㅈㄷㄱㅁㄴㅇ"]
@@ -113,11 +114,13 @@ domestic_test_stock_response = {
     "msg_cd": "MCA00000",
     "msg1": "정상처리 되었습니다!"
 }
+
+
 def test_stock_price_equality():
-    test_response_mock_up = StockPriceResponseOfKorInvAPI(**overseas_test_stock_response)
-    test_response_mock_up2 = StockPriceResponseOfKorInvAPI(**domestic_test_stock_response)
-    assert test_response_mock_up.output.price == "1091.2600"
-    assert test_response_mock_up2.output.price == "128500"
+    test_overseas_response = StockPriceResponseOfKorInvAPI(**overseas_test_stock_response)
+    test_domestic_response = StockPriceResponseOfKorInvAPI(**domestic_test_stock_response)
+    assert test_overseas_response.output.price == "1091.2600"
+    assert test_domestic_response.output.price == "128500"
     test_stock_price1= StockPrice(**{
         "code": "228670",
         "market" : "KRX",
@@ -138,18 +141,29 @@ def test_stock_price_equality():
     assert test_stock_price1 != test_stock_price2
     assert test_stock_price2.price == Decimal("1.1234")
 
+@fixture
+def define_test_stock():
+    test_stock = StockPrice(code="TEST",market="KRX",price=1234)
+    
+    create_result = StockCurPriceRepository.create(test_stock)
+    assert create_result == True
+    yield test_stock
+
+    delete_result = StockCurPriceRepository.delete(test_stock.code,test_stock.market)
+    assert delete_result ==True
+
 @mark.parametrize("code,market,price",[
-    ("test1234","KRX",123),
-    ("teST1234","KRX",123.00)
+    ("test","KRX",1234),
+    ("teST","KRX",1234.00)
 ])
-def test_stock_service_read_from_db(code,market,price):
-    already_inserted_stock_price = StockPrice(**{
+def test_stock_service_read_from_db(code,market,price, define_test_stock):
+    expected_stock_price = StockPrice(**{
         "code": code,
         "market" : market,
         "price": price, 
     })
     result = StockService.price_read_from_db(code, market)
-    assert StockPrice(**result.dict()) == already_inserted_stock_price
+    assert StockPrice(**result.dict()) == expected_stock_price
 
 @mark.parametrize("code,market",[
     ("TSLA","NAS"),
@@ -157,13 +171,13 @@ def test_stock_service_read_from_db(code,market,price):
 ])
 def test_stock_service_read_from_api(code,market):
     result = StockService.price_read_from_api(code,market)
-    expect_result = StockPrice(**{
+    expected_result = StockPrice(**{
         "code": code,
         "market" : market,
         "price" : result.price
     })
     
-    assert result == expect_result
+    assert result == expected_result
 
 @mark.parametrize("code,market",[
     ("qwe","KRX"),
@@ -174,17 +188,13 @@ def test_stock_service_read_from_api_expect_none(code,market):
     assert result is None
 
 
-def test_doemstic_stock_service():
-    result : StockPriceListOutPut = StockService.current_price_list(input_data,market)
+def test_doemstic_stock_service(define_test_stock):
+    output, fail_input = StockService.current_price_list(input_data,market)
     check_stock_price_list_output_model = {
-        "output":[StockPrice(**{
-            "code": "TEST",
-            "market" : "KRX",
-            "price": 1234,
-            })
-        ],
+        "output":[define_test_stock],
         "fail_input" : ["ㅂㅈㄷㄱㅁㄴㅇ"]
     }
-    assert result == check_stock_price_list_output_model
+    assert output == check_stock_price_list_output_model["output"]
+    assert fail_input == check_stock_price_list_output_model["fail_input"]
 
 

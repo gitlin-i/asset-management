@@ -1,11 +1,10 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import String
+from sqlalchemy import TIMESTAMP, String, text
 from sqlalchemy import func
 from datetime import datetime
 
 class Base(DeclarativeBase):
-    created_date : Mapped[datetime] = mapped_column(insert_default=func.now())
-    last_used_date : Mapped[datetime] = mapped_column(insert_default=func.now())
+    created_date : Mapped[datetime] = mapped_column(TIMESTAMP,insert_default=func.now())
     pass
 
 class WebSession(Base):

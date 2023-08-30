@@ -1,6 +1,6 @@
 from pytest import fixture, mark
 from service.exchange_service import ExchangeService
-from domain.schema.exchange_rate import ExchageRateOutput,ExchangeRate
+from domain.schema.exchange_rate import ExchangeRate
 
 @fixture
 def exchange_rate_all() :
@@ -10,7 +10,7 @@ def exchange_rate_all() :
 @mark.parametrize("currency",[
     ("USD"),("KRW")
 ])
-def test_exchange_rate_current_rate(currency, exchange_rate_all: list[ExchangeRate],):
+def test_exchange_rate_current_rate(currency, exchange_rate_all: list):
     result = ExchangeService.current_rate( currency)
 
     find_one = [exchange_rate.base_rate for exchange_rate in exchange_rate_all if exchange_rate.currency == currency]
@@ -18,8 +18,8 @@ def test_exchange_rate_current_rate(currency, exchange_rate_all: list[ExchangeRa
         "currency": currency,
         "base_rate": find_one[0]
     })
-
-    assert result == ExchageRateOutput(output=[target_exchange_rate])
+    assert result == target_exchange_rate
+    
 
 @mark.parametrize("currency_codes",[
     (["USD","JPY(100)","Q1W","NZD"]),
@@ -40,4 +40,4 @@ def test_exchange_rate_current_rate_list(currency_codes, exchange_rate_all: list
     expected_result.sort(key= lambda x: x.currency)
 
     
-    assert read_result == ExchageRateOutput(output=expected_result,fail_input=fail_input)
+    assert read_result == (expected_result, fail_input)

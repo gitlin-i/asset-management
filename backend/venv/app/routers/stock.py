@@ -1,9 +1,10 @@
 
 import json
 from fastapi import APIRouter, Query
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from service.stock_service import StockService
-from domain.schema.stock import StockPriceListOutPut
+from domain.schema.stock import StockPriceListOutPut,StockInfoListOutPut
 from domain.schema.market import Market
 router = APIRouter(
     prefix="/stock"
@@ -14,14 +15,39 @@ router = APIRouter(
 def stock_current_price(code: str, market : Market):
 
     stock_codes = code.split(",")
-    result  = StockService.current_price_list(stock_codes,market)
-    if len(result.fail_input) > 0:
+    output , fail_input  = StockService.current_price_list(stock_codes,market)
+    response = {
+        "output" : output,
+        "fail_input" : fail_input
+    }
+    json_response = jsonable_encoder(response)
+    if len(fail_input) > 0:
         msg = "some stock code not exists. check fail input."
         error_result : dict = {
             "msg" : msg,
-            "result" : result.dict()
+            "result" : json_response
         }
         raise HTTPException(status_code=404, detail=error_result)
     
-    return result
+    return json_response
 
+@router.get("/info", response_model=StockInfoListOutPut)
+def stock_info(code: str, market : Market):
+
+    stock_codes = code.split(",")
+    output , fail_input  = StockService.info_list(stock_codes,market)
+    response = {
+        "output" : output,
+        "fail_input" : fail_input
+    }
+    
+    json_response = jsonable_encoder(response)
+    if len(fail_input) > 0:
+        msg = "some stock code not exists. check fail input."
+        error_result : dict = {
+            "msg" : msg,
+            "result" : json_response
+        }
+        raise HTTPException(status_code=404, detail=error_result)
+    
+    return json_response

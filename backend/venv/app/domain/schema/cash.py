@@ -8,13 +8,15 @@ class CashBase(BaseModel):
 
     @validator('currency')
     def currency_in_real_currency_code(cls, v:str) -> str:
+        if v in ["JPY","IDR"]:
+            return v + "(100)"
+
         if v not in [currency.value for currency in Currency]:
             raise ValueError
         return v
     class Config:
         orm_mode = True
         allow_mutation :False
-
 
 
 def count_decimal_places(target_number: int | float)-> bool:

@@ -1,32 +1,38 @@
 
 from datetime import datetime, timedelta
-from domain.schema.exchange_rate import ExchangeRate,ExchageRateOutput
+from domain.schema.exchange_rate import ExchangeRate
 from repository.exchange_rate_repository import ExchangeRateRepository
 from external_api.koreaexim_api import get_exchange_rate
+from pydantic import validate_arguments
 class ExchangeService:
 
     @classmethod
-    def current_rate(cls, currency_code : str) -> ExchageRateOutput:
+    @validate_arguments
+    def current_rate(cls, currency_code : str) -> ExchangeRate | str:
         read_result = ExchangeRateRepository.read(currency_code= currency_code)
         exchange_rate = ExchangeRate(**read_result[0].__dict__)
 
         if not read_result:
-            return ExchageRateOutput(output=[],fail_input=[currency_code])
+            return currency_code
         
-        return ExchageRateOutput(output=[exchange_rate],fail_input=[])
+        return exchange_rate
+        
     
     @classmethod
-    def current_rate_list(cls,currency_codes : list[str]) -> ExchageRateOutput :
+    @validate_arguments
+    def current_rate_list(cls,currency_codes : list[str]) -> tuple[list[ExchangeRate] , list[str]] :
         read_result = ExchangeRateRepository.read_bulk(currency_codes)
         exchange_rate_list = [ExchangeRate(**exchange_rate[0].__dict__) for exchange_rate in read_result]
         read_currency_codes = [ exchange_rate.currency for exchange_rate in exchange_rate_list]
+        not_read_input = [currency_code for currency_code in currency_codes if currency_code not in read_currency_codes]
+        return (exchange_rate_list,not_read_input)
         
-        return ExchageRateOutput(output=[ exchange_rate for exchange_rate in exchange_rate_list if exchange_rate is not None],
-                                fail_input=[ currency_code for currency_code in currency_codes if currency_code not in read_currency_codes])
+
     @classmethod
+    @validate_arguments
     def current_rate_all(cls) -> list[ExchangeRate] :
         read_result = ExchangeRateRepository.read_all()
-        exchange_rate_list = [ExchangeRate(**exchange_rate[0].__dict__) for exchange_rate in read_result]
+        exchange_rate_list = [ExchangeRate(**exchange_rate_model[0].__dict__) for exchange_rate_model in read_result]
         return exchange_rate_list
 
 

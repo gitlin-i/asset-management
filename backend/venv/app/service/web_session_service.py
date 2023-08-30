@@ -7,17 +7,16 @@ from fastapi import Depends
 
 
 class WebSessionService:
-    @staticmethod
-    def register_web_session(userId: str) -> UUID:
+    @classmethod
+    def register_web_session(user_id: str) -> bool:
         new_web_session_value = uuid4()
-
-        new_web_session = WebSession(uuid=new_web_session_value, user_id=userId)
-        with SessionLocal() as db:
-            WebSessionRepositorty(db).create_web_session(new_web_session)
-        return new_web_session_value
+        new_web_session = WebSession(uuid=new_web_session_value, user_id=user_id)
+        result = WebSessionRepositorty.create(new_web_session)
+        return result
+        
     
-    @staticmethod
-    def read_current_user_id(uuid: UUID) -> str :
-        with SessionLocal() as db:
-            web_session_model = WebSessionRepositorty(db).read_web_session(uuid)
-        return web_session_model.user_id
+    @classmethod
+    def read_current_user_id(cls, uuid: UUID) -> str :
+        read_result = WebSessionRepositorty.read(uuid)
+        user_id = read_result[0].user_id
+        return user_id

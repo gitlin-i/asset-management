@@ -6,58 +6,47 @@ from domain.model.stock_current_price import StockCurrentPriceModel
 from domain.schema.stock import StockPrice,StockPriceWithDate
 from domain.schema.market import Market
 from sqlalchemy.orm.exc import StaleDataError
-from pytest import raises
+from pytest import mark, raises,fixture
 from pydantic.error_wrappers import ValidationError
-def test_stock_current_price_repository():
-    #read
-    market = Market.KRX
-    result = StockCurPriceRepository.read("TEST",market)
 
-    assert result[0] == StockCurrentPriceModel(**{
-        "code" : "TEST",
-        "market" : "KRX",
-        "price": 1234,
-
-    })
-
-    #create
-    new_stock_price = StockPrice(code="TEST2",market="KRX",price=1111)
-    result2 = StockCurPriceRepository.create(new_stock_price) 
+@fixture
+def define_test_stock():
+    test_stock = StockPrice(code="TEST",market="KRX",price=1234)
     
-    result3 = StockCurPriceRepository.read("TEST2",market)
-    assert result2 == True
-    assert result3[0] == StockCurrentPriceModel(**{
-        "code": "TEST2",
-        "market" : "KRX",
-        "price" : 1111,
+    create_result = StockCurPriceRepository.create(test_stock)
+    assert create_result == True
+    yield test_stock
 
-    })
+    delete_result = StockCurPriceRepository.delete(test_stock.code,test_stock.market)
+    assert delete_result ==True
+
+def test_stock_current_price_repository(define_test_stock):
+    #read
+    stock = define_test_stock
+    
+    read_result = StockCurPriceRepository.read(stock.code,stock.market)
+
+    assert read_result[0] == StockCurrentPriceModel(**stock.dict())
+
 
     #update
-    update_stock_price = StockPrice(code="TEST2",market="KRX", price=1222)
-    result4 = StockCurPriceRepository.update(update_stock_price)
-    assert result4 == True
+    update_stock_price = StockPrice(code="TEST",market="KRX", price=1222)
+    update_result = StockCurPriceRepository.update(update_stock_price)
+    assert update_result == True
 
-    result5 = StockCurPriceRepository.read("TEST2",market)
-    assert result5[0] == StockCurrentPriceModel(**{
-        "code": "TEST2",
+    read_result2 = StockCurPriceRepository.read(update_stock_price.code ,update_stock_price.market)
+    assert read_result2[0] == StockCurrentPriceModel(**{
+        "code": "TEST",
         "market" : "KRX",
         "price" : 1222,
 
     })
-    assert result3 != result5
+    assert read_result != read_result2
 
-    #delete
-    result6 = StockCurPriceRepository.delete("TEST2",market)
-    result7 =StockCurPriceRepository.read("TEST2",market)
-    assert result6 == True
-    assert result7 is None
-
-    stock = StockCurPriceRepository.read("TEST","KRX")
+    
+    stock = StockCurPriceRepository.read(stock.code , stock.market)
     stock_price = StockPriceWithDate(**stock[0].__dict__)
-
-    assert stock_price.isOld(timedelta(seconds=1)) == True
-
+    assert stock_price.isOld(timedelta(minutes=1)) == False
 def test_stock_info_repository_expect_error():
     #error
     with raises(ValidationError):

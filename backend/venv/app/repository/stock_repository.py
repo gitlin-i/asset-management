@@ -15,20 +15,19 @@ from domain.schema.market import Market
 class StockInfoRepository(Repository):
     @classmethod
     @validate_arguments
-    def read(cls, stock_code : str ,market: Market) -> Row[StockInfoModel] | None:
+    def read(cls, stock_code : str ,market: Market) -> StockInfoModel | None:
         with SessionLocal() as session:
             stmt = select(StockInfoModel).where(StockInfoModel.code == stock_code).where(StockInfoModel.market == market.value)
             result = session.execute(stmt)
             return result.one_or_none()
-        
     @classmethod
     @validate_arguments
-    def create(cls,stock: StockInfo) -> bool:
+    def create(cls,stock_info: StockInfo) -> bool:
         result = False
         try:
             with SessionLocal() as session:
                 with session.begin(): 
-                    mapped_model = StockInfoModel(**stock.dict())
+                    mapped_model = StockInfoModel(**stock_info.dict())
                     session.add(mapped_model)
         except AttributeError as e:
             print("속성 에러, 매개변수 타입 확인 : ", e)
@@ -41,13 +40,13 @@ class StockInfoRepository(Repository):
         return result
     @classmethod
     @validate_arguments
-    def update(cls,stock: StockInfo) -> bool:
+    def update(cls,stock_info: StockInfo) -> bool:
         result = False
         try:
             with SessionLocal() as session:
                 with session.begin():
                     stmt = update(StockInfoModel)
-                    result = session.execute(stmt,[stock.dict()])    
+                    result = session.execute(stmt,[stock_info.dict()])    
         except StaleDataError as e:
             print("0 matched...",e)
             raise e
@@ -90,7 +89,7 @@ class StockCurPriceRepository(Repository):
                 with session.begin(): 
                     mapped_model = StockCurrentPriceModel(**stock.dict())
                     session.add(mapped_model)
-                    result = True
+                    
         except AttributeError as e:
             print("속성 에러, 매개변수 타입 확인 : ", e)
             raise e
