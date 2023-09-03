@@ -9,16 +9,20 @@ import { useRecoilValue } from 'recoil';
 import { themeState } from './atom/atom';
 import { Outlet } from 'react-router-dom';
 import BottomNav from './component/BottomNav';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 function App() {
   const theme = useRecoilValue(themeState)
+  const queryClient = new QueryClient()
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <Header />
-        <SideBar />
-        <Outlet />
-        <Modal />
-        <BottomNav />
+        <QueryClientProvider client={queryClient}>
+          <Header />
+          <SideBar />
+          <Outlet />
+          <Modal />
+          <BottomNav />
+        </QueryClientProvider>
       </ThemeProvider>
     </React.Fragment>
     

@@ -1,7 +1,9 @@
 
+from uuid import UUID
 from domain.schema.user import UserIn
 from bcrypt import gensalt, hashpw, checkpw
 from repository.user_repository import UserRepositorty
+from service.web_session_service import WebSessionService
 from fastapi import HTTPException
 
 
@@ -20,12 +22,20 @@ class UserService:
         return checkpw(plain_password,hashed_password)
     
     @classmethod
-    def login(cls, user:UserIn) -> bool:
+    def login(cls, user:UserIn) -> UUID:
         user_secret = UserRepositorty.read(user.id)
         if not user_secret:
             raise ValueError("id가 존재하지 않습니다.")
-        result = cls.verify_password(user.password, user_secret.password.get_secret_value())
-        return result
+        is_verified = cls.verify_password(user.password, user_secret.password.get_secret_value())
+        if not is_verified:
+            raise ValueError("비밀번호가 일치하지 않습니다.")
+        
+
+        created_session_uuid = WebSessionService.register_web_session(user.id)
+        return created_session_uuid
+        
+        
+
 
     @classmethod
     def register_user(cls,user:UserIn) -> bool:

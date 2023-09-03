@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from database import engine,SessionLocal
-from routers import stock, coin, exchange
+from routers import stock, coin, exchange,user, my_asset
 
 from domain.model.my_cash import Base as MyCashBase
 from domain.model.my_stock import Base as MyStockBase
@@ -50,3 +50,5 @@ app.add_middleware(
 app.include_router(stock.router)
 app.include_router(coin.router)
 app.include_router(exchange.router)
+app.include_router(user.router )
+app.include_router(my_asset.router)

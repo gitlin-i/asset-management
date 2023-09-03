@@ -47,7 +47,7 @@ class StockPriceWithDate(StockPrice):
 
 class MyStock(StockBase):
     quantity: Decimal
-    average_purchase_price: Decimal
+    average_purchase_price: Decimal | None
     _is_in_db_decimal_range_quantity = validator("quantity",allow_reuse=True)(is_in_db_decimal_range(integer_range=9,decimal_digits_range=4))
     _is_in_db_decimal_range_average_purchase_price = validator("average_purchase_price",allow_reuse=True)(is_in_db_decimal_range(integer_range=9,decimal_digits_range=4))
 

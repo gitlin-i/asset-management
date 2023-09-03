@@ -17,7 +17,10 @@ export const modalState = atom({
         title : "",
     }
 })
-
+export const exchangeRateState = atom({
+    key: "exchangeRateState",
+    default: []
+})
 export const themeState = atom({
     key: "themeState",
     default: lightTheme

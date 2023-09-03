@@ -11,9 +11,9 @@ import { assetsState, modalState, targetRatioState } from '../../atom/atom'
 import { assetsCurrentValue, assetsRatio, cashCurrentValue, cashRatio, coinsCurrentValue, coinsRatio, stocksCurrentValue, stocksRatio } from '../../selector/selector'
 
 import RatioChartCard from '../Card/RatioChartCard'
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import TotalAssetsCard from '../Card/TotalAssetsCard'
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 
 
 interface MainPageProps {
@@ -77,6 +77,7 @@ const MainPage : React.FC<MainPageProps> = (props) => {
   const {category} = props
   
   const [assets,setAssets] = useRecoilState(assetsState)
+   
   const assetsCurRatio = useRecoilValue(assetsRatio)
   const stocksCurRatio = useRecoilValue(stocksRatio)
   const coinsCurRatio = useRecoilValue(coinsRatio)
@@ -88,8 +89,9 @@ const MainPage : React.FC<MainPageProps> = (props) => {
   const [targetRatios, setTargetRatios] = useRecoilState(targetRatioState)
   
   ///
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
   
+  /// 
   let currentVal,currentRatio
   switch(category) {
     case 'stocks' :
@@ -121,13 +123,12 @@ const MainPage : React.FC<MainPageProps> = (props) => {
 
   },[])
   
-
   
   return (
     <StyledMain>
 
       <Section>
-        <TotalAssetsCard targetKey={category} targetData={category ? assets[category] : undefined} totalValue={currentVal}/>
+        <TotalAssetsCard category={category} data={category ? assets[category] : undefined} totalValue={currentVal}/>
       </Section>
 
       <Section>

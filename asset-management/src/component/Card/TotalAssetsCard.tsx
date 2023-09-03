@@ -10,8 +10,8 @@ import { Cash } from "../../domain/cash"
 import { MyStock } from "../../domain/stock"
 
 interface TotalCardProps {
-    targetKey?: "stocks" | "coins" | "cash" 
-    targetData?: MyStock[] | MyCoin[] | Cash[] 
+    category?: "stocks" | "coins" | "cash" 
+    data?: MyStock[] | MyCoin[] | Cash[] 
     totalValue : number | Array<{[key:string]:number}>
 
 }
@@ -20,9 +20,9 @@ const StyledUl = styled.ul`
   margin:0;
 `
 const TotalAssetsCard : React.FC<TotalCardProps> = (props) => {
-    const {targetKey, targetData, totalValue: sumValue} = props
+    const {category, data, totalValue: sumValue} = props
     let title
-    switch(targetKey){
+    switch(category){
         case "stocks":
             title = "주식"
             break;
@@ -64,7 +64,7 @@ const TotalAssetsCard : React.FC<TotalCardProps> = (props) => {
                         <Item key={key} leftupText={"내 " + key + " 합계"}  rightUpText={ value.toLocaleString() + CurrencyMark(Currency.KRW) } />
                     )
                 })}
-            {targetData && targetData.map(spreadItem)}
+            {data && data.map(spreadItem)}
         </StyledUl>
 
   </Card>

@@ -21,6 +21,14 @@ class UserIn(User):
             return hashed_passowrd
         return v 
     
-
 class UserSecret(User):
     password: SecretBytes
+
+
+class LoginUser(BaseModel):
+    id: str
+    password : str | bytes
+
+    class Config:
+        orm_mode = True
+        

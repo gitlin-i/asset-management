@@ -5,7 +5,8 @@ import { assetsState } from '../atom/atom'
 import { MyStock, Stock } from '../domain/stock'
 import { Currency, testRealData } from '../domain/Domain'
 import { MyCoin } from '../domain/coin'
-import { getFakePrice } from './Api'
+import { getStockPrice } from './Api'
+
 
 const StyledDiv = styled.div`
     outline: auto;
@@ -105,10 +106,26 @@ const AssetsInput : React.FC = () => {
         })
     }
     
-    const handleClick4 = async () => {
-        const newData = await getFakePrice()
+    const handleClick4 =  () => {
+        
+        function isStringArray(arr: (string | undefined)[] | undefined): arr is string[] {
+            return arr !== undefined && arr.every(item => typeof item === 'string');
+          }
+        
+        const stockCodes = myAssets.stocks?.map((stock)=>{
+            if (stock.currency == Currency.KRW) {
+                return stock.code
+            }
+        })
+        const stockCodes2 = stockCodes?.filter((code)=> code !== undefined,)
+        console.log(stockCodes)
+        console.log(stockCodes2)
+        if (isStringArray(stockCodes2)) {
+            const res =  getStockPrice(stockCodes2,"KRX")
+            console.log("handleClick4",res)
+        }
+        
 
-        setData(newData.data)
     }
   return (
     <StyledDiv>
