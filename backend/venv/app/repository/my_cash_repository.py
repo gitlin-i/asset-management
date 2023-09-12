@@ -1,7 +1,7 @@
 from sqlalchemy import Row, Sequence, delete, insert,select, update
 from repository.repository import Repository
 from pydantic import validate_arguments
-from domain.schema.cash import MyCash
+from domain.schema.cash import MyCash, CashBase
 from domain.model.my_cash import MyCashModel
 from database import SessionLocal
 from sqlalchemy.exc import IntegrityError
@@ -74,10 +74,30 @@ class MyCashRepository(Repository):
             result = True
         return result
     
-
     @classmethod
     @validate_arguments
-    def delete(cls, user_id : str, my_cash: MyCash) -> bool: 
+    def update_bulk(cls,user_id :str, my_cash :list[MyCash]) -> bool:
+        result = False
+        try:
+            with SessionLocal() as session:
+                with session.begin():
+                    stmt = update(MyCashModel)
+                    def insert_user_id(my_cash : MyCash) -> dict:
+                        cash = my_cash.dict()
+                        cash.update({"user_id": user_id})
+                        return cash
+                    updated_my_cash_list = [ insert_user_id(cash) for cash in my_cash]
+                    result = session.execute(stmt,updated_my_cash_list)    
+        except StaleDataError as e:
+            print("not matched...",e)
+            raise e
+        else:
+            result = True
+        return result
+    
+    @classmethod
+    @validate_arguments
+    def delete(cls, user_id : str, my_cash: MyCash | CashBase) -> bool: 
         result = False
         try: 
             with SessionLocal() as session:

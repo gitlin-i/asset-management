@@ -14,7 +14,7 @@ import RatioChartCard from '../Card/RatioChartCard'
 import { Fragment, useEffect } from 'react'
 import TotalAssetsCard from '../Card/TotalAssetsCard'
 import { QueryClient, useQueryClient } from '@tanstack/react-query'
-
+import { useLocation, useParams } from 'react-router-dom';
 
 interface MainPageProps {
   category ?: "stocks" | "coins" | "cash" 
@@ -72,6 +72,22 @@ const StyledUl = styled.ul`
   margin:0;
 `
 
+
+
+function MyComponent() {
+  const  location  = useLocation();
+
+  // URL에서 전달된 param 값을 사용
+  return (
+    <div>
+      <p>Param from URL: {location.pathname}</p>
+      <p>Param from URL: {location.key}</p>
+      <p>Param from URL: {location.state}</p>
+      <p>Param from URL: {location.hash}</p>
+    </div>
+  );
+}
+
 ////////////
 const MainPage : React.FC<MainPageProps> = (props) => {
   const {category} = props
@@ -126,7 +142,9 @@ const MainPage : React.FC<MainPageProps> = (props) => {
   
   return (
     <StyledMain>
-
+      <Section>
+        <MyComponent></MyComponent>
+      </Section>
       <Section>
         <TotalAssetsCard category={category} data={category ? assets[category] : undefined} totalValue={currentVal}/>
       </Section>

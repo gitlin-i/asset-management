@@ -32,8 +32,13 @@ async def lifespan(app : FastAPI):
     ExchangeService.init_exchange_rate()
     yield
 
-
-app = FastAPI(lifespan=lifespan)
+tag_metadata = [
+    {
+        "name": "my-asset" ,
+        "description" : "CRUD my-asset"
+    }
+]
+app = FastAPI(lifespan=lifespan, openapi_tags=tag_metadata)
 
 origin =  [
     "http://localhost:3000",

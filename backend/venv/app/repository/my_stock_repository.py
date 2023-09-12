@@ -1,7 +1,7 @@
 from sqlalchemy import Row, Sequence,select, update
 from repository.repository import Repository
 from pydantic import validate_arguments
-from domain.schema.stock import MyStock
+from domain.schema.stock import MyStock,StockBase
 from domain.model.my_stock import MyStockModel
 from database import SessionLocal
 from sqlalchemy.exc import IntegrityError
@@ -60,7 +60,7 @@ class MyStockRepository(Repository):
 
     @classmethod
     @validate_arguments
-    def delete(cls, user_id : str, my_stock: MyStock) -> bool: 
+    def delete(cls, user_id : str, my_stock: MyStock | StockBase) -> bool: 
         result = False
         try: 
             with SessionLocal() as session:

@@ -19,21 +19,11 @@ class CashBase(BaseModel):
         allow_mutation :False
 
 
-def count_decimal_places(target_number: int | float)-> bool:
-    if isinstance(target_number, (int, float)):
-        parse_number = str(target_number).split('.')
-        if len(parse_number) == 1 :
-            return 0
-        return len(parse_number[-1])
-    else:
-        raise TypeError
-    
-class MyCash(CashBase):
+class MyCashForUpdate(BaseModel):
     balance: Decimal
-
     _is_in_db_decimal_range_balance = validator("balance",allow_reuse=True)(is_in_db_decimal_range(integer_range=10,decimal_digits_range=2))
 
+class MyCash(CashBase, MyCashForUpdate):
     
     def exchange(self, rate: float) -> float:
         return self.balance * rate
-    

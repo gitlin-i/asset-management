@@ -59,21 +59,36 @@ def get_stock_info(tokenDict, stock_code,market):
         "tr_id" : "CTPF1604R",
         "custtype" : "P",
     }
+    def market_to_PRDT_TYPE_CD(market:Market):
+        """
+        300 주식
+        301 선물옵션
+        302 채권
+        512 미국 나스닥 / 513 미국 뉴욕 / 529 미국 아멕스
+        515 일본
+        501 홍콩 / 543 홍콩CNY / 558 홍콩USD
+        507 베트남 하노이 / 508 베트남 호치민
+        551 중국 상해A / 552 중국 심천A
+        """
+        mapping = {
+            Market.AMS: "529",
+            Market.NAS: "512",
+            Market.NYS: "513",
+            Market.TSE: "515",
+            Market.HKS: "501",
+            Market.HNX: "507",
+            Market.HSX: "508",
+            Market.SHS: "551",
+            Market.SZS: "552",
+            Market.KRX: "300",
+        }
+        return mapping[market]
     params = {
         "PDNO" : stock_code , #상품번호, 코드
-        "PRDT_TYPE_CD": "300" ,#상품타입 
+        "PRDT_TYPE_CD": market_to_PRDT_TYPE_CD(market) ,#상품타입 
     }
-    """
-    300 주식
-    301 선물옵션
-    302 채권
-    512 미국 나스닥 / 513 미국 뉴욕 / 529 미국 아멕스
-    515 일본
-    501 홍콩 / 543 홍콩CNY / 558 홍콩USD
-    507 베트남 하노이 / 508 베트남 호치민
-    551 중국 상해A / 552 중국 심천A
-    """
 
+    
     url = "/uapi/domestic-stock/v1/quotations/search-info"
     response = requests.get(baseUrl_real + url,headers=header , params=params)
     return response.json()

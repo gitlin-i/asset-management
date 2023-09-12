@@ -1,7 +1,7 @@
 from sqlalchemy import Row, Sequence,select, update
 from repository.repository import Repository
 from pydantic import validate_arguments
-from domain.schema.coin import MyCoin
+from domain.schema.coin import MyCoin,CoinBase
 from domain.model.my_coin import MyCoinModel
 from database import SessionLocal
 from sqlalchemy.exc import IntegrityError
@@ -60,13 +60,13 @@ class MyCoinRepository(Repository):
 
     @classmethod
     @validate_arguments
-    def delete(cls, user_id : str, my_coin: MyCoin) -> bool: 
+    def delete(cls, user_id : str, my_coin: MyCoin | CoinBase) -> bool: 
         result = False
         try: 
             with SessionLocal() as session:
                 with session.begin():
                     target = session.get(MyCoinModel,(user_id,my_coin.code))
-                    print(target)
+                    
                     session.delete(target)
         except UnmappedInstanceError as e:
             print("존재하지 않는 인스턴스: ", e)

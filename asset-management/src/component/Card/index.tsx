@@ -38,17 +38,19 @@ const StyledHeader = styled.header`
 `
 const StyledBody = styled.div<CardProps>`
 
-  height : calc(100% -3rem); 
+  
   overflow: auto;
 
   &::-webkit-scrollbar-track {
     border-radius: 0.125rem;
     background-color: white;
+    
   }
   &::-webkit-scrollbar {
     width: 0.25rem;
     height: 0.25rem;
     border-radius: 0.125rem;
+
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 0.125rem;
@@ -65,6 +67,7 @@ const Card : React.FC<CardProps> = (props) => {
       <StyledHeader >
         {title}
       </StyledHeader> }
+
       <StyledBody>
         {children}  
       </StyledBody>

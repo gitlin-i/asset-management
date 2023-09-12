@@ -120,4 +120,21 @@ def test_my_cash_repo_expect_error(balance:float):
         assert result == False
 
 
+def test_my_cash_repo_bulk_update(my_cash_row_multi):
+    test_data1 = MyCash(currency="KRW",balance=1231231.0)
+    test_data2 = MyCash(currency="USD",balance=111)
+    test_data3 = MyCash(currency="JPY",balance=1.32 )
+
+    user_id, origin_list = my_cash_row_multi
+
+
+    update_list = [test_data1,test_data2,test_data3]
+    update_list.sort(key=lambda cash: cash.currency)
+
+    update_result = MyCashRepository.update_bulk(user_id=user_id, my_cash=update_list)
+    assert update_result == True
+    read_result = MyCashRepository.read(user_id=user_id)
+    updated_my_cash_list = [ MyCash(**my_cash_model[0].__dict__) for my_cash_model in read_result]
+
+    assert updated_my_cash_list == update_list
     
