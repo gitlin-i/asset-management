@@ -1,6 +1,7 @@
 
-import { Assets, Currency, calcAllAssetsCurrentValue, calcAssetsPercentage } from "../domain/Domain"
+import { Assets,  calcAllAssetsCurrentValue, calcAssetsPercentage } from "../domain/Domain"
 import { MyCoin } from "../domain/coin"
+import { Currency } from "../domain/currency"
 import { MyStock } from "../domain/stock"
 
 
@@ -17,8 +18,8 @@ const assets :Assets = {
     const assetsCurPer = calcAssetsPercentage(assets)
     expect(assetsCurPer).toEqual([])
 
-    const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,Currency.KRW,31, )
-    const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3 )
+    const stock1 : MyStock = new MyStock('0101001',"KRX",'어떤 주식1', 12222,Currency.KRW,31, )
+    const stock2 : MyStock = new MyStock('0101002',"KRX",'어떤 주식2', 12232,Currency.KRW,3 )
     const coin1 : MyCoin = new MyCoin('led', "Elnora", 33,Currency.KRW,56)
     const myAssets : Assets= {
       stocks: [

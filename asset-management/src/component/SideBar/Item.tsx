@@ -9,7 +9,7 @@ interface SideBarItem {
   onClick ?: () => void;
   $selected ?: boolean;
 }
-const defaultMarginLeft = '3rem'
+const defaultMarginLeft = '2rem'
 const moveXoffset = '1rem';
 
 const StyledLink = styled(Link)<{ $selected ?: boolean;}>`
@@ -70,10 +70,10 @@ const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
 `
 
 const Item : React.FC<SideBarItem> = (props) => {
-  const { href,icon,presentName, $selected, onClick} = props
+  const { href,icon,presentName, $selected} = props
   
   return (
-    <StyledLink to={href} $selected={$selected} onClick={onClick}>
+    <StyledLink to={href} $selected={$selected} >
       { Array.isArray(icon) ? 
         icon.map((icon : string) => {
             return (

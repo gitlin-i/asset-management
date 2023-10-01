@@ -1,14 +1,18 @@
-import { Currency } from "./Domain";
+
+import { Currency } from "./currency";
+import { StockMarket } from "./market";
 import { Price } from "./price";
 
 export class Stock{
     private _code: string;
+    private _market: StockMarket
     private _name: string;
     private _price : Price;
-
-    constructor(code: string, name: string, price: number , currency: Currency ){
+    
+    constructor(code: string, market : StockMarket ,name: string, price: number , currency: Currency ){
         this._code = code
         this._name = name
+        this._market = market
         this._price = new Price(code, price, currency)
     }
 
@@ -20,6 +24,9 @@ export class Stock{
     }
     get price() : number {
         return this._price.value
+    }
+    get market() : StockMarket {
+        return this._market
     }
     get currency() : Currency  {
         return this._price.currency
@@ -36,13 +43,13 @@ export class MyStock extends Stock {
 
     constructor(
         code: string,
-        name: string,
-        price: number,
+        market :StockMarket,
+        name: string = "알 수 없는 이름",
+        price: number = 0,
         currency: Currency,
         quantity : number,
         averagePurchasePrice ?: number,){
-
-            super(code,name,price,currency)
+            super(code,market,name,price,currency)
             this._quantity = quantity
             this._averagePurchasePrice = averagePurchasePrice
     }

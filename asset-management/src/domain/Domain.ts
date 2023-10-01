@@ -6,6 +6,7 @@
 import { TargetRatios } from "../atom/atom";
 import { Cash } from "./cash";
 import { Coin, MyCoin } from "./coin";
+import { Currency } from "./currency";
 import { Price } from "./price";
 import { MyStock, Stock, isStock } from "./stock";
 
@@ -24,14 +25,15 @@ export interface Ratios {
     calcPercentage : ()=> number;
 }
 
-export enum Currency {
-    KRW = "KRW",
-    USD = "USD",
-}
-export enum MarketToCurrency{
-    KOSDAQ = "KRW",
-    KOSPI = "KRW",
-    NASDAQ = "USD"
+
+export const  MarketToCurrency : {[key: string] : Currency} = {
+    KOSDAQ : Currency.KRW,
+    KOSPI : Currency.KRW,
+    NASDAQ : Currency.USD,
+    NAS : Currency.USD,
+    KRX : Currency.KRW,
+    TSE : Currency.JPY,
+
 }
 
 export const testTargetRatios : TargetRatios = {
@@ -150,15 +152,15 @@ export interface User {
 
 export const testRealData : Assets = {
     stocks: [// 현재가 수량 매입가
-        new MyStock("BYND","비욘드 미트",10.63,Currency.USD,22,76.59),
-        new MyStock("IVV","ISHARES CORE S&P 500 ETF",429.7900,Currency.USD,1,439.1900),
-        new MyStock("QQQ","Invesco QQQ Trust Series 1",354.6500,Currency.USD,3,379.7200),
-        new MyStock("TQQQ","ProShares UltraPro QQQ",36.8200,Currency.USD,17,64.5158),
-        new MyStock("UPRO","ProShares UltraPro S&P500",42.7900,Currency.USD,2,60.2150), // 해외주식
-        new MyStock("228670","레이", 36700,Currency.KRW,16,32378.125),
-        new MyStock("293490", "카카오게임즈",39300,Currency.KRW,16,52000),
-        new MyStock("379800","KODEX 미국S&P500TR",12410,Currency.KRW,138,11080),
-        new MyStock("379810","KODEX 미국나스닥100TR",12530,Currency.KRW,252,11501),//국내주식
+        new MyStock("BYND","NAS","비욘드 미트",10.63,Currency.USD,22,76.59),
+        new MyStock("IVV","AMS","ISHARES CORE S&P 500 ETF",429.7900,Currency.USD,1,439.1900),
+        new MyStock("QQQ","NAS","Invesco QQQ Trust Series 1",354.6500,Currency.USD,3,379.7200),
+        new MyStock("TQQQ","NAS","ProShares UltraPro QQQ",36.8200,Currency.USD,17,64.5158),
+        new MyStock("UPRO","AMS","ProShares UltraPro S&P500",42.7900,Currency.USD,2,60.2150), // 해외주식
+        new MyStock("228670","KRX","레이", 36700,Currency.KRW,16,32378.125),
+        new MyStock("293490","KRX", "카카오게임즈",39300,Currency.KRW,16,52000),
+        new MyStock("379800","KRX","KODEX 미국S&P500TR",12410,Currency.KRW,138,11080),
+        new MyStock("379810","KRX","KODEX 미국나스닥100TR",12530,Currency.KRW,252,11501),//국내주식
     ],
     coins : [
         new MyCoin("ETH", "이더리움",2511000,Currency.KRW,1.19411886)
@@ -317,17 +319,4 @@ export const calcAssetArrayPercentage = (asset : MyCoin[] | MyStock[] ) : Array<
 
 }
 
-export const CurrencyMark = (currency : Currency) : string => {
-    switch(currency){
-        case Currency.KRW : {
-            return "₩"
-        }
-        case Currency.USD : {
-            return "$"
-        }
-        default : {
-            return "NONE"
-        }
-    }
-}
 //

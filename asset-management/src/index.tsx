@@ -10,6 +10,10 @@ import {
 } from "react-router-dom";
 import MainPage from './component/page/MainPage';
 import NotFoundPage from './component/page/NotFoundPage';
+import EditPage from './component/page/EditPage';
+import StockPage from './component/page/StockPage';
+import CoinPage from './component/page/CoinPage';
+import CashPage from './component/page/CashPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -27,17 +31,24 @@ const router = createBrowserRouter([
       },
       {
         path: "/stock",
-        element:  <MainPage category='stocks' />
+        element:  <StockPage />
       },
       {
         path: "/coin",
-        element:  <MainPage category='coins' />
+        element:  <CoinPage/>
       },
       {
         path: "/cash",
-        element:  <MainPage category='cash' />
+        element:  <CashPage />
       },
-      
+      {
+        path: "/deposit",
+        element:  <EditPage/>
+      },
+      {
+        path: "/withdraw",
+        element:  <EditPage/>
+      },
     ]
   },
 ]);

@@ -1,11 +1,12 @@
-import { Currency, MarketToCurrency, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, calcCurrentValue, testRealData, testapiStock } from "../domain/Domain"
+import {calcAssetArrayCurrentValue, calcCashArrayCurrentValue, calcCurrentValue, testRealData, testapiStock } from "../domain/Domain"
 import { Cash } from "../domain/cash"
 import { MyCoin } from "../domain/coin"
+import { Currency } from "../domain/currency"
 import { Price } from "../domain/price"
 import { MyStock, Stock, isStock } from "../domain/stock"
 
 test('Stock Testing...', ()=> {
-    const stock1 : MyStock = new MyStock('012','어떤 주식1', 3 ,Currency.KRW ,31, )
+    const stock1 : MyStock = new MyStock('012',"KRX",'어떤 주식1', 3 ,Currency.KRW ,31, )
     
 
     expect(stock1.code).toBe("012")
@@ -48,7 +49,7 @@ test('Stock Testing...', ()=> {
 
 test('call api testStock', ()=> {
     const test = testapiStock
-    const test1 = new Stock("228670","레이",parseInt(test.output.stck_prpr) , Currency.KRW)
+    const test1 = new Stock("228670","KRX","레이",parseInt(test.output.stck_prpr) , Currency.KRW)
     // new MyStock("228670","레이", 36700,Currency.KRW,16,32378.125),
     const expectStock = {
         code : "12345",

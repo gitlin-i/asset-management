@@ -1,14 +1,15 @@
-import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage,  Currency, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, Ratio, } from "../domain/Domain"
+import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, Ratio, } from "../domain/Domain"
 import { Cash } from "../domain/cash"
 import { MyCoin } from "../domain/coin"
+import { Currency } from "../domain/currency"
 import { MyStock } from "../domain/stock"
 import { NivoPieChartData, ObjectToNivoPieChartData } from "../utill/NivoPieChart"
 
 
 
 test('Stock Testing...', ()=> { // code, name, price, quantity
-  const stock1 : MyStock = new MyStock('0101001','어떤 주식1', 12222,Currency.KRW,31, )
-  const stock2 : MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3 )
+  const stock1 : MyStock = new MyStock('0101001',"KRX",'어떤 주식1', 12222,Currency.KRW,31, )
+  const stock2 : MyStock = new MyStock('0101002',"KRX",'어떤 주식2', 12232,Currency.KRW,3 )
   const myAssets : Assets= {
     stocks: [
       stock1,
@@ -54,8 +55,8 @@ test('nivo Testing....', () => {
     label: "somelabel",
     value: 4321
   }
-  const someStock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,Currency.KRW,31)
-  const someStock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3,7000)
+  const someStock1 : MyStock = new MyStock('0101001', "KRX",'어떤 주식1',12222,Currency.KRW,31)
+  const someStock2 :MyStock = new MyStock('0101002',"KRX",'어떤 주식2', 12232,Currency.KRW,3,7000)
   const myAssets : Assets= {
     stocks: [
       someStock1,
@@ -76,8 +77,8 @@ test('nivo Testing....', () => {
 
 
 test("assets Testing...", ()=> {
-  const stock1 : MyStock = new MyStock('0101001', '어떤 주식1',12222,Currency.KRW,31)
-  const stock2 :MyStock = new MyStock('0101002','어떤 주식2', 12232,Currency.KRW,3,7000)
+  const stock1 : MyStock = new MyStock('0101001',"KRX", '어떤 주식1',12222,Currency.KRW,31)
+  const stock2 :MyStock = new MyStock('0101002',"KRX",'어떤 주식2', 12232,Currency.KRW,3,7000)
   const myAssets : Assets= {
     stocks: [
       stock1,

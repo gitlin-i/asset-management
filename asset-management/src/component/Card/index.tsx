@@ -37,7 +37,6 @@ const StyledHeader = styled.header`
   margin-bottom:1rem;
 `
 const StyledBody = styled.div<CardProps>`
-
   
   overflow: auto;
 

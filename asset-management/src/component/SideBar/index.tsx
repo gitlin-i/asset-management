@@ -80,23 +80,14 @@ const menu = [dashboard, stock, coin, cash,deposit,withdraw,myInfo]
 
 
 const SideBar : React.FC = () => {
-  // const [selectedMenu, setSelectedMenu] = useState("/")
+  
   const location  = useLocation()
-  // useEffect(()=> {
-  //   setSelectedMenu(location.pathname)
-  // },[location])
   const mapToItem = ( menu : SideBarItem) => {
-    
-    const handleClick = () => {
-      // setSelectedMenu(menu.href)
-    }
-
     if (location.pathname === menu.href){
-      return <Item key={menu.presentName} {...menu} $selected onClick={handleClick} />
+      return <Item key={menu.presentName} {...menu} $selected  />
     }
-
     return ( 
-      <Item key={menu.presentName} {...menu} onClick={handleClick} />
+      <Item key={menu.presentName} {...menu} />
     )
   }
 

@@ -1,6 +1,7 @@
-import { Currency, exchangeValue } from "../domain/Domain"
+
+import { Currency } from "../domain/currency"
 import { Price } from "../domain/price"
-import { MyStock } from "../domain/stock"
+
 
 test("price Testing...",() => {
     const dollar = new Price("110202", 20000, Currency.USD)

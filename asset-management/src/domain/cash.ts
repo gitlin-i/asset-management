@@ -1,4 +1,4 @@
-import { Currency } from "./Domain";
+import { Currency } from "./currency";
 import { Price } from "./price";
 
 export class Cash {

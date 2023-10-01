@@ -10,6 +10,7 @@ export interface ItemProps{
     rightUpText ?: string | number;
     rightDownText ?: string | number;
     altImageByText ?: string;
+    $imageRadius ?: string | number;
 }
 const StyledItem = styled.li`
     list-style : none;
@@ -26,11 +27,11 @@ const StyledItem = styled.li`
     justify-content: space-between;
 
 `
-const ImageLayout = styled.div`
+const ImageLayout = styled.div<ItemProps>`
     display:inline-block;
     width:3rem;
     height: 3rem;
-    border-radius : 50%;
+    border-radius : ${props => props.$imageRadius ? props.$imageRadius : "50%"};
     overflow:hidden;
     position:relative;
     padding: 0;
@@ -102,12 +103,12 @@ const Right = styled(Left)`
 `
 
 const Item : React.FC<ItemProps> = (props) => {
-    const {image,leftdownText,leftupText,rightUpText, rightDownText, altImageByText} = props
+    const {image,leftdownText,leftupText,rightUpText, rightDownText, altImageByText,$imageRadius: imageRadius} = props
   return (
     <StyledItem>
         <Left>
             {image &&
-            <ImageLayout>
+            <ImageLayout $imageRadius={imageRadius}>
                 <StyledImg src={image} />
             </ImageLayout>}
             {!image && altImageByText &&

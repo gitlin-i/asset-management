@@ -32,7 +32,7 @@ class MyAssetService:
 
     def find_my_asset(self):
         my_assets_model = self.repo.read(self.user_id)
-        my_assets = [ self.schema(**asset[0].__dict__) for asset in my_assets]
+        my_assets = [ self.schema(**asset[0].__dict__) for asset in my_assets_model]
         return my_assets
     
     def enter_my_asset(self, my_asset : MyStock | MyCash | MyCoin):

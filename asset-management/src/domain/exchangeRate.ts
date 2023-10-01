@@ -1,4 +1,5 @@
-import { Currency } from "./Domain";
+import { Currency } from "./currency"
+
 
 class ExchangeRate {
     private _From : Currency

@@ -3,9 +3,13 @@ import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { assetsState } from '../atom/atom'
 import { MyStock, Stock } from '../domain/stock'
-import { Currency, testRealData } from '../domain/Domain'
+import {  testRealData } from '../domain/Domain'
 import { MyCoin } from '../domain/coin'
-import { getStockPrice } from './Api'
+
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { StockMarket } from '../domain/market'
+import { Currency } from '../domain/currency'
+import { getStockPrice } from '../api/stock'
 
 
 const StyledDiv = styled.div`
@@ -31,6 +35,7 @@ const P = styled.p`
 interface assetsInput{
     category: string;
     code: string;
+    market: StockMarket;
     quantity: number;
     name: string;
     price: number;
@@ -40,12 +45,15 @@ const AssetsInput : React.FC = () => {
     const [assetsInput, setAssetsInput] = useState<assetsInput>({
         category: '',
         code: '',
+        market: 'KRX',
         quantity: 0,
         name : '',
         price: 0,
     })
     const [myAssets , setMyAssets] = useRecoilState(assetsState)
     const [data, setData] = useState<{output : Array<Stock> | [] , fail_input: Array<string> | [] }>({output: [], fail_input: []})
+    const queryClient = useQueryClient()
+    // const {status, data:data2, error, isFetching} = useExchangeRate()
     useEffect(()=>{
         if(data.output.length > 0){
 
@@ -53,6 +61,7 @@ const AssetsInput : React.FC = () => {
                 const targetObj : Stock | undefined = data.output.find(newPriceStock => newPriceStock.code === myStock.code)
                 return targetObj ?
                 new MyStock(targetObj.code,
+                    targetObj.market,
                     targetObj?.name,
                     targetObj?.price,
                     targetObj?.currency,
@@ -80,7 +89,7 @@ const AssetsInput : React.FC = () => {
     const handleClick = () => {
         switch(assetsInput.category){
             case 'stock':
-                const stock = new MyStock(assetsInput.code,assetsInput.name,assetsInput.price,Currency.KRW,assetsInput.quantity)
+                const stock = new MyStock(assetsInput.code,assetsInput.market,assetsInput.name,assetsInput.price,Currency.KRW,assetsInput.quantity)
                 setMyAssets((prevAssets) => ({
                     ...prevAssets,
                     stocks: [...prevAssets?.stocks as MyStock[] , stock,]
@@ -127,6 +136,7 @@ const AssetsInput : React.FC = () => {
         
 
     }
+
   return (
     <StyledDiv>
         <H2>
@@ -146,11 +156,15 @@ const AssetsInput : React.FC = () => {
         <button type="button" className="btn btn-primary" onClick={handleClick2}>테스트 데이터 리코일 저장</button>
         <button type="button" className="btn btn-primary" onClick={handleClick3}>초기화</button>
         <button type="button" className="btn btn-primary" onClick={handleClick4}>데이터 불러오기</button>
+        
         {/* <P>{JSON.stringify(assetsInput)}</P> */}
         <br />
         <P>{JSON.stringify(myAssets)}</P>
         <br />
         <p>{JSON.stringify(data)}</p>
+        <br />
+        {/* <p>{status ==='success' &&JSON.stringify(data2)}</p> */}
+
     </StyledDiv>
   )
 }

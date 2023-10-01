@@ -4,12 +4,16 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.0",
+    "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@nivo/bar": "^0.83.0",
     "@nivo/core": "^0.83.0",
     "@nivo/line": "^0.83.0",
     "@nivo/pie": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^4.29.25",
+    "@tanstack/react-query-devtools": "^4.35.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -21,8 +25,10 @@
     "babel-plugin-styled-components": "^2.1.1",
     "chart.js": "^4.3.0",
     "d3-color": "^3.1.0",
+    "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.14.1",
@@ -38,7 +44,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "jest" : "jest"
   },
   "eslintConfig": {
     "extends": [
