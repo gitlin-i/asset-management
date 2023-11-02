@@ -20,7 +20,7 @@ test('Stock Testing...', ()=> { // code, name, price, quantity
   const stockCurrentValue = calcCurrentValue(stock1)
   expect(stockCurrentValue).toBe(12222 *31)
 
-  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
+  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2)
   expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
 
   const assetsCurrentPrice = calcAllAssetsCurrentValue(myAssets,)
@@ -90,7 +90,7 @@ test("assets Testing...", ()=> {
   const stockCurrentValue = calcCurrentValue(stock1)
   expect(stockCurrentValue).toBe(12222 *31)
 
-  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2,12345)
+  const stockCurrentValueWithNowPrice = calcCurrentValue(stock2)
   expect(stockCurrentValueWithNowPrice).toBe(12345 * 3)
 
   const assetsCurrentPrice = calcAllAssetsCurrentValue(myAssets,)

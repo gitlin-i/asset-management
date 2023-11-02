@@ -1,14 +1,10 @@
 
 import { styled } from 'styled-components'
-
 import { testTargetRatios } from '../../domain/Domain'
-import {  changeDataToItem } from '../../utill/NivoPieChart'
-import AssetsInput from '../AssetsInput'
 import Section from '../Section'
-import Card from '../Card'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { assetsState,  targetRatioState } from '../../atom/atom'
-import {  assetsRatio } from '../../selector/selector'
+
 import RatioChartCard from '../Card/RatioChartCard'
 import { useEffect } from 'react'
 import TotalAssetsCard from '../Card/TotalAssetsCard'
@@ -16,16 +12,18 @@ import TotalMyStocksCard from '../Card/TotalMyStocksCard'
 import TotalMyCoinsCard from '../Card/TotalMyCoinsCard'
 import TotalMyCashCard from '../Card/TotalMyCashCard'
 import ExchangeRateCard from '../Card/ExchangeRateCard'
-import { useMyAssets, useMyAssets2, useMyCash, useMyCoinInfoPrice, useMyStockHook, useMyStockInfoPrice, useStockInfo, useStockPrice, } from '../../query/query'
-import { UseQueryResult } from '@tanstack/react-query'
-import { ResponseData } from '../../api'
-import { MyStockAPI } from '../../api/stock'
-import { MapperStockMarketToCurrency } from '../../domain/currency'
-import { MyStock } from '../../domain/stock'
+
+import LineChartCard from '../Card/LineChartCard'
+import { ConvertToNivoLineChartData } from '../../utill/NivoLineChart'
+
+import { useMarketIndex } from '../../query/market'
+
+import { useMyAssetsRatio } from '../../query/assets'
 
 
 
-const StyledMain = styled.main`
+
+export const StyledMain = styled.main`
   display:flex;
   flex-direction: column;
   align-items:center;
@@ -34,7 +32,7 @@ const StyledMain = styled.main`
   height:100%;
   background-color: ${props => props.theme.color.background};
   vertical-align:top;
-  padding:1rem;
+  padding:1rem 1rem 4rem 1rem;
 //768px
   @media screen and (min-width: ${props => props.theme.breakPoint.t}){
 
@@ -54,22 +52,15 @@ const StyledMain = styled.main`
 
   }
 `
-const H5 = styled.h5`
-  padding: 0.5rem;
-  padding-left: 1rem;
-`
-const StyledUl = styled.ul`
-  padding :0;
-  margin:0;
-`
 
 ////////////
 const MainPage : React.FC = () => {
 
-  const [assets,setAssets] = useRecoilState(assetsState)
   const [targetRatios, setTargetRatios] = useRecoilState(targetRatioState)
-  const assetsCurRatio = useRecoilValue(assetsRatio)
-  const stocks = useMyStockHook()
+  const assetsCurRatio = useMyAssetsRatio()
+  const {data: kospiData,status: kospiStatus} = useMarketIndex("KOSPI")
+  const {data: kosdaqData,status: kosdaqStatus} = useMarketIndex("KOSDAQ")
+  
   useEffect(()=>{
     setTargetRatios((prev)=> ({
       ...testTargetRatios
@@ -81,10 +72,6 @@ const MainPage : React.FC = () => {
   return (
     <StyledMain>
 
-      <Section>
-        <TotalAssetsCard />
-        
-      </Section>
 
       <Section>
         <RatioChartCard title={"목표 비율"} ratios={targetRatios.assets} />
@@ -93,13 +80,30 @@ const MainPage : React.FC = () => {
       <Section>
         <RatioChartCard title={"현재 비율"} ratios={assetsCurRatio} />
       </Section>
+      <Section>
+        {kospiStatus === 'success' && 
+        <LineChartCard title='코스피 지수' data={[ConvertToNivoLineChartData("KOSPI",kospiData)]}/>}
+      </Section>
+      
+
+      <Section>
+        <TotalAssetsCard />
+      </Section>
+
 
       <Section>
         <TotalMyStocksCard />
       </Section>
       <Section>
-        <TotalMyCoinsCard />
 
+      <Section>
+        {kosdaqStatus === 'success' && 
+        <LineChartCard title='코스닥 지수' data={[ConvertToNivoLineChartData("KOSDAQ",kosdaqData)]}/>}
+      </Section>
+
+      </Section>
+      <Section>
+        <TotalMyCoinsCard />
       </Section>
       <Section>
         <TotalMyCashCard />
@@ -107,25 +111,7 @@ const MainPage : React.FC = () => {
       <Section>
         <ExchangeRateCard />
       </Section>
-      <Section>
-        <Card title='자산 현재가'>
-            <H5>주식</H5>
-            <StyledUl>
-              {assets.stocks?.map(changeDataToItem)}
-            </StyledUl>
-            <H5>코인</H5>
-            <StyledUl>
-              {assets.coins?.map(changeDataToItem)}
-            </StyledUl>
-        </Card>
-      </Section>
 
-      <Section >
-        <Card title='자산 C,U'>
-        <AssetsInput />
-        {JSON.stringify(assets.stocks)}
-        </Card>
-      </Section>
 
     </StyledMain>
   )

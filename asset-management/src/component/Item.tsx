@@ -69,15 +69,54 @@ const UpText = styled.span`
     display:inline-block;
     position:relative;
     margin: 0;
-
+    max-width: 5rem;
     max-height:24px;
-
+    
     white-space: nowrap; 
     overflow-x:hidden;
     text-overflow: ellipsis; 
 
-    @media screen and (max-width: 420px) {
+    @media screen and (min-width: ${props => props.theme.breakPoint.mm }) {
         max-width: 7rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.ml }) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc(${props => props.theme.breakPoint.ml } + 100px) ) {
+        max-width: 18rem;
+    }
+    @media screen and (min-width: 625px ) {
+        max-width: 25rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.t } ) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.t } + 150px) ) {
+        max-width: 15rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.l } ) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 150px) ) {
+        max-width: 15rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 300px) ) {
+        max-width: 22rem;
+    }
+    @media screen and (min-width:  calc(${props => props.theme.breakPoint.ll}) ) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 150px) ) {
+        max-width: 15rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 350px) ) {
+        max-width: 18rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 500px) ) {
+        max-width: 20rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 800px) ) {
+        max-width: 25rem;
     }
 
 `
@@ -103,7 +142,9 @@ const Right = styled(Left)`
 `
 
 const Item : React.FC<ItemProps> = (props) => {
-    const {image,leftdownText,leftupText,rightUpText, rightDownText, altImageByText,$imageRadius: imageRadius} = props
+    const {image,leftdownText,leftupText,
+      rightUpText, rightDownText, altImageByText,$imageRadius: imageRadius,
+    } = props
   return (
     <StyledItem>
         <Left>

@@ -1,13 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { IStyledComponent } from 'styled-components';
 
-interface ButtonProps {
-  onClick?: (e:React.MouseEvent) => void;
+interface ButtonProps extends React.ClassAttributes<HTMLButtonElement> , React.ButtonHTMLAttributes<HTMLButtonElement>{
   children?:React.ReactNode;
   disabled?: boolean;
   $primary?: boolean;
   $secondary? : boolean;
-  type ?: "submit"|undefined;
+  
   form ?: string;
 }
 
@@ -37,11 +36,17 @@ const StyledButton = styled.button<ButtonProps>`
 
 `;
 
-
+interface ButtonProps {
+  children?:React.ReactNode;
+  disabled?: boolean;
+  $primary?: boolean;
+  $secondary? : boolean;
+  form ?: string;
+}
 const Button :React.FC<ButtonProps> = (props) => {
   const {children,...args} = props;
     return (
-      <StyledButton {...args}>
+      <StyledButton {...args} >
        {children}
       </StyledButton>
     )

@@ -1,12 +1,12 @@
 
 import json
-from typing import List
-from domain.schema.stock import StockPrice, StockPriceResponseOfKorInvAPI,StockInfo, StockInfo,StockInfoReponseOfKorInvAPI,StockPriceWithDate
+from typing import List, Literal
+from domain.schema.stock import StockPrice, StockPriceResponseOfKorInvAPI,StockInfo, StockInfo,StockInfoReponseOfKorInvAPI,StockPriceWithDate,IndexPriceWithDate
 from domain.schema.market import Market
-from datetime import timedelta
+from datetime import datetime, timedelta
 from repository.stock_repository import StockCurPriceRepository, StockInfoRepository
 from domain.model.stock_info import StockInfoModel
-from external_api.korea_investment_api import get_stock_current_price, get_stock_info
+from external_api.korea_investment_api import get_stock_current_price, get_stock_info,get_domestic_index
 from pydantic import validate_arguments
 
 
@@ -17,9 +17,17 @@ def getTokenDict() -> dict:
 
     return tokenDict
 
+def get_index(tokenDict,market: Literal['KOSPI','KOSDAQ']):
+    today = datetime.now()
+    a_week_ago_from_today = today - timedelta(days=7)
+    index_price_date = get_domestic_index(tokenDict, market, a_week_ago_from_today.strftime("%Y%m%d"), today.strftime("%Y%m%d"))
+    index_price_for_a_week = [IndexPriceWithDate(**price_date) for price_date in index_price_date]
+    return index_price_for_a_week
+
 class StockService:
-    
     tokenDict = getTokenDict()
+    KOSPI = get_index(tokenDict,"KOSPI")
+    KOSDAQ = get_index(tokenDict,"KOSDAQ")
     STANDARD_TIMEDELTA_FOR_OLD_DATA = timedelta(days=1)
 
     @classmethod
@@ -118,3 +126,10 @@ class StockService:
         
         return ([ stock_info for stock_info in stock_info_with_none if stock_info is not None],
                 fail_codes)
+
+    @classmethod
+    def index_value(cls,market : Literal['KOSPI','KOSDAQ']):
+        if market == 'KOSPI':
+            return cls.KOSPI
+        elif market == "KOSDAQ":
+            return cls.KOSDAQ

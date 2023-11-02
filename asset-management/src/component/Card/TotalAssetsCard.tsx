@@ -1,10 +1,11 @@
-import { useRecoilState, useRecoilValue } from "recoil"
+
 import styled from "styled-components"
-import { assetsCurrentValue, cashCurrentValue, coinsCurrentValue, stocksCurrentValue} from "../../selector/selector"
 import Card from "."
 import Item from "../Item"
-
 import { Currency, CurrencyMark } from "../../domain/currency"
+import { useMyStockCurrentValue} from "../../query/stock"
+import { useMyCoinsCurrentValue } from "../../query/coin"
+import { useMyCashCurrentValue } from "../../query/cash"
 
 
 const StyledUl = styled.ul`
@@ -12,19 +13,19 @@ const StyledUl = styled.ul`
   margin:0;
 `
 
-//자산, 주식, 코인 ,현금, 
+//자산, 주식, 코인 ,현금
 const TotalAssetsCard : React.FC = (props) => {
-  
-  const assetsCurVal = useRecoilValue(assetsCurrentValue)
-  const stocksCurVal = useRecoilValue(stocksCurrentValue)
-  const coinsCurVal = useRecoilValue(coinsCurrentValue)
-  const cashCurVal = useRecoilValue(cashCurrentValue)
 
+  
+  const stockCurVal = useMyStockCurrentValue()
+  const coinsCurVal = useMyCoinsCurrentValue()
+  const cashCurVal = useMyCashCurrentValue()
+  const assetsCurVal = stockCurVal + coinsCurVal + cashCurVal
   const title = "자산"
 
   const currentValue : {[key: string] : number}[] = [
     {"자산" : assetsCurVal},
-    {"주식": stocksCurVal},
+    {"주식": stockCurVal},
     {"코인": coinsCurVal},
     {"현금": cashCurVal}
   ]

@@ -10,7 +10,6 @@ import { themeState } from './atom/atom';
 import { Outlet } from 'react-router-dom';
 import BottomNav from './component/BottomNav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ChakraProvider } from '@chakra-ui/react'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 
@@ -20,24 +19,22 @@ function App() {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false, 
+        staleTime : 1000* 60*5,
       },
     },
   })
-  const cookie = document.cookie
   
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <ChakraProvider>
-          <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
-            <Header />
-            <SideBar />
-            <Outlet />
-            <Modal />
-            <BottomNav />
-          </QueryClientProvider>
-        </ChakraProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Header />
+          <SideBar />
+          <Outlet />
+          <Modal />
+          <BottomNav />
+        </QueryClientProvider>
       </ThemeProvider>
     </React.Fragment>
     

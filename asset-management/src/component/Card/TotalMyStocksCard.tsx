@@ -7,6 +7,13 @@ import { stocksCurrentValue, stocksRatio } from "../../selector/selector"
 import { MyStock } from "../../domain/stock"
 import { assetsState } from "../../atom/atom"
 import { Currency, CurrencyMark } from "../../domain/currency"
+import { DEFAULT_EXCHANGERATE, useExchangeRate } from "../../query/exchangeRate"
+import { useMyStock, useMyStockCurrentValue, useMyStockInfo2, useStockInfo } from "../../query/stock"
+import { MyStockAPI, StockInfoAPI, StockPriceAPI } from "../../api/stock"
+import { useMyAssets } from "../../query/assets"
+import { ResponseData } from "../../api"
+import { UseQueryResult } from "@tanstack/react-query"
+
 
 const StyledUl = styled.ul`
   padding :0;
@@ -22,27 +29,32 @@ const StyledDiv = styled.div`
   
 `
 const TotalMyStocksCard = () => {
-    const stocksCurVal = useRecoilValue(stocksCurrentValue)
-    // const stocksCurRatio = useRecoilValue(stocksRatio)
-    const stocks = useRecoilValue(assetsState).stocks
+  //내 주식 평가금액, 외화인경우 환산가치, 보유 수량
+    const stocksCurVal = useMyStockCurrentValue()
+    const {data: exchangeRate} = useExchangeRate(DEFAULT_EXCHANGERATE)
+    const stocks = useMyStock()
+    
     const spreadItem = (stock : MyStock) => {
         const value = (stock.price * stock.quantity)
+        const targetExchange = exchangeRate?.output.find(exchange => exchange.currency === stock.currency)
         const key = stock.code
         const leftupText = stock.name
         const leftdownText = "보유 수량: "+stock.quantity
         const rightupText = value.toLocaleString() + CurrencyMark[stock.currency]
-        const rightDownText = (stock.currency === Currency.KRW) ?
-            "" : exchangeValue(value, 1300).toLocaleString() + CurrencyMark[Currency.KRW]
+        const rightDownText = (stock.currency === Currency.KRW  ) ?
+          "" : exchangeValue(value,targetExchange?.base_rate).toLocaleString() + CurrencyMark[Currency.KRW]
         const altImageByText = stock.currency === Currency.KRW ? "국내" : "해외"
-
+        
         return <Item key={key} altImageByText={altImageByText}
         leftupText={leftupText} 
         leftdownText={leftdownText}
         rightUpText={ rightupText }
-        rightDownText={rightDownText}  />
+        rightDownText={rightDownText}
+        />
     }
+    
   return (
-    <Card title='내 주식 합계'>
+    <Card title='내 주식'>
         <StyledDiv>평가 금액</StyledDiv>
         <StyledUl>
             <Item
@@ -50,7 +62,6 @@ const TotalMyStocksCard = () => {
             rightUpText={ stocksCurVal.toLocaleString() + CurrencyMark[Currency.KRW] }
             
             />
-
             {stocks && stocks.map(spreadItem)}
         </StyledUl>
   </Card>

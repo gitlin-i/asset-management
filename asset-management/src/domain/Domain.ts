@@ -3,14 +3,16 @@
 //보유 수량 (Quantity Held)
 //매수 금액 (Purchase Amount)
 
-import { TargetRatios } from "../atom/atom";
+import { TargetRatios, exchangeRateState } from "../atom/atom";
 import { Cash } from "./cash";
-import { Coin, MyCoin } from "./coin";
+import { MyCoin } from "./coin";
 import { Currency } from "./currency";
+import { ExchangeRate } from "./exchangeRate";
 import { Price } from "./price";
 import { MyStock, Stock, isStock } from "./stock";
 
-export interface Assets {
+
+export interface  Assets {
     stocks ?: Array<MyStock>;
     cash?: Array<Cash>;
     coins?: Array<MyCoin>;
@@ -33,6 +35,7 @@ export const  MarketToCurrency : {[key: string] : Currency} = {
     NAS : Currency.USD,
     KRX : Currency.KRW,
     TSE : Currency.JPY,
+    AMS : Currency.USD,
 
 }
 
@@ -187,54 +190,63 @@ export const mappingText = (category : string | undefined) => {
     }
     return text
 }
+interface CalcOption {
+    currentValue ?: number
+
+    exchangeRate?: ExchangeRate
+    baseCurrency ?: Currency 
+}
+const BASE_CURRENCY = Currency.KRW
 //주식,코인 현재가치 구하기
-export const calcCurrentValue = (myAsset : MyStock | MyCoin, currentValue= 0,currency= Currency.KRW,) : number => {
+export const calcCurrentValue = (myAsset : MyStock | MyCoin ,exchangeRate ?: ExchangeRate,currentValue = 0, baseCurrency = Currency.KRW) : number => {
     if (!myAsset.quantity || !myAsset.price) {
-        throw Error('값이 존재하지 않습니다.')
+        console.log("수량 혹은 가격이 0이거나 존재하지 않습니다.")
     }
-    const nowValue = (currentValue) ?  myAsset.quantity * currentValue : myAsset.quantity * myAsset.price
+    //이것의 현재가를 구해줘. 통화가 같지 않으면 환전, 같다면 수량* 가격, 새로운 가격정보
+    const assetValue = (currentValue) ?  myAsset.quantity * currentValue : myAsset.quantity * myAsset.price
     
-    if (myAsset.currency === currency) {
-        return nowValue
-    }
-    return exchangeValue(nowValue, 1300)// rate hard coding
-    
+    return (myAsset.currency === baseCurrency) ? assetValue : exchangeValue(assetValue,exchangeRate)
+
 }
 //asset[] 의 현재가치
-export const calcAssetArrayCurrentValue = (assets : Array<MyStock | MyCoin> , newPrices ?: Array<Price>) :number => {
+export const calcAssetArrayCurrentValue = (assets : Array<MyStock | MyCoin> , newPrices ?: Array<Price>, exchangeRates?: ExchangeRate[]) :number => {
     
     const assetsCurrentValue = assets.reduce((acc, asset) => {
         const newPrice = newPrices?.find(price => price.code === asset.code)
+        const targetExchangeRate = exchangeRates?.find(ex => ex.from === asset.currency && ex.to === Currency.KRW)
         if (newPrice){
-            return acc += calcCurrentValue( asset, newPrice.value )
+            return acc += calcCurrentValue( asset, targetExchangeRate,newPrice.value)
         }
-        return acc += calcCurrentValue(asset)
+        return acc += calcCurrentValue(asset, targetExchangeRate)
     },0)
 
     return assetsCurrentValue
 }
 //cash[] 의 현재가치
-export const calcCashArrayCurrentValue = (cash: Cash[] , currency = Currency.KRW) => {
+export const calcCashArrayCurrentValue = (cash: Cash[] ,exchangeRate : ExchangeRate[] = [] ,baseCurrency = Currency.KRW) => {
+    
     const cashValue = cash.reduce((acc, aCash) => {
-        if(aCash.currency === currency){
+        if(aCash.currency === baseCurrency){
            return acc += aCash.value
         } else {
-            return acc += exchangeValue(aCash.value,1300)
+            const targetExchangeRate = exchangeRate.find((ex) => ex.from === aCash.currency && ex.to === baseCurrency)
+            return acc += exchangeValue(aCash.value,targetExchangeRate)
         }
     },0);
     return cashValue
 } 
 // assets 전체 현재가치 구하기
-export const calcAllAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>) => {
+export const calcAllAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Price>, exchangeRate: ExchangeRate[] = [],baseCurrency = Currency.KRW) => {
 
     const {stocks, coins, cash } = assets
+    
     if (!stocks?.length && !coins?.length && !cash?.length ) {
         return 0
     }
 
     let assetsValue = 0
     if(assets?.stocks && assets?.stocks?.length > 0){
-        const stockCurrentValue = calcAssetArrayCurrentValue( assets?.stocks, ArrayPrice)
+        const stockCurrentValue = calcAssetArrayCurrentValue( assets?.stocks,ArrayPrice ,exchangeRate)
         assetsValue += stockCurrentValue
     }
     if(assets?.coins && assets?.coins.length > 0){
@@ -242,12 +254,13 @@ export const calcAllAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Pr
         assetsValue += coinsCurrentValue
     }
     if(assets?.cash && assets?.cash.length > 0){
-        const cashCurrentValue = calcCashArrayCurrentValue(assets.cash, Currency.KRW)
+        const cashCurrentValue = calcCashArrayCurrentValue(assets.cash,exchangeRate)
         assets?.cash.reduce((acc, aCash) => {
-            if(aCash.currency === Currency.KRW){
+            if(aCash.currency === baseCurrency){
                 return acc += aCash.value
             } else {
-               const exchangedValue = exchangeValue(aCash.value, 1300)//rate hard coding
+                const targetExchangeRate = exchangeRate.find((ex) => ex.from === aCash.currency && ex.to === baseCurrency)
+                const exchangedValue = exchangeValue(aCash.value, targetExchangeRate)
                return acc += exchangedValue
             }
             
@@ -257,9 +270,17 @@ export const calcAllAssetsCurrentValue = (assets: Assets, ArrayPrice ?: Array<Pr
     return assetsValue
 }
 //환전
-export const exchangeValue = (targetValue : number, exchangeRate: number, digit=0) => {
+export const exchangeValue = (targetValue : number, exchangeRate?: number | ExchangeRate , digit=0) => {
     // return Math.round((targetValue * exchangeRate) * (10 ** digit)) / (10 ** digit)
-    return roundNumber(targetValue * exchangeRate, digit)
+    if (exchangeRate === 0 || typeof exchangeRate === 'undefined'){
+        console.log("환율이 0 또는 존재하지 않습니다. 입력 값을 반환합니다.")
+        return roundNumber(targetValue,digit)
+    }
+    if ( typeof exchangeRate === 'number') {
+        return roundNumber(targetValue * exchangeRate, digit)
+    }
+    return roundNumber(targetValue * exchangeRate.rate, digit)
+    
 }
 //소수점 
 export const roundNumber = (x: number, digit = 0) => {

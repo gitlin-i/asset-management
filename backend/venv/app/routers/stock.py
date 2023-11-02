@@ -1,11 +1,13 @@
 
 import json
+from typing import Literal
 from fastapi import APIRouter, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from service.stock_service import StockService
-from domain.schema.stock import StockPriceListOutPut,StockInfoListOutPut
+from domain.schema.stock import StockPriceListOutPut,StockInfoListOutPut,IndexPriceWithDate
 from domain.schema.market import Market
+from datetime import date
 router = APIRouter(
     prefix="/stock"
 )
@@ -51,3 +53,10 @@ def stock_info(code: str, market : Market):
         raise HTTPException(status_code=404, detail=error_result)
     
     return json_response
+
+@router.get("/index")
+def market_index(market: Literal["KOSPI","KOSDAQ"] ):
+    response = StockService.index_value(market)
+    new_response = [res.dict() for res in response]
+    return new_response
+    

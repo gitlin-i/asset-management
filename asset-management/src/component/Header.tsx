@@ -121,10 +121,10 @@ const Header : React.FC = () => {
           <span>자산 관리</span>
         </StyledA>
       </LeftArea>
-
+{/* 
       <MiddleArea>
         페이지 제목
-      </MiddleArea>
+      </MiddleArea> */}
 
 
       <RightArea>

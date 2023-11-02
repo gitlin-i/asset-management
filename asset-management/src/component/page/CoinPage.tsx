@@ -1,27 +1,28 @@
 
 import { styled } from 'styled-components'
-
 import { testTargetRatios } from '../../domain/Domain'
-import {  changeDataToItem } from '../../utill/NivoPieChart'
-import AssetsInput from '../AssetsInput'
 import Section from '../Section'
-import Card from '../Card'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { assetsState,  targetRatioState } from '../../atom/atom'
 import {  assetsRatio, coinsRatio, stocksRatio } from '../../selector/selector'
-
 import RatioChartCard from '../Card/RatioChartCard'
 import { useEffect } from 'react'
 
-import {  useQueryClient } from '@tanstack/react-query'
-import { useLocation } from 'react-router-dom';
-
-import TotalMyStocksCard from '../Card/TotalMyStocksCard'
 import CurrentPriceCard from '../Card/CurrentPriceCard'
 import TotalMyCoinsCard from '../Card/TotalMyCoinsCard'
+import { StyledMain } from './MainPage'
+
+import StockEditableCard from '../Card/StockEditableCard'
+import LineChartCard from '../Card/LineChartCard'
+import { ConvertToNivoLineChartData } from '../../utill/NivoLineChart'
+import { useMarketIndex } from '../../query/market'
+import Card from '../Card'
+import TestingCard from '../Card/TestingCard'
 
 
-const StyledMain = styled.main`
+
+
+const ReStyledMain = styled(StyledMain)`
   display:flex;
   flex-direction: column;
   align-items:center;
@@ -30,7 +31,7 @@ const StyledMain = styled.main`
   height:100%;
   background-color: ${props => props.theme.color.background};
   vertical-align:top;
-  padding:1rem;
+  
 //768px
   @media screen and (min-width: ${props => props.theme.breakPoint.t}){
 
@@ -48,6 +49,24 @@ const StyledMain = styled.main`
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3,1fr);
 
+    && :nth-child(4) {
+      grid-row-start: 2;
+      grid-row-end: 4;
+      grid-column-start:1;
+      grid-column-end:2;
+    }
+    && :nth-child(5) {
+      grid-row-start: 2;
+      grid-row-end: 4;
+      grid-column-start:2;
+      grid-column-end:3;
+    }
+    && :nth-child(6) {
+      grid-row-start: 2;
+      grid-row-end: 4;
+      grid-column-start:3;
+      grid-column-end:4;
+    }
   }
 `
 const StyledDiv = styled.div`
@@ -78,27 +97,18 @@ const StyledUl = styled.ul`
 ////////////
 const CoinPage : React.FC = (props) => {
   
-  const assets = useRecoilValue(assetsState)
   const [targetRatios, setTargetRatios] = useRecoilState(targetRatioState)
   const coinsCurRatio = useRecoilValue(coinsRatio)
-  ///
-  const queryClient = useQueryClient()
-  /// 
-  
+  const {data,status} = useMarketIndex("KOSPI")
+
   useEffect(()=>{
     setTargetRatios((prev)=> ({
       ...testTargetRatios
     }))
-
-
   },[])
   
   return (
-    <StyledMain>
-
-      <Section>
-        <TotalMyCoinsCard /> 
-      </Section>
+    <ReStyledMain>
 
       <Section>
         <RatioChartCard title={"목표 비율"} ratios={targetRatios.coins} />
@@ -107,30 +117,24 @@ const CoinPage : React.FC = (props) => {
       <Section>
         <RatioChartCard title={"현재 비율"} ratios={coinsCurRatio} />
       </Section>
+
       <Section>
-        <CurrentPriceCard category='stocks' />
+        <TestingCard />
       </Section>
 
       <Section>
-        <Card title='자산 현재가'>
-            <H5>주식</H5>
-            <StyledUl>
-              {assets.stocks?.map(changeDataToItem)}
-            </StyledUl>
-            <H5>코인</H5>
-            <StyledUl>
-              {assets.coins?.map(changeDataToItem)}
-            </StyledUl>
-        </Card>
+        <TotalMyCoinsCard /> 
       </Section>
+
+      <Section>
+        <CurrentPriceCard category='coins' />
+      </Section>
+
 
       <Section >
-        <Card title='자산 C,U'>
-        <AssetsInput />
-        </Card>
+        <StockEditableCard />
       </Section>
-
-    </StyledMain>
+    </ReStyledMain>
   )
 }
 

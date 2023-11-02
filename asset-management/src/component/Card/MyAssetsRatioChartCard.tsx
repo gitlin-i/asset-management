@@ -4,7 +4,7 @@ import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
 import { useRecoilValue } from 'recoil'
 import { assetsRatio } from '../../selector/selector'
 import styled from 'styled-components'
-import PieChart2 from '../PieChart2'
+import PieChart from '../PieChart'
 import { Ratio } from '../../domain/Domain'
 
 const StyledDiv = styled.div`
@@ -33,12 +33,12 @@ const MyAssetsRatioChartCard = () => {
     {
       targetRatio &&
       <StyledDiv>
-        <PieChart2 data={targetRatioForChart} title='목표 비율'></PieChart2>
+        <PieChart data={targetRatioForChart} title='목표 비율'></PieChart>
       </StyledDiv>
     }
     { assetsRatioForChart &&
       <StyledDiv>
-        <PieChart2 data={assetsRatioForChart} title='현재 비율'></PieChart2>
+        <PieChart data={assetsRatioForChart} title='현재 비율'></PieChart>
       </StyledDiv>
     }
   </Card>

@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { assetsState } from "../atom/atom";
+import { assetsState, exchangeRateState } from "../atom/atom";
 import {  Ratio, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetArrayPercentage, calcAssetsPercentage, calcCashArrayCurrentValue, calcCurrentValue, calcPercentage, exchangeValue } from "../domain/Domain";
 import { Currency } from "../domain/currency";
 
@@ -7,6 +7,7 @@ export const assetsCurrentValue = selector({
     key: "assetsCurrentValue",
     get: ({get}) => {
         const assets = get(assetsState);
+        
         return calcAllAssetsCurrentValue(assets)
     }
 })
@@ -15,8 +16,9 @@ export const stocksCurrentValue = selector({
     key: "stocksCurrentValue",
     get: ({get}) => {
         const {stocks} = get(assetsState)
+        const exchangeRate = get(exchangeRateState)
         if(stocks && stocks.length > 0){
-            return calcAssetArrayCurrentValue(stocks)
+            return calcAssetArrayCurrentValue(stocks,)
         }
         return 0;
     }

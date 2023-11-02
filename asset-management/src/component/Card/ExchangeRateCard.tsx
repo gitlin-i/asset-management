@@ -1,16 +1,17 @@
 
 import Card from '.'
+import { DEFAULT_EXCHANGERATE, useExchangeRate } from '../../query/exchangeRate'
 import Item from '../Item'
 import styled from 'styled-components'
-import { useExchangeRate } from '../../query/query'
+
 
 const StyledUl = styled.ul`
   margin : 0;
   padding :0;
 `
 const ExchangeRateCard = () => {
-    const currency = ['USD','JPY(100)','EUR','CNH']
-    const {data}  = useExchangeRate(currency)
+
+    const {data}  = useExchangeRate(DEFAULT_EXCHANGERATE)
     const priority = (cur :any) => {
       switch(cur.currency){
         case "USD":

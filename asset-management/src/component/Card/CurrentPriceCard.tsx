@@ -12,8 +12,12 @@ import { useRecoilState } from 'recoil';
 import { assetsState } from '../../atom/atom';
 
 import { Currency, CurrencyMark } from '../../domain/currency';
-import { useStockPrice } from '../../query/query';
+
 import { StockPriceAPI } from '../../api/stock';
+import { useMyStock, useMyStockPrice } from '../../query/stock';
+import { useExchangeRate } from '../../query/exchangeRate';
+import { useMyCoin } from '../../query/coin';
+import { useMyCash } from '../../query/cash';
 
 interface CurrentPriceCardProps {
   category ?: "stocks" | "coins" | "cash"
@@ -30,31 +34,42 @@ const StyledUl = styled.ul`
 const CurrentPriceCard : React.FC<CurrentPriceCardProps> = (props) => {
   const { category } = props
   const title = mappingText(category)
-  const {status,data} =  useStockPrice()
-  const [assets,setAssets] = useRecoilState(assetsState)
+  // const {status,data} =  useMyStockPrice()
+  const stocks = useMyStock()
+  const coins = useMyCoin()
+  const cash = useMyCash()
+  const exchange = useExchangeRate(["USD",
+  "JPY(100)",
+  "EUR",
+  "CNH"])
   
-  
-  const mapToItem = (asset : Coin | Stock | Cash , currentPrice : StockPriceAPI[]) => {
+  const mapToItem = (asset : Coin | Stock | Cash ) => {
     const {name} = asset
-    const nowPrice = currentPrice.find(curPrice => curPrice.code === asset.code)
-    const rightdownText = asset.currency === Currency.KRW ?  "" : exchangeValue(asset.price, 1300)
+    const targetExchange = exchange.data?.output.find(ex => ex.currency === asset.currency)
+    const rightdownText = asset.currency === Currency.KRW ?  "" : exchangeValue(asset.price,targetExchange?.base_rate!).toLocaleString() + CurrencyMark[Currency.KRW]
     return (
       <Item key={asset.code}
       altImageByText={asset.currency === Currency.KRW ? "국내" : "해외"}
       leftupText={name}
-      rightUpText={nowPrice?.price + CurrencyMark[asset.currency]}
+      rightUpText={asset.price.toLocaleString() + CurrencyMark[asset.currency]}
       rightDownText={rightdownText}
       />
     )
   }
   
   return (
-    <Card title={ title + ' 현재가2'}>
+    <Card title={ title + ' 현재가'}>
       
       <H5>{title}</H5>
         <StyledUl>
-          {status==='success' && assets.stocks?.map((stock) => {  
-            return mapToItem(stock,data)
+          {category === 'stocks' && stocks?.map((stock) => {  
+            return mapToItem(stock)
+          })}
+          {category === 'coins' && coins?.map((coin) => {  
+            return mapToItem(coin)
+          })}
+          {category === 'cash' && cash?.map((c) => {  
+            return mapToItem(c)
           })}
         </StyledUl>
 

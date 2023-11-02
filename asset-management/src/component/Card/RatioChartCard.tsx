@@ -3,9 +3,9 @@ import Card from '.'
 import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
 
 import styled from 'styled-components'
-import PieChart2 from '../PieChart2'
+import PieChart from '../PieChart'
 import { Ratio } from '../../domain/Domain'
-import { Skeleton } from '@chakra-ui/react'
+
 interface RatioChart {
     ratios ?: Ratio[];
     title?: string;
@@ -24,7 +24,7 @@ const StyledDiv = styled.div`
   display: inline-block;
   
   width: 100%;
-  height:200px;
+  height:180px;
   &:hover {
     background-color:#efefef;
   }
@@ -34,15 +34,14 @@ const StyledDiv = styled.div`
 
 const RatioChartCard : React.FC<RatioChart> = (props) => {
     const {ratios,title} = props
-    const aaa = props.theme
+    
     const targetRatioForChart = ratios?.map(ratio => ObjectToNivoPieChartData(ratio))
     
   return (
     <Card title={title}>
       <WrappingDiv>
         <StyledDiv>
-          {ratios && ratios?.length >= 1 ? <PieChart2 data={targetRatioForChart!} /> :
-          <Skeleton height="100%" fadeDuration={0.1} endColor="#cccccc"/>}
+          {ratios && <PieChart data={targetRatioForChart!} /> }
 
         </StyledDiv>
       </WrappingDiv>

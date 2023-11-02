@@ -23,8 +23,9 @@ def login_user(user: LoginUser, response:Response):
         uuid = UserService.login(user)
     except ValueError as e:
         raise HTTPException(400,detail=e.args) from e
-    
     response.set_cookie(key="session_id",value=uuid)
+
+    
 
 
     

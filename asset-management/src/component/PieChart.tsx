@@ -11,7 +11,7 @@ interface PieChartProps {
     centerY?: number; 
 }
 
-const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
+const PieChart : React.FC<PieChartProps> = ({data, title}) => {
     const centerTitleLayer : PieCustomLayer<NivoPieChartData> = ({centerX, centerY} ) => (
         <text
         x={centerX}
@@ -89,4 +89,4 @@ const PieChart2 : React.FC<PieChartProps> = ({data, title}) => {
 }
 
 
-export default PieChart2
+export default PieChart

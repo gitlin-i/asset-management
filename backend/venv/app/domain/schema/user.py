@@ -4,7 +4,12 @@ from pydantic import BaseModel, SecretBytes, validator
 class User(BaseModel):
     id: str
     name: str
-
+    @validator('id')
+    def field_check(v : str):
+        if len(v) < 2:
+            raise ValueError("id가 짧습니다.")
+        if ' ' in v:
+            raise ValueError("공백 불가")
     #orm_mode 필수
     class Config:
         orm_mode = True

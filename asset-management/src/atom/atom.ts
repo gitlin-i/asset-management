@@ -1,6 +1,7 @@
 import {atom} from "recoil"
 import { Assets, Ratio } from "../domain/Domain"
 import { lightTheme } from "../theme"
+import { ExchangeRate } from "../domain/exchangeRate"
 export const assetsState = atom<Assets>({
     key: "assetsState",
     default: {
@@ -17,7 +18,7 @@ export const modalState = atom({
         title : "",
     }
 })
-export const exchangeRateState = atom({
+export const exchangeRateState = atom<ExchangeRate[]>({
     key: "exchangeRateState",
     default: []
 })

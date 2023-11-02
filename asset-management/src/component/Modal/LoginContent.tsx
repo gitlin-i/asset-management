@@ -2,12 +2,43 @@ import React, { useState } from 'react'
 import Button from '../Button'
 import axios from 'axios'
 import { DevApi } from '../../api'
+import Input from '../Input'
+import styled from 'styled-components'
+import { Link, redirect, useNavigate } from 'react-router-dom'
+import { modalState } from '../../atom/atom'
+import { useRecoilState } from 'recoil'
 
+
+const StyledForm = styled.form`
+  display:flex;
+  width:80%;
+  flex-direction:column;
+
+  gap:2rem;
+`
+const RestyledInput = styled(Input)`
+`
+const RestyledLink = styled(Link)`
+  width:100%;
+  background-color: ${props => props.theme.color.secondary };
+  color: white;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-decoration: none;
+  &:hover {
+    color: white;
+    box-shadow: 0px 6px 10px #e3e1e1;
+  }
+`
 const LoginContent = () => {
   const [formData, setFormData] = useState({
     id : '',
     password: '',
   })
+  const [modal, setModal] = useRecoilState(modalState)
   const cookieString = document.cookie
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -21,28 +52,34 @@ const LoginContent = () => {
     event.preventDefault();
     try {
       const response= await DevApi.post('/user/login',formData)
-      // const response = await axios.post('/user/login', formData);
+      console.log(response)
+      if(response.status === 200) {
+        setModal((prev) => {
+          return {
+            ...prev,
+            isModalOpen: false
+          }
+        })
+      }
 
     } catch (error) {
-      console.error('Login failed:', error);
+      alert('Login failed');
 
     }
   };
+
   return (
     <React.Fragment>
-      <form action='http://localhost:8000/user/login' method='post' encType='application/json'>
-        <label htmlFor='userId'>ID</label>
-        <input type='text' id="userId" name='id'required onChange={handleInputChange}/>
-
-        <label htmlFor='userPassword'>password</label>
-        <input type='password' id="userPassword" name='password' required onChange={handleInputChange}/>
-        <div>
-          <p>{formData.id + ": " + formData.password}</p>
-        </div>
+      <StyledForm action='http://localhost:8000/user/login' method='post' encType='application/json'>
         
-        <Button $primary type='submit' onClick={handleSubmit}> 제출 </Button>
-      </form>
-      <p> {cookieString}</p>
+        <Input type='text' id='userId' name='id' onChange={handleInputChange} defaultText='ID' />
+        <RestyledInput type='password' id='userPassword' name='password' onChange={handleInputChange} defaultText='PASSWORD'/>
+
+        
+        <Button $primary type='submit' onClick={handleSubmit}> 로그인 </Button>
+        <RestyledLink to={'/join'}> 회원 가입 </RestyledLink>
+
+      </StyledForm>
     </React.Fragment>
   )
 }

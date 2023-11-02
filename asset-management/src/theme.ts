@@ -15,7 +15,10 @@ export const lightTheme = {
         unactive: "#a3a3a3",
         primary: "#038cfc",
         secondary: "#18a8b8",
-        shadow: "#cccccc"
+        shadow: "#cccccc",
+        fontGray: "#d3d3d3",
+        underbar: "#e4e4e4",
+        
     },
     "box-shadow" : "0px 0px 20px 0px #cccccc",
     breakPoint: {
@@ -38,7 +41,10 @@ const dark= {
         unactive: "#a3a3a3",
         primary: "#038cfc",
         secondary: "#18a8b8",
-        shadow: "#1a1a1a"
+        shadow: "#1a1a1a",
+        fontGray: "#d3d3d3",
+        underbar: "#e4e4e4",
+
     },
     "box-shadow" : "0px 0px 20px 0px #1a1a1a",
 

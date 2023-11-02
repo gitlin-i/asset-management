@@ -1,12 +1,15 @@
 
+from typing import Literal
 import requests
 from domain.schema.stock import Market
 from pydantic import validate_arguments
+from datetime import datetime, timedelta
+from temp.appkey import KOREA_INVESTMENT
+
 baseUrl_real = "https://openapi.koreainvestment.com:9443"
 baseUrl = "https://openapivts.koreainvestment.com:29443"
-appkey = "PS6Zg2UsvnFiyPh5YHkVMGTaZH2rnjLXSPeQ"
-appsecret = "mbkv/Zc7bkUlBmC2cH5FweUqQCMl4VIROryRnRlv/53m0eJhr7/xmwvlrePQmY9mtusppo0iasTF+J6GxyNItRYy7IuDEE9oDro4ATiGbJviKlQckEyOk3z/W916mTio5EFuKvZEcDlCqu3u5/lcuQq9DI+Rc2E0ZClc6TEl7gKl092fCEc="
-
+appkey = KOREA_INVESTMENT["appkey"]
+appsecret = KOREA_INVESTMENT["appsecret"]
 @validate_arguments
 def get_domestic_stock_current_price(tokenDict , stock_code:str):
     header = {
@@ -38,6 +41,7 @@ def get_overseas_stock_current_price(tokenDict, stock_code:str,market: Market):
     }
     url = "/uapi/overseas-price/v1/quotations/price"
     response = requests.get(baseUrl + url,headers=header, params=params)
+    
     return response.json()
 
 def get_stock_current_price(tokenDict, stock_code: str,market:Market):
@@ -92,3 +96,33 @@ def get_stock_info(tokenDict, stock_code,market):
     url = "/uapi/domestic-stock/v1/quotations/search-info"
     response = requests.get(baseUrl_real + url,headers=header , params=params)
     return response.json()
+
+def get_domestic_index(tokenDict, market:Literal["KOSPI", "KOSDAQ"],start_date,end_date):
+    #start,end_date format : yyyymmdd
+    mapping = {
+        "KOSPI": "0001",
+        "KOSDAQ" : "1001",
+    #0001 : KOSPI 종합
+    #1001 : KOSDAQ 종합
+    }
+    header = {
+        "content-type" : "application/json; charset=utf-8",
+        "authorization" : tokenDict["token_type"] + ' ' + tokenDict["access_token"],
+        "appkey" : appkey,
+        "appsecret" : appsecret,
+        "tr_id" : "FHKUP03500100",
+    }
+    params = {
+    "FID_COND_MRKT_DIV_CODE" : "U" ,
+    "FID_INPUT_ISCD": mapping[market], 
+    "FID_INPUT_DATE_1": start_date,
+    "FID_INPUT_DATE_2": end_date,
+    "FID_PERIOD_DIV_CODE":"D",
+    }
+    url = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
+
+    response = requests.get(baseUrl_real + url,headers=header , params=params)
+    
+    json_response : dict = response.json()
+    return  json_response["output2"]
+

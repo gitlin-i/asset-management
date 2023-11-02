@@ -80,3 +80,11 @@ class StockInfoReponseOfKorInvAPI(BaseModel):
     rt_cd : str #0은 성공 그 외 실패
     msg_cd: str
     msg1: str
+
+class IndexPriceWithDate(BaseModel):
+    date: str = Field(...,alias="stck_bsop_date")
+    price: Decimal = Field(...,alias="bstp_nmix_prpr")
+    # stck_bsop_date: str = Field(alias="date")
+    # bstp_nmix_prpr: Decimal = Field(alias="price")
+    class Config:
+        allow_mutation :False

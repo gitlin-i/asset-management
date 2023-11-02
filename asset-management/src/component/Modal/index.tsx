@@ -17,7 +17,15 @@ const StyledModal = styled.div`
     /* transform: translate(-50%, -50%); */
     z-index: 11;
     width: 50vw;
-
+    @media screen and (min-width: ${props => props.theme.breakPoint.ms}){
+        width:80vw;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.t}){
+        width:50vw;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.ll}){
+        width:30vw;
+    }
     border-radius:1rem;
     background-color:white;
     border: none;
@@ -58,7 +66,7 @@ const RestyledButton = styled(Button)`
     padding:0;
     margin-right:1rem;
     border-radius:2rem;
-    
+    border: 1px solid #aaaaaa;
     :hover{
         background-color:#dcdcdc;
         box-shadow:none;

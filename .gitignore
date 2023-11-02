@@ -42,3 +42,8 @@ __pycache__/
 [Ll]ib/
 [Ss]cripts/
 pyvenv.cfg
+
+#
+/backend/venv/app/getToken2.py
+/backend/venv/app/t.py
+/backend/venv/app/temp/*

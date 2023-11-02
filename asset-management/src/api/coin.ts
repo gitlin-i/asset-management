@@ -6,7 +6,6 @@ export interface CoinPrice {
     trade_price: number
   }
 export interface MyCoinAPI {
-  user_id: string
   code : string
   quantity : number
   average_purchase_price : number | undefined
@@ -43,7 +42,4 @@ export const getCoinPrice = async (coinCode: string | string[]) :Promise<CoinPri
   
   return response.data
 }
-
-export const getCoinInfo = async (coinCode:string | string[]) => {
-  
-}
+// export const getCoinPriceby

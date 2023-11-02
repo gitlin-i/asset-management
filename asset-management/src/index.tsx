@@ -14,6 +14,8 @@ import EditPage from './component/page/EditPage';
 import StockPage from './component/page/StockPage';
 import CoinPage from './component/page/CoinPage';
 import CashPage from './component/page/CashPage';
+import JoinPage from './component/page/JoinPage';
+import { QueryClient } from '@tanstack/react-query';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -49,9 +51,16 @@ const router = createBrowserRouter([
         path: "/withdraw",
         element:  <EditPage/>
       },
+
     ]
   },
+  {
+    path: "/join",
+    element: <JoinPage />,
+    errorElement: <NotFoundPage />
+  }
 ]);
+
 
 root.render(
   <React.StrictMode>
