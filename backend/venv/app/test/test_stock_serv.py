@@ -6,7 +6,7 @@ from domain.schema.stock import StockPriceListOutPut, StockPrice, StockPriceResp
 from domain.schema.market import Market
 from repository.stock_repository import StockCurPriceRepository
 from pytest import fixture, mark
-
+#api직접테스트 사용 중단
 client = TestClient(app)
 input_data = ["TEST","ㅂㅈㄷㄱㅁㄴㅇ"]
 market = Market.KRX
@@ -165,31 +165,33 @@ def test_stock_service_read_from_db(code,market,price, define_test_stock):
     result = StockService.price_read_from_db(code, market)
     assert StockPrice(**result.dict()) == expected_stock_price
 
-@mark.parametrize("code,market",[
-    ("TSLA","NAS"),
-    ("228670","KRX")
-])
-def test_stock_service_read_from_api(code,market):
-    result = StockService.price_read_from_api(code,market)
-    expected_result = StockPrice(**{
-        "code": code,
-        "market" : market,
-        "price" : result.price
-    })
-    
-    assert result == expected_result
+# @mark.parametrize("code,market",[
+#     ("TSLA","NAS"),
+#     ("228670","KRX")
+# ])
+# def test_stock_service_read_from_api(code,market):
+#     result = StockService.price_read_from_api(code,market)
+#     expected_result = StockPrice(**{
+#         "code": code,
+#         "market" : market,
+#         "price" : result.price
+#     })
+#     #통합 테스트시 한국투자증권 api 초당 호출수를 초과할 수 있음. 개별로 테스트
 
-@mark.parametrize("code,market",[
-    ("qwe","KRX"),
-    ("QASDZXC","NAS")
-])
-def test_stock_service_read_from_api_expect_none(code,market):
-    result = StockService.price_read_from_api(code,market)
-    assert result is None
+#     assert result == expected_result
+
+# @mark.parametrize("code,market",[
+#     ("qwe","KRX"),
+#     ("QASDZXC","NAS")
+# ])
+# def test_stock_service_read_from_api_expect_none(code,market):
+#     result = StockService.price_read_from_api(code,market)
+#     assert result is None
 
 
 def test_doemstic_stock_service(define_test_stock):
     output, fail_input = StockService.current_price_list(input_data,market)
+
     check_stock_price_list_output_model = {
         "output":[define_test_stock],
         "fail_input" : ["ㅂㅈㄷㄱㅁㄴㅇ"]

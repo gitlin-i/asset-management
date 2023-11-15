@@ -24,6 +24,7 @@ def get_domestic_stock_current_price(tokenDict , stock_code:str):
     }
     url = "/uapi/domestic-stock/v1/quotations/inquire-price"
     response = requests.get(baseUrl + url,headers=header , params=params)
+    print(response.text)
     return response.json()
 @validate_arguments
 def get_overseas_stock_current_price(tokenDict, stock_code:str,market: Market):

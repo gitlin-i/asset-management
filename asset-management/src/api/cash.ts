@@ -1,9 +1,7 @@
 
 export interface MyCashAPI {
-    user_id: string
     currency : string
     balance: number
-    
   }
   
 export const isMyCashAPI = (obj : object) : obj is MyCashAPI => {

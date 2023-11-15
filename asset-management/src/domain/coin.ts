@@ -46,6 +46,18 @@ export class MyCoin extends Coin {
     }
 }
 
+export const KRWCoinTop10 = [
+    {'market': 'KRW-BTC', 'korean_name': '비트코인', 'english_name': 'Bitcoin'} ,
+    {'market': 'KRW-ETH', 'korean_name': '이더리움', 'english_name': 'Ethereum'} ,
+    {'market': 'KRW-XRP', 'korean_name': '리플', 'english_name': 'Ripple'} ,
+    {'market': 'KRW-SOL', 'korean_name': '솔라나', 'english_name': 'Solana'} ,
+    {'market': 'KRW-ADA', 'korean_name': '에이다', 'english_name': 'Ada'} ,
+    {'market': 'KRW-DOGE', 'korean_name': '도지코인', 'english_name': 'Dogecoin'} ,
+    {'market': 'KRW-TRX', 'korean_name': '트론', 'english_name': 'TRON'} ,
+    {'market': 'KRW-LINK', 'korean_name': '체인링크', 'english_name': 'Chainlink'} ,
+    {'market': 'KRW-MATIC', 'korean_name': '폴리곤', 'english_name': 'Polygon'} ,
+    {'market': 'KRW-DOT', 'korean_name': '폴카닷', 'english_name': 'Polkadot'} ,
+]
 
 export const coinMarket = 
 ['KRW-BTC', 'KRW-ETH', 'BTC-ETH', 'BTC-XRP', 'BTC-ETC', 'BTC-CVC', 'BTC-DGB', 'BTC-SC', 'BTC-SNT', 'BTC-WAVES', 'BTC-NMR', 'BTC-XEM',

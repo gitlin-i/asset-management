@@ -1,6 +1,6 @@
 
 from uuid import UUID
-from domain.schema.user import UserIn
+from domain.schema.user import UserIn,User
 from bcrypt import gensalt, hashpw, checkpw
 from repository.user_repository import UserRepositorty
 from service.web_session_service import WebSessionService
@@ -34,7 +34,11 @@ class UserService:
         created_session_uuid = WebSessionService.register_web_session(user.id)
         return created_session_uuid
         
-        
+    @classmethod
+    def info(cls, session_id : UUID):
+        user_id = WebSessionService.find_user_id(session_id)
+        user_info = UserRepositorty.read(user_id)
+        return User(**user_info.dict())
 
 
     @classmethod

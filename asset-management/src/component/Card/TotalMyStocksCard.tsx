@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import Card from "."
 import Item from "../Item"
-import { exchangeValue } from "../../domain/Domain"
+import { exchangeValue } from "../../domain/domain"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { stocksCurrentValue, stocksRatio } from "../../selector/selector"
 import { MyStock } from "../../domain/stock"

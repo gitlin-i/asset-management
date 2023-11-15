@@ -20,7 +20,8 @@ const StyledInput = styled.input<InputProps>`
   border-left: none;
   border-right:none;
   border-bottom : 2px solid ${props => props.theme.color.underbar };
-  
+  background-color: ${props => props.theme.color.card };
+  color : ${props => props.theme.color.font };
 `
 const Input :React.FC<InputProps> = (props) => {
   const {isEditing, defaultText, type, $responsive,readOnly,setValue,id,name, onChange ,...args} = props

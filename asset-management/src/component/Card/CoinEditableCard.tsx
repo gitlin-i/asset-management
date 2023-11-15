@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Card from '.'
 import styled from 'styled-components'
-import Input from '../Input'
-import { MyStock } from '../../domain/stock'
-import Button from '../Button'
-import { StockInfoAPI, getStockInfo } from '../../api/stock'
-import { StockMarket, StockMarketArray } from '../../domain/market'
-import {  useQueryClient } from '@tanstack/react-query'
 
-import { useRecoilValue } from 'recoil'
-import { assetsState } from '../../atom/atom'
+
+import Button from '../Button'
+
+
 import { useMyAssetsMutation } from '../../mutation/mutation'
-import { useMyStock } from '../../query/stock'
-interface StockEditableCardProps {
-    myStock?: MyStock
-}
+
+import { useMyCoin } from '../../query/coin'
+import { KRWCoin, KRWCoinTop10 } from '../../domain/coin'
+import { CoinInfoAPI } from '../../api/coin'
+import Input from '../Input'
+import { AxiosError } from 'axios'
+
 const StyledLayout = styled.div`
   width:100%;
   padding : 0;
@@ -109,7 +108,7 @@ const StyledResultArea = styled.div`
   
 `
 const StyledDiv = styled.div`
-  width:100%;
+  width:50%;
   height:2rem;
 `
 const StyledButton = styled(Button)`
@@ -117,83 +116,67 @@ const StyledButton = styled(Button)`
   color: white;
 `
 
-const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {  
-
-    const myStock = useMyStock()
+const CoinEditableCard :React.FC= (props) => {  
+    const myCoins = useMyCoin()
+    const KRW_BTC = KRWCoinTop10[0]
     const [params, setParams] = useState({
-      code:'',
-      market: 'KRX',
+      code: KRW_BTC.market,
       average_purchase_price : 0,
-      quantity : 0
+      quantity : 0,
     })
-    const [searchedData , setSearchedData] = useState<StockInfoAPI | undefined>()
-    const stockMutation = useMyAssetsMutation("stock")
-
-
-
-    const handleSearchClick = async (e : any) => {
-      try {
-        const response = await getStockInfo(params.code,params.market as StockMarket)
-        if (response.statusText === 'OK'){
-          setSearchedData(response.data.output[0])
-        }
-      } catch (error) {
-        alert("존재하지 않는 주식입니다. 다시 검색해 주세요.")
-      }
-       
-    }
-
+    const [coinName, setCoinName] = useState(KRW_BTC.korean_name)
+    const coinMutation = useMyAssetsMutation("coin")
     const handleSaveClick = async (e : any) => {
-      const isExistStock = searchedData?.code && searchedData?.market
-      if (isExistStock){
-        const isMyStock = myStock?.find((stockInMyAssets) => stockInMyAssets.code === searchedData.code &&
-        stockInMyAssets.market === searchedData.market)
+        const isMyCoin = myCoins?.find((coinInMyAssets) => coinInMyAssets.code === params.code )
 
-        const stock = {
-          code : searchedData?.code,
-          market: searchedData?.market,
+        const coin = {
+          code : params.code,
           average_purchase_price: params.average_purchase_price,
           quantity: params.quantity,
         }
-        if (!!isMyStock){
-          stockMutation.mutate({
-            ...stock,
+
+        if (!!isMyCoin){
+          coinMutation.mutate({
+            ...coin,
             method:"put"
           })
-        }else{
-          stockMutation.mutate({
-            ...stock,
+        } else {
+          coinMutation.mutate({
+            ...coin,
             method:"post",
           })
         }
-      } else {
-        alert("존재하지 않는 주식입니다. 다시 검색해주세요.")
-      }
+
       
     }
     const handleDeleteClick =async (e: any) => {
-      const isExistStock = searchedData?.code && searchedData?.market
-      if (isExistStock){
-        const isMyStock = myStock?.find((stockInMyAssets) => stockInMyAssets.code === searchedData.code &&
-        stockInMyAssets.market === searchedData.market)
-        const stock = {
-          code : searchedData?.code,
-          market: searchedData?.market,
-          average_purchase_price: params.average_purchase_price,
-          quantity: params.quantity,
-          
-        }
-        if (!!isMyStock){
-          stockMutation.mutate({
-            ...stock,
-            method:"delete"
-          })
-        }else{
-          // alert("보유 하고 있지 않습니다.")
-        }
-      } else {
-        alert("먼저 검색해주세요.")
+
+      const isMyCoin = myCoins?.find((coinInMyAssets) => coinInMyAssets.code === params.code)
+      const coin = {
+        code : params.code,
+        average_purchase_price: params.average_purchase_price,
+        quantity: params.quantity,
       }
+      if (!!isMyCoin){
+        coinMutation.mutate({
+          ...coin,
+          method:"delete"
+        })
+      } else{
+        alert("보유 하고 있지 않습니다.")
+      }
+      
+    }
+    const handleSelectChange =  (e : React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const {name, value} = e.target
+      const selectedCoinName = KRWCoinTop10.find((info) => info.market === value)?.korean_name
+      if (selectedCoinName) {
+        setCoinName(selectedCoinName)
+      }
+      setParams({
+        ...params,
+        [name] : value
+      })
     }
     const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const {name, value} = e.target
@@ -202,33 +185,29 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
         [name] : value
       })
     }
-    
+
   return (
     
-    <Card title='보유 주식 수정' >
+    <Card title='보유 코인 수정' >
       <StyledLayout>
         <StyledWrappingDiv>
           <StyledSearchArea>
             <StyledSearchDiv>
-              <Input id='code' name='code' defaultText='주식 코드' onChange={handleChange} />
-              <StyledSelect id='market' name='market' onChange={handleChange} defaultValue={"KRX"} >
-                {StockMarketArray.map((val: StockMarket) => {
-                  return (<option key={val} value={val}>{val.toString()}</option>)
+              <StyledSelect id='code' name='code' onChange={handleSelectChange} defaultValue={KRW_BTC?.market} >
+                {KRWCoinTop10.map((info:CoinInfoAPI ) => {
+                  return (<option key={info.market} value={info.market}>{info.korean_name.toString()}</option>)
                 })}
               </StyledSelect>
             </StyledSearchDiv>
-            <StyledSearchButton key={"search_button"} onClick={handleSearchClick}>
-              <MaterialSpan>search</MaterialSpan>
-            </StyledSearchButton>
+
           </StyledSearchArea>
         </StyledWrappingDiv>
 
         <StyledWrappingDiv>
           <StyledResultArea>
-              <StyledDiv>이름 : {searchedData?.name}</StyledDiv>
-              <StyledDiv>코드 : {searchedData?.code}</StyledDiv>
-              <StyledDiv>마켓 : {searchedData?.market}</StyledDiv>
-              
+            <StyledDiv>이름 : {coinName}</StyledDiv>
+            <StyledDiv>코드 : {params.code}</StyledDiv>
+
           </StyledResultArea>
         </StyledWrappingDiv>
 
@@ -257,11 +236,9 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
         </StyledWrappingDiv>
 
 
-
-
         </StyledLayout>
     </Card>
   )
 }
 
-export default StockEditableCard
+export default CoinEditableCard

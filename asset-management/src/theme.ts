@@ -18,7 +18,7 @@ export const lightTheme = {
         shadow: "#cccccc",
         fontGray: "#d3d3d3",
         underbar: "#e4e4e4",
-        
+        hover: "#e6e6e6",
     },
     "box-shadow" : "0px 0px 20px 0px #cccccc",
     breakPoint: {
@@ -44,7 +44,7 @@ const dark= {
         shadow: "#1a1a1a",
         fontGray: "#d3d3d3",
         underbar: "#e4e4e4",
-
+        hover: "#383838",
     },
     "box-shadow" : "0px 0px 20px 0px #1a1a1a",
 

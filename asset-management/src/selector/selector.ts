@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { assetsState, exchangeRateState } from "../atom/atom";
-import {  Ratio, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetArrayPercentage, calcAssetsPercentage, calcCashArrayCurrentValue, calcCurrentValue, calcPercentage, exchangeValue } from "../domain/Domain";
+import {  Ratio, calcAllAssetsCurrentValue, calcAssetArrayCurrentValue, calcAssetArrayPercentage, calcAssetsPercentage, calcCashArrayCurrentValue, calcCurrentValue, calcPercentage, exchangeValue } from "../domain/domain";
 import { Currency } from "../domain/currency";
 
 export const assetsCurrentValue = selector({

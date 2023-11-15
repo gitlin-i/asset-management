@@ -1,4 +1,5 @@
-import { PriceWithDate } from "../api/stock";
+import { CoinCandleAPI } from "../api/coin";
+import { IndexWithDateAPI } from "../api/stock";
 
 export interface NivoPoint {
     x:string;
@@ -11,35 +12,36 @@ export interface NivoLineChartData {
 }
 
 
-export const ConvertToNivoLineChartData = (id : string ,data : PriceWithDate[] , color : string | undefined = undefined) : NivoLineChartData => {
-
-    const newData :Array<{x:string, y:number}> = data.map((priceWithDate) => {
-        return {
-            x: priceWithDate.date,
-            y: priceWithDate.price
-        }
-    })
+export const ConvertToNivoLineChartData = (id : string ,data : IndexWithDateAPI[] | CoinCandleAPI[] , color : string | undefined = undefined) : NivoLineChartData => {
     
-    const sortedNewData = [...newData].sort((a,b) => {
-        if (a.x > b.x) {
-          return 1;
-        }
-        if (a.x < b.x) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      });
+    const newData :Array<{x:string, y:number}> = data.map((priceWithDate) => {
+        if ("date" in priceWithDate){
+            const date = priceWithDate.date
+            const year = date.slice(2,4)
+            const month = date.slice(4,6)
+            const day= date.slice(6,8)
+            return {
+                x: `${year}/${month}/${day}`,
+                y: priceWithDate.price
+            }
+        } else {
+            const date = new Date(priceWithDate.candle_date_time_utc)
+            const year = date.getFullYear().toString().slice(-2)
+            const month = (date.getMonth() + 1 ).toString()
+            const day = date.getDate().toString()
 
-    if (typeof color ==='undefined'){
-        return {
-            id: id,
-            data:sortedNewData
+            return {
+                x: `${year}/${month}/${day}`,
+                y: priceWithDate.trade_price
+            }
         }
-    }
+        
+    })
+    const sortedTimeData = [...newData].reverse()
     return {
         id: id,
-        color,
-        data: sortedNewData
+        data: sortedTimeData,
+        color: color
     }
+
 }

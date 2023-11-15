@@ -17,6 +17,8 @@ const StyledForm = styled.form`
   gap:2rem;
 `
 const RestyledInput = styled(Input)`
+  background-color:white;
+  color: black;
 `
 const RestyledLink = styled(Link)`
   width:100%;
@@ -72,7 +74,7 @@ const LoginContent = () => {
     <React.Fragment>
       <StyledForm action='http://localhost:8000/user/login' method='post' encType='application/json'>
         
-        <Input type='text' id='userId' name='id' onChange={handleInputChange} defaultText='ID' />
+        <RestyledInput type='text' id='userId' name='id' onChange={handleInputChange} defaultText='ID' />
         <RestyledInput type='password' id='userPassword' name='password' onChange={handleInputChange} defaultText='PASSWORD'/>
 
         

@@ -4,7 +4,7 @@ import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
 
 import styled from 'styled-components'
 import PieChart from '../PieChart'
-import { Ratio } from '../../domain/Domain'
+import { Ratio } from '../../domain/domain'
 
 interface RatioChart {
     ratios ?: Ratio[];
@@ -24,9 +24,10 @@ const StyledDiv = styled.div`
   display: inline-block;
   
   width: 100%;
-  height:180px;
+  height : 180px;
+  
   &:hover {
-    background-color:#efefef;
+    background-color:${props => props.theme.color.hover };
   }
   border-radius:1rem;
   

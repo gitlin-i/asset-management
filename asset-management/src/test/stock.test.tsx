@@ -1,4 +1,4 @@
-import {calcAssetArrayCurrentValue, calcCashArrayCurrentValue, calcCurrentValue, testRealData, testapiStock } from "../domain/Domain"
+import {calcAssetArrayCurrentValue, calcCashArrayCurrentValue, calcCurrentValue, testRealData, testapiStock } from "../domain/domain"
 import { Cash } from "../domain/cash"
 import { MyCoin } from "../domain/coin"
 import { Currency } from "../domain/currency"

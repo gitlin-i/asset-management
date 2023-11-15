@@ -1,6 +1,6 @@
 import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ResponseData } from "../api"
-import { StockMarket, StockMarketDetail } from "../domain/market"
+import { StockMarket, StockMarketIndex } from "../domain/market"
 import { MyStockAPI, StockInfoAPI, StockPriceAPI, getStockInfo, getStockMarketIndex, getStockPrice } from "../api/stock"
 import { useMyAssets } from "./assets"
 import { useRecoilState } from "recoil"
@@ -8,7 +8,7 @@ import { assetsState } from "../atom/atom"
 import { MyStock } from "../domain/stock"
 import { Currency, MapperStockMarketToCurrency } from "../domain/currency"
 import { useEffect } from "react"
-import { MarketToCurrency, Ratio, calcPercentage, exchangeValue } from "../domain/Domain"
+import { MarketToCurrency, Ratio, calcPercentage, exchangeValue } from "../domain/domain"
 import { ExchangeRateAPI } from "../api/exchange"
 import { useExchangeRate } from "./exchangeRate"
 
@@ -91,7 +91,7 @@ export const useMyStockInfo = ()  => {
 export const useMyStockInfo2 = (stocks : MyStockAPI[] | undefined)  => {
   
   return useQuery({
-    queryKey: ['MyStockInfo'],
+    queryKey: ['MyStockInfo',stocks],
     queryFn : async () :Promise<StockInfoAPI[]> => {
       let result : StockInfoAPI[] = []
       const marketAndStockCodes = parseMarketAndStockCodes(stocks)
@@ -189,9 +189,15 @@ export const useMyStock = () : MyStock[] | undefined =>{
   }
   if (myStockStatus ==='success' && stockInfoStatus === 'success' && stockPriceStatus === 'success'){
     return myStock?.output.map((stock) => {
-      const targetStockInfo = stockInfo?.find((info) => info.code === stock.code && info.market === stock.market)
-      const targetCoinPrice = stockPrice?.find((price) => price.code === stock.code && price.market === stock.market)
-      return factory(stock,targetStockInfo!,targetCoinPrice!)
+      const targetStockInfo = stockInfo.find((info) => info.code === stock.code && info.market === stock.market)
+      const targetStockPrice = stockPrice.find((price) => price.code === stock.code && price.market === stock.market)
+
+      if (targetStockInfo && targetStockPrice){
+        return factory(stock,targetStockInfo ,targetStockPrice)
+      } else {
+        return factory(stock,{...stock, name: "알 수 없는 이름" } ,{...stock,price : 0} )
+      }
+      
     })
   }
 

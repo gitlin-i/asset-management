@@ -7,7 +7,7 @@ import { getMyAssets } from "../api/asset"
 import { useMyStockCurrentValue } from "./stock"
 import {  useMyCoinsCurrentValue } from "./coin"
 import { useMyCashCurrentValue } from "./cash"
-import { Ratio,calcPercentage } from "../domain/Domain"
+import { Ratio,calcPercentage } from "../domain/domain"
 
 
 type AssetsString = "stock" | "coin" | "cash"
@@ -29,12 +29,15 @@ export const useMyAssetsRatio = () : Ratio[] => {
   const stocksCurVal = useMyStockCurrentValue()
   const coinsCurVal = useMyCoinsCurrentValue()
   const cashCurVal = useMyCashCurrentValue()
-
   const total = stocksCurVal + coinsCurVal + cashCurVal
   const stockRatio = calcPercentage(stocksCurVal, total)
   const coinsRatio = calcPercentage(coinsCurVal,total)
   const cashRatio = calcPercentage(cashCurVal, total)
-
+  
+  
+  if (total <= 0 ){
+    return []
+  }
   return [
     {"주식" : stockRatio},
     {"코인" : coinsRatio},

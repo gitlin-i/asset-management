@@ -3,7 +3,7 @@ import { MyCashAPI } from "./cash";
 import { MyCoinAPI } from "./coin";
 import { MyStockAPI } from "./stock";
 
-export type Assets = "stock" | "coin" | "cash"
+type Asset = "stock" | "coin" | "cash"
 const matchUrlForPutAndDelete = (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI ) => {
   let url 
   if ("market" in myAsset){
@@ -27,7 +27,7 @@ const matchUrlForPost = (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI) => {
   return url
 }
 
-export const getMyAssets = async (asset: Assets) :Promise<ResponseData<MyCashAPI | MyCoinAPI | MyStockAPI>> => {
+export const getMyAssets = async (asset: Asset) :Promise<ResponseData<MyCashAPI | MyCoinAPI | MyStockAPI>> => {
   const response = await DevApi.get(`/my-asset/${asset}`,{withCredentials:true})
   return response.data 
 }

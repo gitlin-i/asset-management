@@ -16,6 +16,7 @@ import CoinPage from './component/page/CoinPage';
 import CashPage from './component/page/CashPage';
 import JoinPage from './component/page/JoinPage';
 import { QueryClient } from '@tanstack/react-query';
+import TestingPage from './component/page/TestingPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -44,33 +45,29 @@ const router = createBrowserRouter([
         element:  <CashPage />
       },
       {
-        path: "/deposit",
-        element:  <EditPage/>
-      },
-      {
-        path: "/withdraw",
-        element:  <EditPage/>
-      },
-
+        path: "/setting",
+        element: <EditPage />
+      }
     ]
   },
   {
     path: "/join",
     element: <JoinPage />,
     errorElement: <NotFoundPage />
+  },
+  {
+    path: "/test",
+    element: <TestingPage />
   }
 ]);
 
 
 root.render(
   <React.StrictMode>
-
     <RecoilRoot>
       <RouterProvider router={router} />
     </RecoilRoot>
-      
-
-  </React.StrictMode>
+  </React.StrictMode> 
 );
 
 // If you want to start measuring performance in your app, pass a function

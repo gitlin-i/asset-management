@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { cashCurrentValue} from "../../selector/selector"
 import Card from "."
 import Item from "../Item"
-import { exchangeValue } from "../../domain/Domain"
+import { exchangeValue } from "../../domain/domain"
 import { Cash } from "../../domain/cash"
 import { Currency, CurrencyMark } from "../../domain/currency"
 import { useMyCash, useMyCashCurrentValue} from "../../query/cash"
@@ -33,9 +33,9 @@ const TotalMyCashCard = () => {
         const rightupText = value.toLocaleString() + CurrencyMark[cash.currency]
         const rightDownText = (cash.currency === Currency.KRW) ?
             "" : exchangeValue(value, 1300).toLocaleString() + CurrencyMark[cash.currency]
+        const altText = (cash.code.length > 3) ? cash.code.substring(0,3) : cash.code
 
-
-        return <Item key={key} altImageByText={cash.code}
+        return <Item key={key} altImageByText={altText}
         leftupText={leftupText} 
         rightUpText={ rightupText }
         rightDownText={rightDownText}  />

@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios"
 import { DevApi, ResponseData } from "."
 import { MapperStockMarketToCurrency } from "../domain/currency"
-import { StockMarket, StockMarketDetail } from "../domain/market"
+import { StockMarket, StockMarketIndex } from "../domain/market"
 import { MyStock } from "../domain/stock"
 
 export interface StockPriceAPI {
@@ -10,16 +10,15 @@ export interface StockPriceAPI {
     price: number
   }
 export interface StockInfoAPI {
-code: string
-market : StockMarket
-name : string
+  code: string
+  market : StockMarket
+  name : string
 }
 export interface MyStockAPI {
-
-code : string
-market: StockMarket
-quantity : number
-average_purchase_price : number | undefined
+  code : string
+  market: StockMarket
+  quantity : number
+  average_purchase_price : number | undefined
 }
 export const isMyStockAPI = (obj : object) : obj is MyStockAPI => {
     if (typeof obj ==='object' &&
@@ -30,6 +29,10 @@ export const isMyStockAPI = (obj : object) : obj is MyStockAPI => {
     'average_purchase_price' in obj 
     ) return true
     return false
+}
+export type IndexWithDateAPI = {
+  date: string,
+  price : number
 }
 
 const MyStockFactory = (myStock: MyStockAPI,myStockInfo:StockInfoAPI,myStockPrice: StockPriceAPI) =>{
@@ -69,12 +72,8 @@ export const getStockPrice = async (stockCodes: Array<string> | string,market: s
   
   }
 
-export type PriceWithDate = {
-  date: string,
-  price : number
-}
 
-export const getStockMarketIndex = async (market: StockMarketDetail)  =>{
-  const response : AxiosResponse<PriceWithDate[]> = await DevApi.get(`/stock/index?market=${market}`)
+export const getStockMarketIndex = async (market: StockMarketIndex)  =>{
+  const response : AxiosResponse<IndexWithDateAPI[]> = await DevApi.get(`/stock/index?market=${market}`)
   return response.data
 }

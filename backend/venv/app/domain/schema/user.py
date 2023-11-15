@@ -10,6 +10,7 @@ class User(BaseModel):
             raise ValueError("id가 짧습니다.")
         if ' ' in v:
             raise ValueError("공백 불가")
+        return v
     #orm_mode 필수
     class Config:
         orm_mode = True
@@ -25,7 +26,6 @@ class UserIn(User):
             hashed_passowrd = hashpw(encoded_password, salt)
             return hashed_passowrd
         return v 
-    
 class UserSecret(User):
     password: SecretBytes
 

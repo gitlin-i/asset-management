@@ -1,7 +1,7 @@
 
 import { styled } from 'styled-components'
 
-import {  testTargetRatios } from '../../domain/Domain'
+import {  testTargetRatios } from '../../domain/domain'
 import Section from '../Section'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -18,49 +18,30 @@ import LineChartCard from '../Card/LineChartCard'
 import { ConvertToNivoLineChartData } from '../../utill/NivoLineChart'
 import { useMarketIndex } from '../../query/market'
 import { useMyStocksRatio } from '../../query/stock'
+import { useMyRatio } from '../../query/ratio'
 
 
 
 const ReStyledMain = styled(StyledMain)`
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  row-gap: 1rem;
-  width: 100%;
-  height:100%;
-  background-color: ${props => props.theme.color.background};
-  vertical-align:top;
-  
-//768px
-  @media screen and (min-width: ${props => props.theme.breakPoint.t}){
 
-    display: grid;
-    height:calc(100vh - 56px);
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 1rem;
-  }
-  @media screen and (min-width: ${props => props.theme.breakPoint.l }) {
-    display:inline-grid;
-    width:80%;
-  }
+//768px
+
   @media screen and ( min-width: ${props => props.theme.breakPoint.ll }){
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3,1fr);
-
-    && :nth-child(4) {
+    && :nth-child(3) {
       grid-row-start: 2;
       grid-row-end: 4;
       grid-column-start:1;
       grid-column-end:2;
     }
-    && :nth-child(5) {
+    && :nth-child(4) {
       grid-row-start: 2;
       grid-row-end: 4;
       grid-column-start:2;
       grid-column-end:3;
     }
-    && :nth-child(6) {
+    && :nth-child(5) {
       grid-row-start: 2;
       grid-row-end: 4;
       grid-column-start:3;
@@ -71,45 +52,30 @@ const ReStyledMain = styled(StyledMain)`
 
 ////////////
 const StockPage : React.FC = (props) => {
-  
-  const [targetRatios, setTargetRatios] = useRecoilState(targetRatioState)
+  const page ="StockPage"
+
+  const stockRatio = useMyRatio("stock")
   const stocksCurRatio = useMyStocksRatio()
   const {data,status} = useMarketIndex("KOSPI")
+  const wrapping =(content: React.ReactNode,index :number | string) => {
+    return (
+      <Section key={page + 'section' + index} >
+        {content}
+      </Section>
+    )
+  }
 
-  useEffect(()=>{
-    setTargetRatios((prev)=> ({
-      ...testTargetRatios
-    }))
-  },[])
-  
+  const content = [
+    <RatioChartCard title={"목표 비율"} ratios={stockRatio} />,
+    <RatioChartCard title={"현재 비율"} ratios={stocksCurRatio} />,
+    <TotalMyStocksCard /> ,
+    <CurrentPriceCard category='stocks' />,
+    <StockEditableCard />,
+    (status === 'success') ? <LineChartCard title='코스피 지수' data={[ConvertToNivoLineChartData("KOSPI",data)]} /> : "",
+  ]
   return (
     <ReStyledMain>
-
-      <Section>
-        <RatioChartCard title={"목표 비율"} ratios={targetRatios.stocks} />
-      </Section>
-
-      <Section>
-        <RatioChartCard title={"현재 비율"} ratios={stocksCurRatio} />
-      </Section>
-
-      <Section>
-        { status ==='success' &&
-        <LineChartCard title='코스피 지수' data={[ConvertToNivoLineChartData("KOSPI",data)]}/>}
-      </Section>
-
-      <Section>
-        <TotalMyStocksCard /> 
-      </Section>
-
-      <Section>
-        <CurrentPriceCard category='stocks' />
-      </Section>
-
-
-      <Section >
-        <StockEditableCard />
-      </Section>
+      {content.map(wrapping)}
     </ReStyledMain>
   )
 }

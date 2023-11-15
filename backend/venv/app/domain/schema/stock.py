@@ -44,6 +44,7 @@ class StockPriceWithDate(StockPrice):
 
     def isOld(self, timedelta: timedelta = timedelta(hours=6) ) -> bool:
         return self.updated_date <= datetime.now() - timedelta
+    
 class MyStockForUpdate(BaseModel):
     quantity: Decimal
     average_purchase_price: Decimal | None

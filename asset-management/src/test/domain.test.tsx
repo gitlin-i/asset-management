@@ -1,4 +1,4 @@
-import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, Ratio, } from "../domain/Domain"
+import { Assets, calcPercentage, calcAllAssetsCurrentValue, calcCurrentValue, calcAssetsPercentage, testRealData, calcAssetArrayCurrentValue, calcCashArrayCurrentValue, Ratio, } from "../domain/domain"
 import { Cash } from "../domain/cash"
 import { MyCoin } from "../domain/coin"
 import { Currency } from "../domain/currency"

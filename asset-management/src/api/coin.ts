@@ -1,7 +1,7 @@
 import { config } from "process"
 import { UPBIT_Api } from "./index"
 
-export interface CoinPrice {
+export interface CoinPriceAPI {
     market: string,
     trade_price: number
   }
@@ -10,10 +10,18 @@ export interface MyCoinAPI {
   quantity : number
   average_purchase_price : number | undefined
 }
-export interface CoinInfo{
+export interface CoinInfoAPI{
   market: string
   korean_name : string
   english_name : string
+}
+export interface CoinCandleAPI{
+  market: string
+  opening_price :number
+  high_price :number
+  low_price : number
+  trade_price	:number
+  candle_date_time_utc : string
 }
   export const isMyCoinAPI = (obj : object) : obj is MyCoinAPI => {
     if (typeof obj ==='object' &&
@@ -25,7 +33,7 @@ export interface CoinInfo{
     return false
   }
   
-export const getCoinPrice = async (coinCode: string | string[]) :Promise<CoinPrice[]> => {
+export const getCoinPrice = async (coinCode: string | string[]) :Promise<CoinPriceAPI[]> => {
 
   let params
   if (Array.isArray(coinCode)) {
@@ -33,13 +41,12 @@ export const getCoinPrice = async (coinCode: string | string[]) :Promise<CoinPri
   } else {
     params = coinCode
   }
-  const axiosConfig = {
-    headers:{
-        "Content-Type": "application-json"
-    }
-  }
-  const response = await UPBIT_Api.get(`/ticker?markets=${params}`)
   
+  const response = await UPBIT_Api.get(`/ticker?markets=${params}`)
   return response.data
 }
-// export const getCoinPriceby
+
+export const getCoinPricebyCandle =async (coinCode:string,candleCount :number = 7) : Promise<CoinCandleAPI[]>=> {
+  const response = await UPBIT_Api.get(`/candles/days?market=${coinCode}&count=${candleCount}`)
+  return response.data
+} 

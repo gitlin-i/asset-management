@@ -1,9 +1,9 @@
 import Item from "../component/Item";
 import { MyCoin } from "../domain/coin";
 import { MyStock } from "../domain/stock";
-import {  Ratio } from "../domain/Domain";
+import {  Ratio } from "../domain/domain";
 import { CurrencyMark } from "../domain/currency";
-import { PriceWithDate } from "../api/stock";
+import { IndexWithDateAPI } from "../api/stock";
 
 
 export interface NivoPieChartData {

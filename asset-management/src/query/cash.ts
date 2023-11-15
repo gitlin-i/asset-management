@@ -7,8 +7,9 @@ import { assetsState } from "../atom/atom"
 import { Cash } from "../domain/cash"
 import { Currency } from "../domain/currency"
 import { useEffect } from "react"
-import { useExchangeRate } from "./exchangeRate"
-import { exchangeValue } from "../domain/Domain"
+import { DEFAULT_EXCHANGERATE, useExchangeRate } from "./exchangeRate"
+import { Ratio, calcPercentage, exchangeValue } from "../domain/domain"
+import { ExchangeRateAPI } from "../api/exchange"
 
 export const useMyCashHook = ( )  => {
     const {data:myCash, status} = useMyAssets("cash") as UseQueryResult<ResponseData<MyCashAPI>, unknown>
@@ -56,4 +57,34 @@ export const useMyCash = () : Cash[] | undefined=> {
     return myCash.output.map(factoryCash)
   }
   
+}
+export const useMyCashRatio = (baseCurrency = Currency.KRW) : Ratio[] => {
+  const myCash = useMyCash()
+  const {data:exchangeRate, status:exchangeRateStatus}= useExchangeRate(DEFAULT_EXCHANGERATE)
+
+
+
+  if (!!myCash && exchangeRateStatus === 'success'){
+    const cashCurVal : { [name: string] : number }[] = myCash?.map((cash) => {
+      const targetExchangeRate  = exchangeRate.output.find((ex) => ex.currency === cash.currency)
+      const cashCurrentValue : number = (cash.currency === baseCurrency) ? cash.value : exchangeValue(cash.value,targetExchangeRate?.base_rate)
+      return {
+        [cash.name] : cashCurrentValue
+      }
+    })
+    const total  = cashCurVal.reduce((acc, cur) => {
+      const key = Object.keys(cur)[0]
+      return acc + cur[key]
+    },0)
+
+    const cashRatio : Ratio[] =  cashCurVal.map((val) => {
+      const key = Object.keys(val)[0]
+      return { [key] : calcPercentage(val[key] , total, 2)}
+    })
+    return cashRatio
+  } else {
+    return []
+  }
+
+
 }

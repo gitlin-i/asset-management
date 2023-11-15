@@ -5,8 +5,14 @@ import { useLocation, useParams } from 'react-router-dom'
 
 const StyledSide = styled.aside`
     display:none;
-    @media screen and (min-width: 1024px){
+    @media screen and (min-width: ${props => props.theme.breakPoint.t }){
         display:inline-block;        
+        width:30%;
+
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.l }){
+        display:inline-block;   
+        width:20%;
     }
     width:20%;
     position:relative;
@@ -61,22 +67,13 @@ const cash = {
   presentName: "현금",
   href: "/cash"
 }
-const deposit = {
-  icon: ["arrow_Forward","account_balance_wallet"],
-  presentName: "입금",
-  href: "/deposit"
+
+const setting = {
+  icon: "donut_large",
+  presentName: "설정",
+  href: "/setting"
 }
-const withdraw = {
-  icon: ["arrow_back","account_balance_wallet"],
-  presentName: "출금",
-  href: "/withdraw"
-}
-const myInfo = {
-  icon: "person",
-  presentName: "내 정보",
-  href: "/myinfo"
-}
-const menu = [dashboard, stock, coin, cash,deposit,withdraw,myInfo]
+const menu = [dashboard, stock, coin, cash,setting]
 
 
 const SideBar : React.FC = () => {

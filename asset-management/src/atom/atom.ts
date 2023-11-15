@@ -1,5 +1,5 @@
 import {atom} from "recoil"
-import { Assets, Ratio } from "../domain/Domain"
+import { Assets, Ratio } from "../domain/domain"
 import { lightTheme } from "../theme"
 import { ExchangeRate } from "../domain/exchangeRate"
 export const assetsState = atom<Assets>({

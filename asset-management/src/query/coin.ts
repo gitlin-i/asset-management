@@ -1,18 +1,20 @@
 import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ResponseData } from "../api"
-import { CoinPrice, MyCoinAPI, getCoinPrice } from "../api/coin"
+import { CoinPriceAPI, MyCoinAPI, getCoinPrice } from "../api/coin"
 import { useMyAssets } from "./assets"
 import { useRecoilState } from "recoil"
 import { assetsState } from "../atom/atom"
 import { KRWCoinInfo, MyCoin } from "../domain/coin"
 import { Currency } from "../domain/currency"
 import { useEffect } from "react"
+import { Ratio, calcPercentage } from "../domain/domain"
+import { DEFAULT_EXCHANGERATE, useExchangeRate } from "./exchangeRate"
 
 
 export const useCoinPrice = (coinCodes : MyCoinAPI[] | undefined) => {
     return useQuery({
       queryKey: ["coinPrice",coinCodes?.map((coin) => coin.code)],
-      queryFn : async () : Promise<CoinPrice[]> => {
+      queryFn : async () : Promise<CoinPriceAPI[]> => {
         const data = await getCoinPrice(coinCodes?.map((coin: MyCoinAPI) => coin.code) as string[])
         return data
       },enabled: !!coinCodes && coinCodes.length > 0 
@@ -74,3 +76,29 @@ export const useMyCoin = () : MyCoin[] | undefined => {
   }
 }
 
+export const useMyCoinsRatio = () : Ratio[] => {
+  const coins = useMyCoin()
+  //KRW-COINCODE 전제
+  if (!!coins && coins.length > 0 ){
+    const coinsCurVal : { [name: string] : number }[] | undefined = coins.map((coin) => {
+    
+      const coinsCurrentValue = coin.quantity * coin.price
+      return {
+        [coin.name] : coinsCurrentValue
+      }
+    })
+
+
+    const total : number = coinsCurVal.reduce((acc , cur: { [name: string] : number } ) => {
+      const key = Object.keys(cur)[0]
+      return acc + cur[key]
+    },0)
+    const coinsRatio : Ratio[] =  coinsCurVal.map((val) => {
+      const key = Object.keys(val)[0]
+      return { [key] : calcPercentage(val[key] , total, 2)}
+    })
+    return coinsRatio
+  }
+
+  return []
+}

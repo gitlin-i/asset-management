@@ -47,7 +47,7 @@ const BottomNav = () => {
             <StyledLi to={"/stock"}>
                 <Icon>universal_currency_alt</Icon>
             </StyledLi>
-            <StyledLi to={"/person"}>
+            <StyledLi to={"/setting"}>
                 <Icon>person</Icon>
             </StyledLi>
             <StyledLi to={"/coin"}>

@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { assetsState } from '../atom/atom'
 import { MyStock, Stock } from '../domain/stock'
-import {  testRealData } from '../domain/Domain'
+import {  testRealData } from '../domain/domain'
 import { MyCoin } from '../domain/coin'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'

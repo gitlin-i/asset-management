@@ -1,5 +1,5 @@
 
-import { Assets,  calcAllAssetsCurrentValue, calcAssetsPercentage } from "../domain/Domain"
+import { Assets,  calcAllAssetsCurrentValue, calcAssetsPercentage } from "../domain/domain"
 import { MyCoin } from "../domain/coin"
 import { Currency } from "../domain/currency"
 import { MyStock } from "../domain/stock"

@@ -3,6 +3,7 @@ import { keyframes, styled } from 'styled-components'
 import ThemeChangeButton from './ThemeChangeButton'
 import { useRecoilState } from 'recoil'
 import { modalState } from '../atom/atom'
+import { useUserInfo } from '../query/user'
 const StyledNav = styled.nav`
   width:100%;
   height: 56px;
@@ -102,9 +103,10 @@ interface animate {
 const Header : React.FC = () => {
 
   const [modal, setModal] = useRecoilState(modalState)
+  const {data, status} = useUserInfo()
 
-
-  const handleClick = () => {setModal((prev)=>({
+  const handleClick = () => {
+    setModal((prev)=>({
     ...prev,
     isModalOpen: true,
     title: "로그인",
@@ -133,9 +135,12 @@ const Header : React.FC = () => {
           account_circle
         </AccountIconButton>
 
-        <AccountInfo>
-          hello! Kim.
-        </AccountInfo>
+        
+          {status === 'success' ? 
+          <AccountInfo>
+          {`hello! ${data.name}`}
+          </AccountInfo> :``}
+        
         
         <ThemeChangeButton />
       </RightArea>

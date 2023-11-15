@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil'
 import { assetsRatio } from '../../selector/selector'
 import styled from 'styled-components'
 import PieChart from '../PieChart'
-import { Ratio } from '../../domain/Domain'
+import { Ratio } from '../../domain/domain'
 
 const StyledDiv = styled.div`
   display: inline-block;

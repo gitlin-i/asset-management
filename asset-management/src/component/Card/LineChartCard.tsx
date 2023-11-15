@@ -9,21 +9,15 @@ interface LineChartProps {
     data : any
     titleRightText ?: string;
 }
-const WrappingDiv = styled.div`
-    width: 100%;
-    height: 100%;
-    display:flex;
-    justify-content:center;
-    align-items: center;
-    position:relative;
-`
+
 const StyledDiv = styled.div`
   display: inline-block;
   
   width: 100%;
   height:180px;
+
   &:hover {
-    background-color:#efefef;
+    background-color:${props => props.theme.color.hover };
   }
   border-radius:1rem;
   
@@ -31,11 +25,11 @@ const StyledDiv = styled.div`
 const LineChartCard : React.FC<LineChartProps>= (props) => {
     const {title ,titleRightText, data} = props
     const last = data[0].data.length - 1
-    const lastIndexValue = data[0].data[last].y
+    const lastIndexValue: number = data[0].data[last].y
 
   
   return (
-    <Card title={title +" "+ lastIndexValue} titleRightText={titleRightText}>
+    <Card title={title +" "+ lastIndexValue.toLocaleString()} titleRightText={titleRightText}>
       <StyledDiv>
         <LineChart data={data}/>
       </StyledDiv>

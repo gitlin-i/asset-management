@@ -7,7 +7,7 @@ import { Stock } from '../../domain/stock';
 import { Cash } from '../../domain/cash';
 import Item from '../Item';
 import { Price } from '../../domain/price';
-import {  exchangeValue, mappingText } from '../../domain/Domain';
+import {  exchangeValue, mappingText } from '../../domain/domain';
 import { useRecoilState } from 'recoil';
 import { assetsState } from '../../atom/atom';
 

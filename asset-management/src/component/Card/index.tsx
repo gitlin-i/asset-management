@@ -15,14 +15,11 @@ const StyledDiv = styled.div<CardProps>`
     width: 100%;
     height: 100%;
     max-height:100%;
-    background-color:${(props) => props.color || "white" };
+    background-color:${props => props.theme.color.card };
     border-radius:1rem;
     display:flex;
     flex-direction:column;
-    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); */
-    /* &:hover{
-    background-color: #e6e6e6;
-  } */
+    color: ${props => props.theme.color.font };
 
 `
 const StyledHeader = styled.header<{$titleButton: boolean; $titleRightText : boolean;}>`
@@ -38,10 +35,8 @@ const StyledHeader = styled.header<{$titleButton: boolean; $titleRightText : boo
   font-size:20px;
   display: flex;
   align-items: center;
-  margin-bottom:1rem;
   justify-content: ${props => props.$titleButton || props.$titleRightText ? "space-between" : ""};
 
-  
 `
 const StyledSpan = styled.span`
   display:inline-flex;
@@ -53,7 +48,7 @@ const StyledSpan = styled.span`
 const StyledBody = styled.div<CardProps>`
   
   overflow: auto;
-  
+  padding-bottom: 0.5rem;
   &::-webkit-scrollbar-track {
     border-radius: 0.125rem;
     background-color: white;
