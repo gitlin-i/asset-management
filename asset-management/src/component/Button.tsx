@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { IStyledComponent } from 'styled-components';
+import styled from 'styled-components';
 
 interface ButtonProps extends React.ClassAttributes<HTMLButtonElement> , React.ButtonHTMLAttributes<HTMLButtonElement>{
   children?:React.ReactNode;
@@ -25,9 +25,6 @@ const StyledButton = styled.button<ButtonProps>`
     box-shadow: 0px 6px 10px #e3e1e1;
   }
 
-  /* &:active {
-    transform: translateY(0.5rem);
-  } */
 
   &:disabled {
     opacity: 0.6;

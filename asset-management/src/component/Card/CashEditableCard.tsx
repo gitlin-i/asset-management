@@ -1,21 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '.'
 import styled from 'styled-components'
-
-
 import Button from '../Button'
-
-
 import { useMyAssetsMutation } from '../../mutation/mutation'
-
-import { useMyCoin } from '../../query/coin'
-import { KRWCoin, KRWCoinTop10 } from '../../domain/coin'
-import { CoinInfoAPI } from '../../api/coin'
 import Input from '../Input'
-import { AxiosError } from 'axios'
 import { useMyCash } from '../../query/cash'
-import { Cash } from '../../domain/cash'
-import { MyCashAPI } from '../../api/cash'
 import { DEFAULT_EXCHANGERATE, useExchangeRate } from '../../query/exchangeRate'
 import { CurrencyToKoreanName, POPULAR_CURRENCY } from '../../domain/currency'
 
@@ -52,23 +41,6 @@ const StyledSearchArea = styled.div`
   display:flex;
   justify-content:space-between;
   align-items:center;
-`
-const StyledSearchButton = styled(Button)`
-
-  width:1rem;
-  height:1rem;
-  padding:1.5rem;
-  border-radius:2rem;
-
-  background-color: gray;
-  color: white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-`
-
-
-const MaterialSpan = styled.span.attrs({className: "material-symbols-outlined" })`
 `
 
 

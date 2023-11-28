@@ -6,12 +6,11 @@ import Card from '../Card'
 import Input from '../Input'
 import Button from '../Button'
 import { DevApi } from '../../api'
-import { redirect, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 const StyledDiv = styled.div`
   background-color: ${props => props.theme.color.background };
-  /* background-color:white; */
   width:100vw;
   height:100vh;
   display:flex;

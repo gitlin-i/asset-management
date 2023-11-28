@@ -1,14 +1,9 @@
-import React, { useRef, useState } from 'react'
+import  {  useState } from 'react'
 import Input from './Input'
 import styled from 'styled-components'
 import Button from './Button';
 
-interface InputProps {
-    isEditing ?: boolean;
-    defaultText ?: string;
-    type?: string
-    $responsive ?: boolean;
-}
+
 const StyledLayout = styled.div`
     width:100%;
     height:100%;

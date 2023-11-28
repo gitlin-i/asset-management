@@ -2,17 +2,10 @@ import styled from "styled-components"
 import Card from "."
 import Item from "../Item"
 import { exchangeValue } from "../../domain/domain"
-import { useRecoilState, useRecoilValue } from "recoil"
-import { stocksCurrentValue, stocksRatio } from "../../selector/selector"
 import { MyStock } from "../../domain/stock"
-import { assetsState } from "../../atom/atom"
 import { Currency, CurrencyMark } from "../../domain/currency"
 import { DEFAULT_EXCHANGERATE, useExchangeRate } from "../../query/exchangeRate"
-import { useMyStock, useMyStockCurrentValue, useMyStockInfo2, useStockInfo } from "../../query/stock"
-import { MyStockAPI, StockInfoAPI, StockPriceAPI } from "../../api/stock"
-import { useMyAssets } from "../../query/assets"
-import { ResponseData } from "../../api"
-import { UseQueryResult } from "@tanstack/react-query"
+import { useMyStock, useMyStockCurrentValue, useMyStockInfo } from "../../query/stock"
 
 
 const StyledUl = styled.ul`
@@ -21,7 +14,6 @@ const StyledUl = styled.ul`
 `
 const StyledDiv = styled.div`
 
-  /* font-size: 12px; */
   font-weight:600;
   text-align:right;
   position:relative;

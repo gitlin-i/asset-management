@@ -1,6 +1,4 @@
 import React from 'react'
-// install (please try to align the version of installed @nivo packages)
-// yarn add @nivo/pie
 import { PieCustomLayer, ResponsivePie } from '@nivo/pie'
 import { NivoPieChartData } from '../utill/NivoPieChart'
 

@@ -7,8 +7,9 @@ RUN yarn install --production
 RUN yarn build
 
 
-FROM nginx:1.25-alpine
+FROM nginx:stable-alpine
 COPY --from=build /asset-management/build /usr/share/nginx/html
-
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 
 

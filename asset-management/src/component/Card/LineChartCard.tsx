@@ -1,9 +1,7 @@
-import { ResponsiveLine } from '@nivo/line'
 import React from 'react'
 import Card from '.'
 import LineChart from '../LineChart';
 import styled from 'styled-components';
-type NivoData = {id:string,data: {x:string, y:number}[]}
 interface LineChartProps {
     title ?: string;
     data : any

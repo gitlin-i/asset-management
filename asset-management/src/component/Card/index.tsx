@@ -1,5 +1,5 @@
-import { title } from 'process';
-import React, { Children } from 'react'
+
+import React from 'react'
 import { styled } from 'styled-components'
 interface CardProps {
     title ?: string;

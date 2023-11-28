@@ -2,32 +2,12 @@ import { UseQueryResult } from "@tanstack/react-query"
 import { useMyAssets } from "./assets"
 import { ResponseData } from "../api"
 import { MyCashAPI } from "../api/cash"
-import { useRecoilState } from "recoil"
-import { assetsState } from "../atom/atom"
 import { Cash } from "../domain/cash"
 import { Currency } from "../domain/currency"
-import { useEffect } from "react"
 import { DEFAULT_EXCHANGERATE, useExchangeRate } from "./exchangeRate"
 import { Ratio, calcPercentage, exchangeValue } from "../domain/domain"
-import { ExchangeRateAPI } from "../api/exchange"
 
-export const useMyCashHook = ( )  => {
-    const {data:myCash, status} = useMyAssets("cash") as UseQueryResult<ResponseData<MyCashAPI>, unknown>
-    const [assets, setAssets] = useRecoilState(assetsState)
-    const factoryCash = (cash: MyCashAPI) => {
-      return new Cash(cash.balance,cash.currency as Currency)
-    }
-    useEffect(() => {
-      if (status === 'success') {
-        setAssets((prev) => ({
-          ...prev,
-          cash: myCash?.output.map(factoryCash)
-        }))
-      }
-    },[status])
-    return assets.cash
-  }
-  
+
 
 export const useMyCashCurrentValue = (baseCurrency = Currency.KRW)  => {
   const {data:myCash, status: myCashStatus} = useMyAssets("cash") as UseQueryResult<ResponseData<MyCashAPI>, unknown>

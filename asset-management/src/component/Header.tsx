@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { keyframes, styled } from 'styled-components'
 import ThemeChangeButton from './ThemeChangeButton'
 import { useRecoilState } from 'recoil'
@@ -27,7 +27,6 @@ const LeftArea = styled(Area)`
 const StyledA = styled.a`
   display: inline-flex;
   align-items: center;
-  /* background-color:red; */
   gap:1rem;
   font-size: 1.5rem;
   text-decoration: none;
@@ -85,19 +84,6 @@ const AccountInfo = styled.span`
     display:none;
   }
 `
-const moveAnimaition = keyframes`
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(16px);
-    opacity: 0;
-  }
-
-`
-interface animate {
-  $ani: boolean;
-}
 
 
 const Header : React.FC = () => {
@@ -123,10 +109,6 @@ const Header : React.FC = () => {
           <span>자산 관리</span>
         </StyledA>
       </LeftArea>
-{/* 
-      <MiddleArea>
-        페이지 제목
-      </MiddleArea> */}
 
 
       <RightArea>

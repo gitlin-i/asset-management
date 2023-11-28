@@ -1,6 +1,4 @@
-import { useRecoilValue } from "recoil"
 import styled from "styled-components"
-import { cashCurrentValue} from "../../selector/selector"
 import Card from "."
 import Item from "../Item"
 import { exchangeValue } from "../../domain/domain"

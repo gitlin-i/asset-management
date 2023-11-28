@@ -1,4 +1,3 @@
-import { config } from "process"
 import { UPBIT_Api } from "./index"
 
 export interface CoinPriceAPI {

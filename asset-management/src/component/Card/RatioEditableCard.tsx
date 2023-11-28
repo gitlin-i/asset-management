@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '.'
 import styled from 'styled-components'
 import Input from '../Input'
-import { MyStock } from '../../domain/stock'
 import Button from '../Button'
-
-
-import { useMyAssetsMutation, useMyRatioMutation } from '../../mutation/mutation'
-import { useMyStock } from '../../query/stock'
+import { useMyRatioMutation } from '../../mutation/mutation'
 import { RatioCategory, RatioCategoryArray, RatioCategoryToKorean } from '../../domain/ratio'
-import { StockInfoAPI } from '../../api/stock'
 import { MyRatioAPI } from '../../api/ratio'
 import { useMyRatio } from '../../query/ratio'
 import { Ratio } from '../../domain/domain'
@@ -122,6 +117,7 @@ const RatioEditableCard :React.FC= (props) => {
         const ratioName = Object.keys(ratio)[0]
         return ratioName === params.ratio_name
       })
+
       if (isExistRatio){
         ratioMutation.mutate({
             ...params,
@@ -133,6 +129,8 @@ const RatioEditableCard :React.FC= (props) => {
             method:"post",
           })
       }
+
+      
       
     }
     const handleDeleteClick =async (e: any) => {

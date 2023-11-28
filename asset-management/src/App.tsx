@@ -1,7 +1,5 @@
 import React from 'react';
-import './App.css';
 import Header from './component/Header';
-
 import SideBar from './component/SideBar';
 import Modal from './component/Modal';
 import { ThemeProvider } from 'styled-components';

@@ -1,15 +1,12 @@
-import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query"
+import { UseQueryResult, useQuery } from "@tanstack/react-query"
 import { ResponseData } from "../api"
-import { StockMarket, StockMarketIndex } from "../domain/market"
-import { MyStockAPI, StockInfoAPI, StockPriceAPI, getStockInfo, getStockMarketIndex, getStockPrice } from "../api/stock"
+import { StockMarket } from "../domain/market"
+import { MyStockAPI, StockInfoAPI, StockPriceAPI, getStockInfo, getStockPrice } from "../api/stock"
 import { useMyAssets } from "./assets"
-import { useRecoilState } from "recoil"
-import { assetsState } from "../atom/atom"
 import { MyStock } from "../domain/stock"
-import { Currency, MapperStockMarketToCurrency } from "../domain/currency"
-import { useEffect } from "react"
+import { Currency } from "../domain/currency"
 import { MarketToCurrency, Ratio, calcPercentage, exchangeValue } from "../domain/domain"
-import { ExchangeRateAPI } from "../api/exchange"
+
 import { useExchangeRate } from "./exchangeRate"
 
 
@@ -39,59 +36,12 @@ const parseMarketAndStockCodes= (cachedData: ResponseData<StockBase>| StockBase[
   return marketRecord
 }
 
-export const useMyStockPrice = () => {
-  const queryClient = useQueryClient()
-  const cachedMyStock : ResponseData<MyStockAPI> | undefined= queryClient.getQueryData(["myAssets", "stock"])
-  return useQuery({
-    queryKey: ['stockPrice',cachedMyStock?.output],
-    queryFn: async () : Promise<StockPriceAPI[] > => {
 
-      let result : StockPriceAPI[] = []
-      const MarketAndStockCodes : {[market : string] : string[]} = parseMarketAndStockCodes(cachedMyStock)
 
-      for (const [market, stockCodes] of Object.entries(MarketAndStockCodes)){
-        const response = await getStockPrice(stockCodes,market)
-        result = result.concat(response.data.output)
-      }
-      return result
-    },enabled : !!(cachedMyStock && cachedMyStock?.output.length > 0)
-  })
-}
-
-export const useStockInfo = (stockCode : string[] | string, market: StockMarket, isClicked : boolean = false) => {
-  const stockCodeisArray = (Array.isArray(stockCode) && stockCode.length > 0)
-  const stockCodeisString = !!stockCode
-
-  return useQuery({
-    queryKey: ['stockInfo' , stockCode,market],
-    queryFn:async () : Promise<StockInfoAPI[]>=> {
-      const response = await getStockInfo(stockCode,market)
-      return response.data.output
-    }, enabled : !!(stockCodeisArray || stockCodeisString) && !!market && isClicked
-  })
-}
-export const useMyStockInfo = ()  => {
-  const queryClient = useQueryClient()
-  const cachedData : ResponseData<StockInfoAPI> | undefined= queryClient.getQueryData(['myAssets', 'stock'])
+export const useMyStockInfo = (stocks : MyStockAPI[] | undefined)  => {
   
   return useQuery({
-    queryKey: ['MyStockInfo',cachedData?.output],
-    queryFn : async () :Promise<StockInfoAPI[]> => {
-      let result : StockInfoAPI[] = []
-      const marketAndStockCodes = parseMarketAndStockCodes(cachedData)
-      
-      for (const [market, stockCodes] of Object.entries(marketAndStockCodes)){
-        const response = await getStockInfo(stockCodes,market as StockMarket )
-        result = result.concat(response.data.output)
-      }
-      return result
-    }, enabled: !!(cachedData && cachedData?.output.length > 0)
-  })
-}
-export const useMyStockInfo2 = (stocks : MyStockAPI[] | undefined)  => {
-  
-  return useQuery({
-    queryKey: ['MyStockInfo',stocks],
+    queryKey: ['myStockInfo',stocks],
     queryFn : async () :Promise<StockInfoAPI[]> => {
       let result : StockInfoAPI[] = []
       const marketAndStockCodes = parseMarketAndStockCodes(stocks)
@@ -104,39 +54,11 @@ export const useMyStockInfo2 = (stocks : MyStockAPI[] | undefined)  => {
     }, enabled: !!stocks && stocks.length > 0
   })
 }
-export const useMyStockHook= () =>{
-  
-  const {data:myStock, status:myStockStatus} = useMyAssets("stock") as UseQueryResult<ResponseData<MyStockAPI>, unknown>
-  const {data: stockInfo ,status: stockInfoStatus} = useMyStockInfo()
-  const {data: stockPrice, status:stockPriceStatus} = useMyStockPrice()
-  const [assets,setAssets] = useRecoilState(assetsState)
-  const factoryMyStock = (stock: MyStockAPI) => {
-    const targetStockInfo = stockInfo?.find((stockinfo) => stockinfo.code === stock.code && stockinfo.market === stock.market )
-    const targetStockPrice = stockPrice?.find((stockprice) => stockprice.code === stock.code && stockprice.market === stock.market)
-
-    return new MyStock(stock.code,stock.market,targetStockInfo?.name!,
-      targetStockPrice?.price!,MapperStockMarketToCurrency[stock.market],
-      stock.quantity,stock.average_purchase_price)
-  }
-  
-  useEffect(() => {
-    
-    if (myStockStatus === 'success' && stockInfoStatus === 'success'&& stockPriceStatus === 'success'){
-      setAssets((prev) => ({
-        ...prev,
-        stocks:  myStock?.output.map(factoryMyStock)
-      }))
-    }
-    
-  },[myStockStatus,stockInfoStatus,stockPriceStatus])
-  return assets.stocks
-}
-
 
 
 export const useStockPrice = (stock:StockBase[] | undefined) => {
   return useQuery({
-    queryKey: ["stock","price"],
+    queryKey: ["stockPrice",stock],
     queryFn: async () : Promise<StockPriceAPI[]> => {
 
       let result : StockPriceAPI[] = []
@@ -151,8 +73,31 @@ export const useStockPrice = (stock:StockBase[] | undefined) => {
     enabled: !!stock && stock.length > 0
   })
 }
+export const useMyStock = () : MyStock[] | undefined =>{
+  const {data: myStock, status:myStockStatus} = useMyAssets("stock") as UseQueryResult<ResponseData<MyStockAPI>, unknown>
+  const {data: stockInfo, status:stockInfoStatus} = useMyStockInfo(myStock?.output)
+  const {data: stockPrice, status:stockPriceStatus} = useStockPrice(myStock?.output)
+  const factory = (myStock :MyStockAPI , stockInfo : StockInfoAPI , stockPrice: StockPriceAPI) => {
+    return new MyStock(myStock.code,myStock.market,stockInfo.name,stockPrice.price,
+      MarketToCurrency[myStock.market], myStock.quantity,myStock.average_purchase_price)
+  }
+  if (myStockStatus ==='success' && stockInfoStatus === 'success' && stockPriceStatus === 'success'){
+    return myStock?.output.map((stock) => {
+      const targetStockInfo = stockInfo.find((info) => info.code === stock.code && info.market === stock.market)
+      const targetStockPrice = stockPrice.find((price) => price.code === stock.code && price.market === stock.market)
+      if (targetStockInfo && targetStockPrice){
+        return factory(stock,targetStockInfo ,targetStockPrice)
+      } else {
+        
+        return factory(stock,{...stock, name: "알 수 없는 이름" } ,{...stock,price : 0} )
+      }
+      
+    })
+  }
 
-//useQuery
+}
+
+
 export const useMyStockCurrentValue = () => {
   const {data: myStock ,status:myStockStatus} = useMyAssets("stock") as UseQueryResult<ResponseData<MyStockAPI>, unknown>
   const {data: exchangeRate ,status: exchangeRateStatus} = useExchangeRate(['USD','JPY(100)','EUR','CNH'])
@@ -179,56 +124,12 @@ export const useMyStockCurrentValue = () => {
   return stockCurValue
 }
 
-export const useMyStock = () : MyStock[] | undefined =>{
-  const {data: myStock, status:myStockStatus} = useMyAssets("stock") as UseQueryResult<ResponseData<MyStockAPI>, unknown>
-  const {data: stockInfo, status:stockInfoStatus} = useMyStockInfo2(myStock?.output)
-  const {data: stockPrice, status:stockPriceStatus} = useStockPrice(myStock?.output)
-  const factory = (myStock :MyStockAPI , stockInfo : StockInfoAPI , stockPrice: StockPriceAPI) => {
-    return new MyStock(myStock.code,myStock.market,stockInfo.name,stockPrice.price,
-      MarketToCurrency[myStock.market], myStock.quantity,myStock.average_purchase_price)
-  }
-  if (myStockStatus ==='success' && stockInfoStatus === 'success' && stockPriceStatus === 'success'){
-    return myStock?.output.map((stock) => {
-      const targetStockInfo = stockInfo.find((info) => info.code === stock.code && info.market === stock.market)
-      const targetStockPrice = stockPrice.find((price) => price.code === stock.code && price.market === stock.market)
 
-      if (targetStockInfo && targetStockPrice){
-        return factory(stock,targetStockInfo ,targetStockPrice)
-      } else {
-        return factory(stock,{...stock, name: "알 수 없는 이름" } ,{...stock,price : 0} )
-      }
-      
-    })
-  }
-
-}
-// const calcCurrentValue = (
-//   myStock : MyStockAPI[] ,
-//   stockPrice : StockPriceAPI[],
-//   stockInfo : StockInfoAPI[], 
-//   exchangeRate: ExchangeRateAPI[]) : number => {
-  
-//   const stockCurrentValue = myStock.map((stock) => {
-//     const stockCurrentPrice = stockPrice?.find((aStockPrice) => aStockPrice.code === stock.code && aStockPrice.market === stock.market)
-//     const stockInfoName = stockInfo.find((info) => info.code === stock.code && info.market === stock.market)
-
-//     if (!!stockCurrentPrice && !!stockInfoName){
-//       const stockCurrentValue = stock.quantity * stockCurrentPrice.price
-//       const aExchangeRate = exchangeRate.find((ex) => ex.currency === MarketToCurrency[stock.market])
-
-//       return (MarketToCurrency[stock.market] === Currency.KRW) ? stockCurrentValue : exchangeValue(stockCurrentValue,aExchangeRate?.base_rate)
-      
-//     }
-//     return 0
-//   })
-//   return stockCurrentValue ? stockCurrentValue : 0   
-
-// }
 export const useMyStocksRatio = () : Ratio[] => {
   const {data: myStock ,status:myStockStatus} = useMyAssets("stock") as UseQueryResult<ResponseData<MyStockAPI>, unknown>
   const {data: exchangeRate ,status: exchangeRateStatus} = useExchangeRate(['USD','JPY(100)','EUR','CNH'])
   const {data: stockPrice ,status:stockPriceStatus} = useStockPrice(myStock?.output)
-  const {data: stockInfo, status:stockInfoStatus} = useMyStockInfo2(myStock?.output)
+  const {data: stockInfo, status:stockInfoStatus} = useMyStockInfo(myStock?.output)
 
   if (myStockStatus ==="success" && exchangeRateStatus ==="success" && stockPriceStatus ==="success" && stockInfoStatus === 'success'){
     const stocksCurVal : { [name: string] : number }[] | undefined = myStock.output.map((stock) => {

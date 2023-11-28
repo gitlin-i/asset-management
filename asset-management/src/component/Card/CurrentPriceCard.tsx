@@ -2,19 +2,13 @@ import React from 'react'
 import Card from '.';
 
 import styled from 'styled-components';
-import { Coin, MyCoin } from '../../domain/coin';
+import { Coin} from '../../domain/coin';
 import { Stock } from '../../domain/stock';
 import { Cash } from '../../domain/cash';
 import Item from '../Item';
-import { Price } from '../../domain/price';
 import {  exchangeValue, mappingText } from '../../domain/domain';
-import { useRecoilState } from 'recoil';
-import { assetsState } from '../../atom/atom';
-
 import { Currency, CurrencyMark } from '../../domain/currency';
-
-import { StockPriceAPI } from '../../api/stock';
-import { useMyStock, useMyStockPrice } from '../../query/stock';
+import { useMyStock} from '../../query/stock';
 import { useExchangeRate } from '../../query/exchangeRate';
 import { useMyCoin } from '../../query/coin';
 import { useMyCash } from '../../query/cash';
@@ -34,7 +28,6 @@ const StyledUl = styled.ul`
 const CurrentPriceCard : React.FC<CurrentPriceCardProps> = (props) => {
   const { category } = props
   const title = mappingText(category)
-  // const {status,data} =  useMyStockPrice()
   const stocks = useMyStock()
   const coins = useMyCoin()
   const cash = useMyCash()

@@ -8,9 +8,7 @@ from sqlalchemy import Row, select, update
 from domain.model.user import UserModel
 from domain.schema.user import UserIn,UserSecret
 class UserRepositorty:
-
-
-
+    
     @classmethod
     @validate_arguments
     def read(cls, user_id : str ) -> UserSecret | None:

@@ -1,5 +1,5 @@
 import requests
-from temp.appkey import KOREAEXIM
+from secret.appkey import KOREAEXIM
 base_url = "https://www.koreaexim.go.kr/site/program/financial"
 
 authkey = KOREAEXIM["authkey"]
@@ -15,5 +15,5 @@ def get_exchange_rate(search_date = None):
         "data" : data_type
     }
     response = requests.get(base_url + url, params=params)
-    
+    #공휴일 조회시 []반환
     return response.json()

@@ -1,14 +1,9 @@
 
 import { styled } from 'styled-components'
-import { testTargetRatios } from '../../domain/domain'
 import Section from '../Section'
-import { useRecoilState,} from 'recoil'
-import { targetRatioState } from '../../atom/atom'
 import RatioChartCard from '../Card/RatioChartCard'
-import { useEffect } from 'react'
 import CurrentPriceCard from '../Card/CurrentPriceCard'
 import { StyledMain } from './MainPage'
-import TestingCard from '../Card/TestingCard'
 import TotalMyCashCard from '../Card/TotalMyCashCard'
 import { useMyCashRatio } from '../../query/cash'
 import CashEditableCard from '../Card/CashEditableCard'
@@ -44,9 +39,6 @@ const ReStyledMain = styled(StyledMain)`
   }
 `
 
-
-
-////////////
 const CashPage : React.FC = (props) => {
   const page = "CashPage"
   

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
@@ -15,7 +14,6 @@ import StockPage from './component/page/StockPage';
 import CoinPage from './component/page/CoinPage';
 import CashPage from './component/page/CashPage';
 import JoinPage from './component/page/JoinPage';
-import { QueryClient } from '@tanstack/react-query';
 import TestingPage from './component/page/TestingPage';
 
 const root = ReactDOM.createRoot(

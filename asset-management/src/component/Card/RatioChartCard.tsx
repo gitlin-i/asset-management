@@ -1,7 +1,6 @@
 import React from 'react'
 import Card from '.'
 import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
-
 import styled from 'styled-components'
 import PieChart from '../PieChart'
 import { Ratio } from '../../domain/domain'

@@ -35,16 +35,6 @@ export type IndexWithDateAPI = {
   price : number
 }
 
-const MyStockFactory = (myStock: MyStockAPI,myStockInfo:StockInfoAPI,myStockPrice: StockPriceAPI) =>{
-    return new MyStock(myStock.code,
-        myStock.market,
-        myStockInfo.name,
-        myStockPrice.price,
-        MapperStockMarketToCurrency[myStock.market],
-        myStock.quantity,
-        myStock.average_purchase_price)
-}
-
 
 export const getStockPrice = async (stockCodes: Array<string> | string,market: string) : Promise<AxiosResponse<ResponseData<StockPriceAPI>>>=> {
     let params

@@ -1,13 +1,13 @@
-import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { MyStockAPI } from "../api/stock"
-import { deleteMyAssets, getMyAssets, postMyAssets, putMyAssets } from "../api/asset"
+import { deleteMyAssets, postMyAssets, putMyAssets } from "../api/asset"
 import { MyCashAPI } from "../api/cash"
 import { MyCoinAPI } from "../api/coin"
 import { AxiosError } from "axios"
 import { MyRatioAPI, deleteMyRatio, postMyRatio, putMyRatio } from "../api/ratio"
 
 type Assets = "stock" | "coin" | "cash"
-type HTTPMethod = "get" |"post"| "put" | "delete"
+// type HTTPMethod = "get" |"post"| "put" | "delete"
 type MutationMethod = "post"| "put" | "delete"
 interface MyStockAPIwithMethod extends MyStockAPI {
   method : MutationMethod
@@ -39,8 +39,8 @@ export const useMyAssetsMutation = (asset : Assets) => {
       queryClient.invalidateQueries({queryKey: ["myAssets",asset]})
     },
     onError: (error) => {
-      const {response}  = error as AxiosError<{ detail : string}>
-      const message = response?.data.detail 
+      const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>
+      const message = response?.data.detail[0].msg
       alert(message)
     }
   })
@@ -63,9 +63,11 @@ export const useMyRatioMutation = () => {
       queryClient.invalidateQueries({queryKey: ["myRatio"]})
     },
     onError: (error) => {
-      const {response}  = error as AxiosError<{ detail : string}>
-      const message = response?.data.detail 
+      const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>
+      const message = response?.data.detail[0].msg
       alert(message)
+
+
     }
   })
 }

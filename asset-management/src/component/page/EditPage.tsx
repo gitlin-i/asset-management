@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { StyledMain } from './MainPage'
-import StockEditableCard from '../Card/StockEditableCard'
 import { useMyRatio } from '../../query/ratio'
 import RatioChartCard from '../Card/RatioChartCard'
 import RatioEditableCard from '../Card/RatioEditableCard'
@@ -10,10 +9,6 @@ import Section from '../Section'
 const ReStyledMain = styled(StyledMain)`
 
   @media screen and (min-width: ${props => props.theme.breakPoint.ll }){
-    /* height:calc(100vh - 56px);
-
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3,1fr); */
     && :nth-child(1){
       grid-row-start:1;
       grid-row-end:3;

@@ -38,8 +38,8 @@ class ExchangeService:
 
     @classmethod
     def init_exchange_rate(cls) -> bool:
-        read_result = ExchangeRateRepository.read("KRW")
-        if not read_result:
+        exchange_rate_in_db = ExchangeRateRepository.read("KRW")
+        if not exchange_rate_in_db:
             exchange_rate_list = get_exchange_rate()
             
             if not exchange_rate_list:
@@ -61,7 +61,7 @@ class ExchangeService:
     def update_exchange_rate(cls) -> bool:
         exchange_rate_list = get_exchange_rate()
         if not exchange_rate_list:
-            return False
+            raise ValueError("empty list")
         def replace(target) :
             target['deal_bas_r'] = target['deal_bas_r'].replace(",","")
             return target

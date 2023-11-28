@@ -1,5 +1,4 @@
 
-import json
 from typing import List, Literal
 from domain.schema.stock import StockPrice, StockPriceResponseOfKorInvAPI,StockInfo, StockInfo,StockInfoReponseOfKorInvAPI,StockPriceWithDate,IndexPriceWithDate
 from domain.schema.market import Market
@@ -8,14 +7,8 @@ from repository.stock_repository import StockCurPriceRepository, StockInfoReposi
 from domain.model.stock_info import StockInfoModel
 from external_api.korea_investment_api import get_stock_current_price, get_stock_info,get_domestic_index
 from pydantic import validate_arguments
+from korea_investment_token import read_token
 
-
-def getTokenDict() -> dict:
-    file_path = "./temp/AT.txt"
-    with open(file_path,"r") as f:
-        tokenDict = json.load(f)
-
-    return tokenDict
 
 def get_index(tokenDict,market: Literal['KOSPI','KOSDAQ']):
     today = datetime.now()
@@ -25,9 +18,9 @@ def get_index(tokenDict,market: Literal['KOSPI','KOSDAQ']):
     return index_price_for_a_week
 
 class StockService:
-    tokenDict = getTokenDict()
-    KOSPI = get_index(tokenDict,"KOSPI")
-    KOSDAQ = get_index(tokenDict,"KOSDAQ")
+    access_token = read_token()
+    KOSPI = get_index(access_token,"KOSPI")
+    KOSDAQ = get_index(access_token,"KOSDAQ")
     STANDARD_TIMEDELTA_FOR_OLD_DATA = timedelta(days=1)
 
     @classmethod
@@ -40,7 +33,7 @@ class StockService:
     @validate_arguments
     def price_read_from_api(cls, stock_code:str, market:Market ) -> StockPrice:
 
-        json_response = get_stock_current_price(cls.tokenDict,stock_code,market)
+        json_response = get_stock_current_price(cls.access_token,stock_code,market)
         api_response = StockPriceResponseOfKorInvAPI(**json_response)
         
         if api_response.rt_cd != '0': #read_fail (api가 정상처리되지 못한 경우)
@@ -100,7 +93,7 @@ class StockService:
     @validate_arguments
     def info_read_from_api(cls, stock_code:str, market:Market ) -> StockInfo | None:
 
-        json_response = get_stock_info(cls.tokenDict,stock_code,market)
+        json_response = get_stock_info(cls.access_token,stock_code,market)
         api_response = StockInfoReponseOfKorInvAPI(**json_response)
         
         if api_response.rt_cd != '0': #read_fail (api가 정상처리되지 못한 경우)

@@ -1,7 +1,5 @@
-import { useRecoilValue } from "recoil"
+
 import styled from "styled-components"
-import { coinsCurrentValue } from "../../selector/selector"
-import { assetsState } from "../../atom/atom"
 import Card from "."
 import Item from "../Item"
 import {   exchangeValue } from "../../domain/domain"

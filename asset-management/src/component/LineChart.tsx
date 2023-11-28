@@ -1,8 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 import { NivoLineChartData } from '../utill/NivoLineChart'
 
-
-// type NivoLineChartData = {id:string, data: {x:string, y:number}[]}
 interface LineChartProps {
     data : Array<NivoLineChartData>
 }

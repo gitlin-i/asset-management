@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import Button from '../Button'
-import axios from 'axios'
 import { DevApi } from '../../api'
 import Input from '../Input'
 import styled from 'styled-components'
-import { Link, redirect, useNavigate } from 'react-router-dom'
+import { Link  } from 'react-router-dom'
 import { modalState } from '../../atom/atom'
 import { useRecoilState } from 'recoil'
 

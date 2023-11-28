@@ -1,14 +1,11 @@
-import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query"
+import { UseQueryResult, useQuery } from "@tanstack/react-query"
 import { ResponseData } from "../api"
 import { CoinPriceAPI, MyCoinAPI, getCoinPrice } from "../api/coin"
 import { useMyAssets } from "./assets"
-import { useRecoilState } from "recoil"
-import { assetsState } from "../atom/atom"
 import { KRWCoinInfo, MyCoin } from "../domain/coin"
 import { Currency } from "../domain/currency"
-import { useEffect } from "react"
 import { Ratio, calcPercentage } from "../domain/domain"
-import { DEFAULT_EXCHANGERATE, useExchangeRate } from "./exchangeRate"
+
 
 
 export const useCoinPrice = (coinCodes : MyCoinAPI[] | undefined) => {
@@ -21,27 +18,6 @@ export const useCoinPrice = (coinCodes : MyCoinAPI[] | undefined) => {
     })
   }
 
-  export const useMyCoinHook = () => {
-    const {data:myCoins,status: myCoinStatus} = useMyAssets("coin") as UseQueryResult<ResponseData<MyCoinAPI>, unknown>
-    const {data:coinPrice, status : coinPriceStatus} = useCoinPrice(myCoins?.output)
-    const [assets, setAssets] = useRecoilState(assetsState)
-    const factoryMyCoin = (myCoin: MyCoinAPI) => {
-      const targetCoinInfo = KRWCoinInfo.find((obj)=> obj.market === myCoin.code)
-      const targetCoinPrice = coinPrice?.find((coinprice) => coinprice.market === myCoin.code)
-      return new MyCoin(myCoin.code, targetCoinInfo?.korean_name!,
-        targetCoinPrice?.trade_price!,Currency.KRW,myCoin.quantity,myCoin.average_purchase_price)
-    }
-    useEffect(() => {
-  
-      if(myCoinStatus ==="success" && coinPriceStatus === 'success'){
-        setAssets((prev) => ({
-          ...prev,
-          coins: myCoins?.output.map(factoryMyCoin)
-        }))
-      }
-    },[myCoinStatus, coinPriceStatus])
-    return assets.coins
-  }
 
 
 export const useMyCoinsCurrentValue = () =>{

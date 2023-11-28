@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '.'
 import styled from 'styled-components'
 import Input from '../Input'
@@ -6,10 +6,6 @@ import { MyStock } from '../../domain/stock'
 import Button from '../Button'
 import { StockInfoAPI, getStockInfo } from '../../api/stock'
 import { StockMarket, StockMarketArray } from '../../domain/market'
-import {  useQueryClient } from '@tanstack/react-query'
-
-import { useRecoilValue } from 'recoil'
-import { assetsState } from '../../atom/atom'
 import { useMyAssetsMutation } from '../../mutation/mutation'
 import { useMyStock } from '../../query/stock'
 interface StockEditableCardProps {

@@ -3,7 +3,6 @@ import { MyCoin } from "../domain/coin";
 import { MyStock } from "../domain/stock";
 import {  Ratio } from "../domain/domain";
 import { CurrencyMark } from "../domain/currency";
-import { IndexWithDateAPI } from "../api/stock";
 
 
 export interface NivoPieChartData {

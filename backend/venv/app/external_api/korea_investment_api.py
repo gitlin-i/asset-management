@@ -3,8 +3,7 @@ from typing import Literal
 import requests
 from domain.schema.stock import Market
 from pydantic import validate_arguments
-from datetime import datetime, timedelta
-from temp.appkey import KOREA_INVESTMENT
+from secret.appkey import KOREA_INVESTMENT
 
 baseUrl_real = "https://openapi.koreainvestment.com:9443"
 baseUrl = "https://openapivts.koreainvestment.com:29443"
@@ -125,5 +124,8 @@ def get_domestic_index(tokenDict, market:Literal["KOSPI", "KOSDAQ"],start_date,e
     response = requests.get(baseUrl_real + url,headers=header , params=params)
     
     json_response : dict = response.json()
-    return  json_response["output2"]
-
+    try: 
+        return json_response["output2"]
+    except KeyError as e:
+        raise KeyError(e, json_response['msg1'])
+    

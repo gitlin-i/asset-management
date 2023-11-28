@@ -1,7 +1,7 @@
 
 
 from decimal import Decimal
-
+import os
 
 from fastapi import APIRouter, Query
 from fastapi.exceptions import HTTPException
@@ -40,7 +40,6 @@ def current_exchange_rate(currency : str | None = None):
         }
         raise HTTPException(status_code=404, detail=error_response)
 
-    
     return json_response
 
 

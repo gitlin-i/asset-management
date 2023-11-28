@@ -44,6 +44,7 @@ __pycache__/
 pyvenv.cfg
 
 #
-/backend/venv/app/getToken2.py
+/backend/venv/app/korea_investment_token.py
 /backend/venv/app/t.py
 /backend/venv/app/temp/*
+/backend/venv/app/secret/*

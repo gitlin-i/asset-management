@@ -1,14 +1,8 @@
 
 import { styled } from 'styled-components'
-
-import {  testTargetRatios } from '../../domain/domain'
 import Section from '../Section'
 
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { targetRatioState } from '../../atom/atom'
-import {  stocksRatio } from '../../selector/selector'
 import RatioChartCard from '../Card/RatioChartCard'
-import { useEffect } from 'react'
 import TotalMyStocksCard from '../Card/TotalMyStocksCard'
 import CurrentPriceCard from '../Card/CurrentPriceCard'
 
