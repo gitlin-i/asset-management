@@ -57,6 +57,12 @@ class MyRatioForUpdate(BaseModel):
     ratio : Decimal
 
     @validator('ratio')
+    def is_ratio_decimal(v:Decimal):
+        if not isinstance(v,Decimal):
+            raise ValueError("잘못된 ratio 값입니다.")
+        return v
+
+    @validator('ratio')
     def ratio_gt_0_and_lt_100(v:Decimal):
         if v <= 0 :
             raise ValueError("ratio가 0보다 작습니다.")

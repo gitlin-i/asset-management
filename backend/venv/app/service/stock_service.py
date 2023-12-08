@@ -7,8 +7,8 @@ from repository.stock_repository import StockCurPriceRepository, StockInfoReposi
 from domain.model.stock_info import StockInfoModel
 from external_api.korea_investment_api import get_stock_current_price, get_stock_info,get_domestic_index
 from pydantic import validate_arguments
-from korea_investment_token import read_token
-
+from korea_investment_token import read_token, write_access_token
+from setting import CURRENT_FLAG, Flag
 
 def get_index(tokenDict,market: Literal['KOSPI','KOSDAQ']):
     today = datetime.now()
@@ -17,8 +17,14 @@ def get_index(tokenDict,market: Literal['KOSPI','KOSDAQ']):
     index_price_for_a_week = [IndexPriceWithDate(**price_date) for price_date in index_price_date]
     return index_price_for_a_week
 
+def init_token():
+    if CURRENT_FLAG == Flag.OPERATION:
+        write_access_token()
+    token = read_token()
+
+    return token
 class StockService:
-    access_token = read_token()
+    access_token = init_token()
     KOSPI = get_index(access_token,"KOSPI")
     KOSDAQ = get_index(access_token,"KOSDAQ")
     STANDARD_TIMEDELTA_FOR_OLD_DATA = timedelta(days=1)
@@ -135,3 +141,9 @@ class StockService:
             return cls.KOSPI
         elif market == "KOSDAQ":
             return cls.KOSDAQ
+    @classmethod
+    def refresh_index(cls):
+        cls.KOSDAQ = get_index(cls.access_token,"KOSDAQ")
+        cls.KOSPI = get_index(cls.access_token,"KOSPI")
+
+    

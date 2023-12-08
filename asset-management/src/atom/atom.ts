@@ -1,7 +1,6 @@
 import {atom} from "recoil"
-import { Ratio } from "../domain/domain"
 import { lightTheme } from "../theme"
-import { ExchangeRate } from "../domain/exchangeRate"
+
 
 export const modalState = atom({
     key: "modalState",
@@ -15,4 +14,9 @@ export const modalState = atom({
 export const themeState = atom({
     key: "themeState",
     default: lightTheme
+})
+
+export const loginState = atom({
+    key: "loginState",
+    default: false
 })

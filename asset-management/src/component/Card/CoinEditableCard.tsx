@@ -109,8 +109,8 @@ const CoinEditableCard :React.FC= (props) => {
 
         const coin = {
           code : params.code,
-          average_purchase_price: params.average_purchase_price,
-          quantity: params.quantity,
+          quantity : !!params.quantity ? params.quantity : 0,
+          average_purchase_price: !!params.average_purchase_price ? params.average_purchase_price : 0,
         }
 
         if (!!isMyCoin){

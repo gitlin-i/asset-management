@@ -5,7 +5,7 @@ import { themeState } from '../../atom/atom'
 import Card from '../Card'
 import Input from '../Input'
 import Button from '../Button'
-import { DevApi } from '../../api'
+import { MY_API } from '../../api'
 import { useNavigate } from 'react-router-dom'
 
 
@@ -104,7 +104,7 @@ const JoinPage = () => {
   })
   const handleClick = async () => {
     try{
-      const response = await DevApi.post(`/user/register`,formData)
+      const response = await MY_API.post(`/user/register`,formData)
       navigator(-1);
     } catch (error) {
       alert("회원가입 실패" + error)

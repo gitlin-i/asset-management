@@ -1,4 +1,4 @@
-import { DevApi } from "."
+import { MY_API } from "."
 
 
 interface UserInfoAPI {
@@ -9,6 +9,6 @@ interface UserInfoAPI {
 
 
 export const getUserInfo = async () : Promise<UserInfoAPI> => {
-    const response = await DevApi.get('/user/info',{withCredentials:true})
+    const response = await MY_API.get('/user/info',{withCredentials:true})
     return response.data
 }

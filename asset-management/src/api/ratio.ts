@@ -1,4 +1,4 @@
-import { DevApi, ResponseData } from "."
+import { MY_API, ResponseData } from "."
 
 
 export interface MyRatioAPI{
@@ -8,24 +8,24 @@ export interface MyRatioAPI{
 }
 
 export const getMyRatio = async () : Promise<ResponseData<MyRatioAPI>> => {
-    const response = await DevApi.get(`/my-ratio`,{withCredentials: true})
+    const response = await MY_API.get(`/my-ratio`,{withCredentials: true})
     return response.data
 }
 
 export const postMyRatio = async (myRatio : MyRatioAPI) : Promise<ResponseData<MyRatioAPI>> => {
-    const response = await DevApi.post(`/my-ratio`,{
+    const response = await MY_API.post(`/my-ratio`,{
         ...myRatio
     }, {withCredentials: true})
     return response.data
 }
 export const putMyRatio = async (myRatio : MyRatioAPI) : Promise<ResponseData<MyRatioAPI>> => {
-    const response = await DevApi.put(`/my-ratio/${myRatio.asset_code}/${myRatio.ratio_name}`,{
+    const response = await MY_API.put(`/my-ratio/${myRatio.asset_code}/${myRatio.ratio_name}`,{
         ...myRatio
     },{withCredentials: true})
     return response.data
 }
 
 export const deleteMyRatio = async (myRatio : MyRatioAPI) : Promise<ResponseData<MyRatioAPI>> => {
-    const response = await DevApi.delete(`/my-ratio/${myRatio.asset_code}/${myRatio.ratio_name}`,{withCredentials: true})
+    const response = await MY_API.delete(`/my-ratio/${myRatio.asset_code}/${myRatio.ratio_name}`,{withCredentials: true})
     return response.data
 }

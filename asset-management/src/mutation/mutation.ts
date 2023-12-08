@@ -40,7 +40,11 @@ export const useMyAssetsMutation = (asset : Assets) => {
     },
     onError: (error) => {
       const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>
-      const message = response?.data.detail[0].msg
+      let message
+      if (typeof response?.data.detail === 'string'){
+        message = response.data.detail
+      }
+      message = response?.data.detail[0].msg
       alert(message)
     }
   })
@@ -64,10 +68,12 @@ export const useMyRatioMutation = () => {
     },
     onError: (error) => {
       const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>
-      const message = response?.data.detail[0].msg
+      let message
+      if (typeof response?.data.detail === 'string'){
+        message = response.data.detail
+      }
+      message = response?.data.detail[0].msg
       alert(message)
-
-
     }
   })
 }

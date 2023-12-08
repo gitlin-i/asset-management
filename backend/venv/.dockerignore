@@ -1,5 +1,6 @@
-t.py
+/app/t.py
+/app/test/
 
 **/__pycache__
 **/pytest_cache
-./test
+

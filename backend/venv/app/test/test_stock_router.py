@@ -5,11 +5,13 @@ from domain.schema.stock import StockPriceListOutPut,StockPrice
 from repository.stock_repository import StockCurPriceRepository
 from service.stock_service import StockService
 from pytest import fixture, mark
+
+
 client = TestClient(app)
 
 
 @fixture
-def stock():
+def input_stock():
     test_stock = StockPrice(code="TEST",market="KRX",price=1234)
     create_result = StockCurPriceRepository.create(test_stock)
     assert create_result == True
@@ -23,9 +25,10 @@ def stock():
     ("TEST","KRX",1234),
     ("TESt","KRX",1234)
 ])
-def test_stock_cur_price(code:str, market:str ,price, stock):
-    
-    response = client.get("/stock/current-price?code="+ code +"&market="+ market)
+def test_stock_cur_price(code:str, market:str ,price, input_stock):
+    test_stock = input_stock
+    response = client.get("/api/stock/current-price?code="+ code +"&market="+ market)
+
     expected_response = StockPriceListOutPut(output=[
         StockPrice(code= code,market= market,price= price)
     ],
@@ -40,7 +43,7 @@ def test_stock_cur_price(code:str, market:str ,price, stock):
     
 ])
 def test_stock_cur_price_expect_error(code:str, market:str):
-    response = client.get("/stock/current-price?code="+ code +"&market="+ market)
+    response = client.get("/api/stock/current-price?code="+ code +"&market="+ market)
     msg = "some stock code not exists. check fail input."
     error_result = {
         "msg" : msg,
@@ -58,7 +61,7 @@ def test_stock_cur_price_expect_error(code:str, market:str):
     
 ])
 def test_stock_cur_price_expect_error_and_some_success(code:str, market:str):
-    response = client.get("/stock/current-price?code="+ code +"&market="+ market)
+    response = client.get("/api/stock/current-price?code="+ code +"&market="+ market)
     msg = "some stock code not exists. check fail input."
     codes = code.split(",")
     output, fail_input = StockService.current_price_list(codes,market)

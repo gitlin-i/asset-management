@@ -12,6 +12,8 @@ import { ConvertToNivoLineChartData } from '../../utill/NivoLineChart'
 import { useMarketIndex } from '../../query/market'
 import { useMyAssetsRatio } from '../../query/assets'
 import { useMyRatio } from '../../query/ratio'
+import { useRecoilValue } from 'recoil'
+import { loginState } from '../../atom/atom'
 
 export const StyledMain = styled.main`
   display:flex;
@@ -54,7 +56,8 @@ export const StyledMain = styled.main`
 const MainPage : React.FC = () => {
 
   const page = "MainPage"
-  
+  const islogined = useRecoilValue(loginState)
+
   const assetsRatio = useMyRatio("assets")
   const assetsCurRatio = useMyAssetsRatio()
   const {data: kospiData,status: kospiStatus} = useMarketIndex("KOSPI")

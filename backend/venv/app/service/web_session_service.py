@@ -31,6 +31,8 @@ class WebSessionService:
     @classmethod
     def find_user_id(cls, uuid: UUID) -> str :
         read_result = WebSessionRepositorty.read(uuid)
+        if read_result is None:
+            raise ValueError("Unreadable session")
         web_session = WebSessionWithDate(**read_result[0].__dict__)
         if web_session.isOld():
             WebSessionRepositorty.delete(web_session.uuid)

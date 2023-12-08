@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Card from '.'
-import { useMyStock, useMyStockCurrentValue } from '../../query/stock'
 
 const TestingCard = () => {
-  // const stockCurValue = useMyStockCurrentValue()
-  // const stocks= useMyStock()
   const [count, setCount] = useState(0)
   console.log("TestingCard렌더!", count)
   useEffect(()=>{

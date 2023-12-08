@@ -116,22 +116,25 @@ const StyledButton = styled(Button)`
 const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {  
 
     const myStock = useMyStock()
+    const stockMutation = useMyAssetsMutation("stock")
     const [params, setParams] = useState({
       code:'',
       market: 'KRX',
       average_purchase_price : 0,
       quantity : 0
     })
-    const [searchedData , setSearchedData] = useState<StockInfoAPI | undefined>()
-    const stockMutation = useMyAssetsMutation("stock")
-
+    const [searchedData , setSearchedData] = useState<{code: string, name:string,market:string}>({
+      code: "",
+      name: "코드와 마켓을 입력하고 검색해주세요.",
+      market: "",
+    })
 
 
     const handleSearchClick = async (e : any) => {
       try {
         const response = await getStockInfo(params.code,params.market as StockMarket)
         if (response.statusText === 'OK'){
-          setSearchedData(response.data.output[0])
+          setSearchedData({...response.data.output[0]})
         }
       } catch (error) {
         alert("존재하지 않는 주식입니다. 다시 검색해 주세요.")
@@ -146,10 +149,10 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
         stockInMyAssets.market === searchedData.market)
 
         const stock = {
-          code : searchedData?.code,
-          market: searchedData?.market,
-          average_purchase_price: params.average_purchase_price,
-          quantity: params.quantity,
+          ...searchedData,
+          quantity : !!params.quantity ? params.quantity : 0,
+          average_purchase_price: !!params.average_purchase_price ? params.average_purchase_price : 0,
+
         }
         if (!!isMyStock){
           stockMutation.mutate({
@@ -223,7 +226,7 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
           <StyledResultArea>
               <StyledDiv>이름 : {searchedData?.name}</StyledDiv>
               <StyledDiv>코드 : {searchedData?.code}</StyledDiv>
-              <StyledDiv>마켓 : {searchedData?.market}</StyledDiv>
+              <StyledDiv>마켓 : {}</StyledDiv>
               
           </StyledResultArea>
         </StyledWrappingDiv>

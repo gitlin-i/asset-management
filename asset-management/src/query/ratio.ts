@@ -9,8 +9,8 @@ type Category = "assets" | "stock"| "coin" | "cash"
 export const useAllMyRatio = () => {
     const loginCookie = document.cookie.split(';').find((cookie) => {
         return cookie.includes("session_id")
-      })
-
+    })
+    
     return useQuery({
         queryKey: ['myRatio'],
         queryFn : async () : Promise<ResponseData<MyRatioAPI>>=> {

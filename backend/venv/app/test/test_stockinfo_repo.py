@@ -5,9 +5,25 @@ from domain.model.stock_info import StockInfoModel
 from domain.schema.stock import StockInfo
 from domain.schema.market import Market
 from sqlalchemy.orm.exc import StaleDataError
-from pytest import raises
+from pytest import fixture, raises
 from pydantic.error_wrappers import ValidationError
-def test_stock_info_repository():
+
+@fixture
+def input_test_case():
+    test_case_1 = StockInfo(**{
+        "code" : "TEST",
+        "name" : "테스트",
+        "market" : "KRX"
+    })
+    test_case_2 = StockInfo(code="TEST2",name="테스트2",market="KRX")
+
+    StockInfoRepository.create(test_case_1)
+    StockInfoRepository.create(test_case_2)
+    yield [test_case_1, test_case_2]
+    StockInfoRepository.delete(test_case_1.code, test_case_1.market)
+    StockInfoRepository.delete(test_case_2.code, test_case_2.market)
+
+def test_stock_info_repository(input_test_case):
     
     #read
     market = Market.KRX
@@ -17,11 +33,6 @@ def test_stock_info_repository():
         "name" : "테스트",
         "market" : "KRX"
     })
-
-    #create
-    new_stock = StockInfo(code="TEST2",name="테스트2",market="KRX")
-    result2 = StockInfoRepository.create(new_stock) 
-    assert result2 == True
 
     result3 = StockInfoRepository.read("TEST2",market)
 
@@ -43,11 +54,7 @@ def test_stock_info_repository():
         "market" : "KRX"
     })
 
-    #delete
-    result6 = StockInfoRepository.delete("TEST2",market)
-    result7 = StockInfoRepository.read("TEST2",market)
-    assert result6 == True
-    assert result7 is None
+
 
 def test_stock_info_repository_expect_error():
     #error

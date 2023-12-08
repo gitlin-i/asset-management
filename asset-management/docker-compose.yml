@@ -1,7 +1,19 @@
 
 services:
-  react-app:
-    image: jindev24/assets
+  frontend:
+    image: jindev24/assets-management
     ports:
       - "80:80"
     restart: on-failure
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  backend:
+    image: jindev24/assets-management-back
+    ports:
+      - "8123"
+    restart: on-failure
+    environment:
+      - TZ=Asia/Seoul

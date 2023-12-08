@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import Button from '../Button'
-import { DevApi } from '../../api'
+import { MY_API } from '../../api'
 import Input from '../Input'
 import styled from 'styled-components'
 import { Link  } from 'react-router-dom'
-import { modalState } from '../../atom/atom'
+import { loginState, modalState } from '../../atom/atom'
 import { useRecoilState } from 'recoil'
 
 
@@ -40,6 +40,7 @@ const LoginContent = () => {
     password: '',
   })
   const [modal, setModal] = useRecoilState(modalState)
+  const [login,setLogin] = useRecoilState(loginState)
   const cookieString = document.cookie
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -52,8 +53,8 @@ const LoginContent = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response= await DevApi.post('/user/login',formData)
-      console.log(response)
+      const response= await MY_API.post('/user/login',formData)
+
       if(response.status === 200) {
         setModal((prev) => {
           return {
@@ -61,6 +62,7 @@ const LoginContent = () => {
             isModalOpen: false
           }
         })
+        setLogin(true)
       }
 
     } catch (error) {

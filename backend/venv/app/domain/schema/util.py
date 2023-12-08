@@ -1,6 +1,5 @@
 
 from decimal import Decimal
-from pydantic import validate_arguments
 
 def is_in_db_decimal_range(integer_range = 9, decimal_digits_range = 8):
     
@@ -13,7 +12,7 @@ def is_in_db_decimal_range(integer_range = 9, decimal_digits_range = 8):
                 raise ValueError("out of decimal range")
             return v
         else:
-            return None
+            raise ValueError("Decimal이 아닙니다.")
     return validate_decimal_range
 
 def count_digits(target_number: int | float)-> tuple[int, int]:

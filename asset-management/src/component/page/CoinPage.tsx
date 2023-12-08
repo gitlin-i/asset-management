@@ -48,7 +48,7 @@ const CoinPage : React.FC = (props) => {
   const page = "CoinPage"
   const coinRatio = useMyRatio("coin")
   const coinsCurRatio = useMyCoinsRatio()
-  const {data:coinCandle , status} = useCoinIndex("KRW-BTC")
+  const {data:coinCandle , status} = useCoinIndex("KRW-ETH")
 
   const wrapping =(content: React.ReactNode,index :number | string) => {
     return (

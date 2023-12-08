@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import { DevApi, ResponseData } from "."
+import { MY_API, ResponseData } from "."
 
 export interface ExchangeRateAPI{
     currency: string
@@ -17,7 +17,7 @@ export const getExchangeRate = async (currency: string | string[] | undefined) :
         url += currency
       }
     }
-    const response : AxiosResponse<ResponseData<ExchangeRateAPI>, any>  = await DevApi.get(url)
+    const response : AxiosResponse<ResponseData<ExchangeRateAPI>, any>  = await MY_API.get(url)
 
     return response
   }

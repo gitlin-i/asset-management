@@ -52,8 +52,14 @@ class MyStockForUpdate(BaseModel):
     @validator("quantity")
     def valid_quantity(cls,v:Decimal):
         if v <= 0:
-            raise ValueError("보유 수량은 0보다 커야합니다.")
+            raise ValueError("보유 수량은 0보다 작을 수 없습니다.")
         return v
+    @validator("average_purchase_price")
+    def valid_average_purchase_price(cls,v:Decimal):
+        if not isinstance(v,Decimal):
+            return Decimal(0)
+        return v
+        
     
     _is_in_db_decimal_range_quantity = validator("quantity",allow_reuse=True)(is_in_db_decimal_range(integer_range=9,decimal_digits_range=4))
     _is_in_db_decimal_range_average_purchase_price = validator("average_purchase_price",allow_reuse=True)(is_in_db_decimal_range(integer_range=9,decimal_digits_range=4))

@@ -1,9 +1,10 @@
 import React from 'react'
-import { keyframes, styled } from 'styled-components'
+import { styled } from 'styled-components'
 import ThemeChangeButton from './ThemeChangeButton'
-import { useRecoilState } from 'recoil'
-import { modalState } from '../atom/atom'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { loginState, modalState } from '../atom/atom'
 import { useUserInfo } from '../query/user'
+import Button from './Button'
 const StyledNav = styled.nav`
   width:100%;
   height: 56px;
@@ -60,7 +61,7 @@ const RightArea = styled(Area)`
 const Icon = styled.span.attrs({className: "material-symbols-rounded" })`
 
 `
-const AccountIconButton = styled.button.attrs({className: "material-symbols-rounded"})`
+const IconButton = styled.button.attrs({className: "material-symbols-rounded"})`
   display: inline-flex;
   padding: 0;
   margin: 0;
@@ -90,7 +91,7 @@ const Header : React.FC = () => {
 
   const [modal, setModal] = useRecoilState(modalState)
   const {data, status} = useUserInfo()
-
+  const [islogined,setLogin] = useRecoilState(loginState)
   const handleClick = () => {
     setModal((prev)=>({
     ...prev,
@@ -98,7 +99,11 @@ const Header : React.FC = () => {
     title: "로그인",
     content: "login",
   }))}
-
+  const handleLogoutClick = () => {
+    const name = "session_id"
+    document.cookie = name +  '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    setLogin(false)
+  }
   return (
     <StyledNav>
       <LeftArea>
@@ -113,9 +118,13 @@ const Header : React.FC = () => {
 
       <RightArea>
 
-        <AccountIconButton onClick={handleClick}>
+        {islogined ? 
+        <IconButton onClick={handleLogoutClick}>
+          logout
+        </IconButton> : 
+        <IconButton onClick={handleClick}>
           account_circle
-        </AccountIconButton>
+        </IconButton> }
 
         
           {status === 'success' ? 

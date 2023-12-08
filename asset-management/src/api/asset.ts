@@ -1,4 +1,4 @@
-import { DevApi, ResponseData } from ".";
+import { MY_API, ResponseData } from ".";
 import { MyCashAPI } from "./cash";
 import { MyCoinAPI } from "./coin";
 import { MyStockAPI } from "./stock";
@@ -28,26 +28,26 @@ const matchUrlForPost = (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI) => {
 }
 
 export const getMyAssets = async (asset: Asset) :Promise<ResponseData<MyCashAPI | MyCoinAPI | MyStockAPI>> => {
-  const response = await DevApi.get(`/my-asset/${asset}`,{withCredentials:true})
+  const response = await MY_API.get(`/my-asset/${asset}`,{withCredentials:true})
   return response.data 
 }
   
 export const postMyAssets = async (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI)  => {
   const url = matchUrlForPost(myAsset)
-  const response = await DevApi.post(url,{
+  const response = await MY_API.post(url,{
     ...myAsset
   },{withCredentials:true})
   return response.data
 }
 export const deleteMyAssets =async (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI)  => {
   const url = matchUrlForPutAndDelete(myAsset)
-  const response = await DevApi.delete(url,{withCredentials:true})
+  const response = await MY_API.delete(url,{withCredentials:true})
   return response.data
 }
 
 export const putMyAssets = async ( myAsset: MyStockAPI | MyCoinAPI | MyCashAPI) => {
   const url = matchUrlForPutAndDelete(myAsset)
-  const response = await DevApi.put(url,{
+  const response = await MY_API.put(url,{
     ...myAsset
   }, {withCredentials:true})
 

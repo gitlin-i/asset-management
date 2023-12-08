@@ -8,6 +8,8 @@ class User(BaseModel):
     def field_check(v : str):
         if len(v) < 2:
             raise ValueError("id가 짧습니다.")
+        if len(v) > 10:
+            raise ValueError("id가 너무 깁니다.")
         if ' ' in v:
             raise ValueError("공백 불가")
         return v

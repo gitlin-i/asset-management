@@ -16,7 +16,7 @@ from service.stock_service import StockService
 from database import Base
 from database import engine
 from korea_investment_token import read_token, write_access_token
-from setting import CURRENT_FLAG,Flag
+from setting import CURRENT_FLAG,Flag 
 
 
 # create database model
@@ -78,11 +78,9 @@ app = FastAPI(lifespan=lifespan, openapi_tags=tag_metadata)
 
 origin_dev =  [
     "http://localhost:3000",
-    "http://localhost",
 ]
 origin_aws = [
-    "http://ec2-13-125-237-137.ap-northeast-2.compute.amazonaws.com",
-    "http://ec2-13-125-237-137.ap-northeast-2.compute.amazonaws.com:8000"
+    "http://my-asset.info",
 ]
 
 origin = origin_aws if CURRENT_FLAG == Flag.OPERATION else origin_dev
@@ -97,7 +95,6 @@ app.add_middleware(
 
 routers = [
     stock.router,
-    
     exchange.router,
     user.router,
     my_asset.router,
@@ -105,4 +102,4 @@ routers = [
 ]
 
 for router in routers:
-    app.include_router(router)
+    app.include_router(router,prefix='/api')

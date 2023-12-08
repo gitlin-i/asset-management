@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import { DevApi, ResponseData } from "."
+import { MY_API, ResponseData } from "."
 import { MapperStockMarketToCurrency } from "../domain/currency"
 import { StockMarket, StockMarketIndex } from "../domain/market"
 import { MyStock } from "../domain/stock"
@@ -44,7 +44,7 @@ export const getStockPrice = async (stockCodes: Array<string> | string,market: s
       params = stockCodes
     }
     
-    const response = await DevApi.get(`/stock/current-price?code=${params}` + `&market=${market}` )
+    const response = await MY_API.get(`/stock/current-price?code=${params}` + `&market=${market}` )
 
     return response
   }
@@ -56,7 +56,7 @@ export const getStockPrice = async (stockCodes: Array<string> | string,market: s
     } else {
       params = stockCodes
     }
-    const response : AxiosResponse<ResponseData<StockInfoAPI>> = await DevApi.get(`/stock/info?code=${params}` + `&market=${market}` )
+    const response : AxiosResponse<ResponseData<StockInfoAPI>> = await MY_API.get(`/stock/info?code=${params}` + `&market=${market}` )
 
     return response
   
@@ -64,6 +64,6 @@ export const getStockPrice = async (stockCodes: Array<string> | string,market: s
 
 
 export const getStockMarketIndex = async (market: StockMarketIndex)  =>{
-  const response : AxiosResponse<IndexWithDateAPI[]> = await DevApi.get(`/stock/index?market=${market}`)
+  const response : AxiosResponse<IndexWithDateAPI[]> = await MY_API.get(`/stock/index?market=${market}`)
   return response.data
 }
