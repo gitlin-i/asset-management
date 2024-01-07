@@ -144,7 +144,6 @@ const JoinPage = () => {
                   <ReStyledInput type='text'  id='userName' name='name'  defaultText='NAME' onChange={handleInputChange}/>
                 </Styledblock>
               </InputArea>
-                <p>{formData.id + ":" + formData.name+ ":" +formData.password}</p>
                 <Button $primary onClick={handleClick}>제출</Button>
             </StyledLayout>
           </Card>

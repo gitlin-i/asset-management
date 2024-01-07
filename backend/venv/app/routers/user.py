@@ -29,7 +29,7 @@ def login_user(user: LoginUser, response:Response):
 
 
 @router.get("/info", response_model=User)
-def user_info(session_id : Annotated[str| None, Cookie()] = None):
+def user_info(session_id : Annotated[str| None, Cookie()] = None ):
     info = UserService.info(session_id)
     return info
     

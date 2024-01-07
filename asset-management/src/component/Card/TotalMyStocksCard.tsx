@@ -22,9 +22,10 @@ const StyledDiv = styled.div`
 `
 const TotalMyStocksCard = () => {
   //내 주식 평가금액, 외화인경우 환산가치, 보유 수량
-    const stocksCurVal = useMyStockCurrentValue()
+
     const {data: exchangeRate} = useExchangeRate(DEFAULT_EXCHANGERATE)
     const stocks = useMyStock()
+    const stocksCurVal = useMyStockCurrentValue()
     
     const spreadItem = (stock : MyStock) => {
         const value = (stock.price * stock.quantity)

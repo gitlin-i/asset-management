@@ -113,9 +113,8 @@ const RatioEditableCard :React.FC= (props) => {
 
 
     const handleSaveClick = async (e : any) => {
-      const isExistRatio : Ratio | undefined = myRatio.find((ratio) => {
-        const ratioName = Object.keys(ratio)[0]
-        return ratioName === params.ratio_name
+      const isExistRatio : MyRatioAPI | undefined = myRatio.find((ratio) => {
+        return ratio.ratio_name === params.ratio_name && ratio.asset_code === params.asset_code
       })
 
       if (isExistRatio){
@@ -129,14 +128,10 @@ const RatioEditableCard :React.FC= (props) => {
             method:"post",
           })
       }
-
-      
-      
     }
-    const handleDeleteClick =async (e: any) => {
-        const isExistRatio : Ratio | undefined = myRatio.find((ratio) => {
-            const ratioName = Object.keys(ratio)[0]
-            return ratioName === params.ratio_name
+    const handleDeleteClick = async (e: any) => {
+        const isExistRatio : MyRatioAPI | undefined = myRatio.find((ratio) => {
+            return ratio.ratio_name === params.ratio_name && ratio.asset_code === params.asset_code
           })
       if (isExistRatio){
         ratioMutation.mutate({

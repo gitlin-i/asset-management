@@ -4,6 +4,7 @@ from database import SessionLocal
 from sqlalchemy.orm import Session
 from domain.schema.web_session import WebSession, WebSessionWithDate
 from fastapi import Depends
+from exception.exception import LoginSessionException
 
 
 class WebSessionService:
@@ -32,9 +33,9 @@ class WebSessionService:
     def find_user_id(cls, uuid: UUID) -> str :
         read_result = WebSessionRepositorty.read(uuid)
         if read_result is None:
-            raise ValueError("Unreadable session")
+            raise LoginSessionException("Unknown_session")
         web_session = WebSessionWithDate(**read_result[0].__dict__)
         if web_session.isOld():
             WebSessionRepositorty.delete(web_session.uuid)
-            raise ValueError("expired_session")
+            raise LoginSessionException("expired_session")
         return web_session.user_id

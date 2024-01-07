@@ -48,3 +48,5 @@ pyvenv.cfg
 /backend/venv/app/t.py
 /backend/venv/app/temp/*
 /backend/venv/app/secret/*
+
+*.pem

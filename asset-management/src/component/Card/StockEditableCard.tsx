@@ -8,6 +8,7 @@ import { StockInfoAPI, getStockInfo } from '../../api/stock'
 import { StockMarket, StockMarketArray } from '../../domain/market'
 import { useMyAssetsMutation } from '../../mutation/mutation'
 import { useMyStock } from '../../query/stock'
+import { useUserInfo } from '../../query/user'
 interface StockEditableCardProps {
     myStock?: MyStock
 }
@@ -114,8 +115,8 @@ const StyledButton = styled(Button)`
 `
 
 const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {  
-
     const myStock = useMyStock()
+
     const stockMutation = useMyAssetsMutation("stock")
     const [params, setParams] = useState({
       code:'',
@@ -123,17 +124,16 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
       average_purchase_price : 0,
       quantity : 0
     })
-    const [searchedData , setSearchedData] = useState<{code: string, name:string,market:string}>({
+    const [searchedData , setSearchedData] = useState({
       code: "",
       name: "코드와 마켓을 입력하고 검색해주세요.",
       market: "",
     })
 
-
     const handleSearchClick = async (e : any) => {
       try {
         const response = await getStockInfo(params.code,params.market as StockMarket)
-        if (response.statusText === 'OK'){
+        if (response.status === 200){
           setSearchedData({...response.data.output[0]})
         }
       } catch (error) {
@@ -226,7 +226,7 @@ const StockEditableCard :React.FC<StockEditableCardProps>= (props) => {
           <StyledResultArea>
               <StyledDiv>이름 : {searchedData?.name}</StyledDiv>
               <StyledDiv>코드 : {searchedData?.code}</StyledDiv>
-              <StyledDiv>마켓 : {}</StyledDiv>
+              <StyledDiv>마켓 : {searchedData?.market}</StyledDiv>
               
           </StyledResultArea>
         </StyledWrappingDiv>

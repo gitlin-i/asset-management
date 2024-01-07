@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import JSONResponse
 from routers import stock, exchange,user, my_asset, my_ratio
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,12 +12,12 @@ from domain.model.user import Base as UserBase
 from domain.model.web_session import Base as WebSessionBase
 
 from service.exchange_service import ExchangeService
-from service.stock_service import StockService
+from service.stock_service import StockService, get_index
 from database import Base
 from database import engine
 from korea_investment_token import read_token, write_access_token
 from setting import CURRENT_FLAG,Flag 
-
+from exception.exception import LoginSessionException
 
 # create database model
 Base.metadata.create_all(engine)
@@ -44,10 +44,13 @@ if CURRENT_FLAG == Flag.OPERATION:
     def session_refresh_job():
         WebSessionBase.metadata.drop_all(engine)
         WebSessionBase.metadata.create_all(engine)
-
-    scheduler.add_job(exchange_update_job,'interval', hours= 6)
+    def index_refresh_job():
+        StockService.KOSPI = get_index(StockService.access_token,"KOSPI")
+        StockService.KOSDAQ = get_index(StockService.access_token,"KOSDAQ")
+    scheduler.add_job(exchange_update_job,'interval', hours= 6,misfire_grace_time=10)
     scheduler.add_job(access_token_refresh_job,'interval', hours= 12)
     scheduler.add_job(session_refresh_job,trigger=CronTrigger(hour=23,minute=10))
+    scheduler.add_job(index_refresh_job, 'interval', hours= 2)
 elif CURRENT_FLAG == Flag.DEV:
     def test_job():
         print("!!!!!호출",datetime.now())
@@ -103,3 +106,10 @@ routers = [
 
 for router in routers:
     app.include_router(router,prefix='/api')
+
+@app.exception_handler(LoginSessionException)
+async def login_exception_handler(request: Request, e: LoginSessionException):
+    response = JSONResponse(content="Session is wrong...",status_code=401)
+    response.delete_cookie("session_id")
+    return response
+    

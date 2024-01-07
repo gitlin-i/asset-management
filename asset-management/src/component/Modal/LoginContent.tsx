@@ -16,8 +16,8 @@ const StyledForm = styled.form`
   gap:2rem;
 `
 const RestyledInput = styled(Input)`
-  background-color:white;
-  color: black;
+  background-color:${props => props.theme.color.card };
+  color: ${props => props.theme.color.font };
 `
 const RestyledLink = styled(Link)`
   width:100%;
@@ -41,7 +41,7 @@ const LoginContent = () => {
   })
   const [modal, setModal] = useRecoilState(modalState)
   const [login,setLogin] = useRecoilState(loginState)
-  const cookieString = document.cookie
+  
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
     const { name, value } = event.target;

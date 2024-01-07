@@ -4,7 +4,7 @@ from enum import Enum, auto
 class AutoName(Enum):
     def _generate_next_value_(name, start, count, last_values):
         return name
-class Market(AutoName):
+class Market(str, AutoName):
     HKS = auto() #"홍콩"
     NYS = auto() #"뉴욕"
     NAS = auto()#"나스닥"

@@ -104,7 +104,7 @@ const CoinEditableCard :React.FC= (props) => {
     })
     const [coinName, setCoinName] = useState(KRW_BTC.korean_name)
     const coinMutation = useMyAssetsMutation("coin")
-    const handleSaveClick = async (e : any) => {
+    const handleSaveClick = (e : any) => {
         const isMyCoin = myCoins?.find((coinInMyAssets) => coinInMyAssets.code === params.code )
 
         const coin = {
@@ -127,7 +127,7 @@ const CoinEditableCard :React.FC= (props) => {
 
       
     }
-    const handleDeleteClick =async (e: any) => {
+    const handleDeleteClick = (e: any) => {
 
       const isMyCoin = myCoins?.find((coinInMyAssets) => coinInMyAssets.code === params.code)
       const coin = {

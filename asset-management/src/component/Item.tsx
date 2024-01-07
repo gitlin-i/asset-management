@@ -100,17 +100,18 @@ const UpText = styled.span`
     @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 150px) ) {
         max-width: 15rem;
     }
+
     @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 300px) ) {
-        max-width: 22rem;
+        max-width: 19rem;
     }
     @media screen and (min-width:  calc(${props => props.theme.breakPoint.ll}) ) {
-        max-width: 12rem;
+        max-width: 10rem;
     }
     @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 150px) ) {
-        max-width: 15rem;
+        max-width: 14rem;
     }
     @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 350px) ) {
-        max-width: 18rem;
+        max-width: 17rem;
     }
     @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 500px) ) {
         max-width: 20rem;

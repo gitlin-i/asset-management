@@ -5,6 +5,8 @@ import { MyCashAPI } from "../api/cash"
 import { MyCoinAPI } from "../api/coin"
 import { AxiosError } from "axios"
 import { MyRatioAPI, deleteMyRatio, postMyRatio, putMyRatio } from "../api/ratio"
+import { useUserInfo } from "../query/user"
+
 
 type Assets = "stock" | "coin" | "cash"
 // type HTTPMethod = "get" |"post"| "put" | "delete"
@@ -24,6 +26,8 @@ interface MyRatioAPIwithMethod extends MyRatioAPI {
 
 export const useMyAssetsMutation = (asset : Assets) => {
   const queryClient = useQueryClient()
+  const {data: userInfo, status} = useUserInfo()
+  const id = (status === 'success') ? userInfo.id : ""
   return useMutation({
     mutationFn: (myAsset: MyStockAPIwithMethod | MyCashAPIwithMethod | MyCoinAPIAPIwithMethod) => {
       
@@ -36,15 +40,17 @@ export const useMyAssetsMutation = (asset : Assets) => {
       } 
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["myAssets",asset]})
+      queryClient.invalidateQueries({queryKey: ['myAssets', id, asset]})
     },
     onError: (error) => {
       const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>
       let message
       if (typeof response?.data.detail === 'string'){
         message = response.data.detail
+      } else{
+        message = response?.data.detail[0].msg
       }
-      message = response?.data.detail[0].msg
+      
       alert(message)
     }
   })
@@ -52,6 +58,8 @@ export const useMyAssetsMutation = (asset : Assets) => {
   
 export const useMyRatioMutation = () => {
   const queryClient = useQueryClient()
+  const {data: userInfo, status} = useUserInfo()
+  const id = (status === 'success') ? userInfo.id : ""
   return useMutation({
     mutationFn: (myRatio: MyRatioAPIwithMethod) => {
       
@@ -64,7 +72,7 @@ export const useMyRatioMutation = () => {
       } 
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["myRatio"]})
+      queryClient.invalidateQueries({queryKey: ['myRatio',id]})
     },
     onError: (error) => {
       const {response}  = error as AxiosError<{ detail : {loc:string[],msg:string,type: string}[]}>

@@ -1,23 +1,25 @@
 
 import json
-from typing import Literal
-from fastapi import APIRouter, Query
+from typing import Annotated, Literal
+from fastapi import APIRouter, Depends, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from service.stock_service import StockService
 from domain.schema.stock import StockPriceListOutPut,StockInfoListOutPut,IndexPriceWithDate
 from domain.schema.market import Market
-from datetime import date
+
 router = APIRouter(
     prefix="/stock"
 )
-
+def preprocess(code : str) -> list[str]:
+    codes_list = code.split(",")
+    result = [ code.upper() for code in codes_list]
+    return result
+CommonCode = Annotated[str , Depends(preprocess)]
 
 @router.get("/current-price", response_model=StockPriceListOutPut)
-def stock_current_price(code: str, market : Market):
-
-    stock_codes = code.split(",")
-    output , fail_input  = StockService.current_price_list(stock_codes,market)
+def stock_current_price(code: CommonCode, market : Market):
+    output , fail_input  = StockService.current_price_list(code,market)
     response = {
         "output" : output,
         "fail_input" : fail_input
@@ -34,10 +36,9 @@ def stock_current_price(code: str, market : Market):
     return json_response
 
 @router.get("/info", response_model=StockInfoListOutPut)
-def stock_info(code: str, market : Market):
+def stock_info(code: CommonCode, market : Market):
 
-    stock_codes = code.split(",")
-    output , fail_input  = StockService.info_list(stock_codes,market)
+    output , fail_input  = StockService.info_list(code,market)
     response = {
         "output" : output,
         "fail_input" : fail_input

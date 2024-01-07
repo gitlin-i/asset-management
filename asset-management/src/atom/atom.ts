@@ -18,5 +18,7 @@ export const themeState = atom({
 
 export const loginState = atom({
     key: "loginState",
-    default: false
+    default: !!document.cookie.split(';').find((cookie) => {
+        return cookie.includes("session_id")
+    })
 })

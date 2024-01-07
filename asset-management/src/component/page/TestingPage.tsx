@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { useMyAssets } from '../../query/assets'
+import { useUserInfo } from '../../query/user'
+
 
 const TestingPage = () => {
-
-    const [state,setState] = useState(0)
-    console.log("state",state)
-    useEffect(() => {
-        
-        setState(1)
-        return () => {
-            console.log(state)
-        }
-    },[state])
+  const {data} = useUserInfo()
   return (
-    <div>TestingPage</div>
+    <div>TestingPage
+      <div>hi</div>
+      {/* <div>{myStock && myStock?.output.toString()}</div> */}
+      {data?.id}
+      
+    </div>
+
   )
 }
 

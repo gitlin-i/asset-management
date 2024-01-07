@@ -17,6 +17,7 @@ def getCurrency(market:str):
 class StockBase(BaseModel):
     code: str 
     market : str 
+
     class Config:
         orm_mode = True
         allow_mutation :False

@@ -5,6 +5,7 @@ import { ExchangeRate } from "./exchangeRate";
 //보유 수량 (Quantity Held)
 //매수 금액 (Purchase Amount)
 
+
 export interface Ratio {
     [key: string] : number;
 }

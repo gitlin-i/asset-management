@@ -1,4 +1,3 @@
-from typing import Annotated
 from pydantic import BaseModel, Field, validator
 from decimal import Decimal
 from domain.schema.currency import Currency
@@ -12,7 +11,7 @@ class CashBase(BaseModel):
             return v + "(100)"
 
         if v not in [currency.value for currency in Currency]:
-            raise ValueError
+            raise ValueError("통화가 아닙니다.")
         return v
     class Config:
         orm_mode = True

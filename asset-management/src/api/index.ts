@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let mode : "dev" | "oper" | string = "dev"
+let mode : "dev" | "oper" | string = "oper"
 
 
 const domain = "localhost" 
@@ -18,6 +18,7 @@ export const UPBIT_Api = axios.create({
 
 export const MY_API = axios.create({
     baseURL: (mode === 'oper') ? OPER_URL : DEV_URL,
+    // headers:{"Content-Type": "application/json"}
 })
 
 

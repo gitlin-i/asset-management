@@ -8,9 +8,9 @@ from domain.schema.stock import MyStock, StockBase
 from service.web_session_service import WebSessionService
 
 assets_repo = {
-        "coin": MyCoinRepository,
-        "stock" : MyStockRepository,
-        "cash" : MyCashRepository
+    "coin": MyCoinRepository,
+    "stock" : MyStockRepository,
+    "cash" : MyCashRepository
 }
 
 

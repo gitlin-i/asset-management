@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { MY_API, ResponseData } from ".";
 import { MyCashAPI } from "./cash";
 import { MyCoinAPI } from "./coin";
@@ -7,7 +8,7 @@ type Asset = "stock" | "coin" | "cash"
 const matchUrlForPutAndDelete = (myAsset: MyStockAPI | MyCoinAPI | MyCashAPI ) => {
   let url 
   if ("market" in myAsset){
-    url = `/my-asset/stock/${myAsset.market}/${myAsset.code}`
+    url = `/my-asset/stock/${myAsset.code}/${myAsset.market}`
   } else if ("currency" in myAsset) {
     url = `/my-asset/cash/${myAsset.currency}`
   } else {

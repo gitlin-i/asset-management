@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled } from 'styled-components'
 import ThemeChangeButton from './ThemeChangeButton'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { loginState, modalState } from '../atom/atom'
 import { useUserInfo } from '../query/user'
-import Button from './Button'
+import { useMyAssets } from '../query/assets'
+import { useQueryClient } from '@tanstack/react-query'
+
 const StyledNav = styled.nav`
   width:100%;
   height: 56px;
@@ -67,7 +69,7 @@ const IconButton = styled.button.attrs({className: "material-symbols-rounded"})`
   margin: 0;
   background-color: ${props => props.theme.color.background};
   color: ${props => props.theme.color.font};
-  font-size: 40px;
+  font-size: 36px;
   justify-content:center;
   align-items: center;
   border: none;
@@ -88,9 +90,9 @@ const AccountInfo = styled.span`
 
 
 const Header : React.FC = () => {
-
+  const queryClient = useQueryClient()
   const [modal, setModal] = useRecoilState(modalState)
-  const {data, status} = useUserInfo()
+  const {data,status} = useUserInfo()
   const [islogined,setLogin] = useRecoilState(loginState)
   const handleClick = () => {
     setModal((prev)=>({
@@ -99,23 +101,27 @@ const Header : React.FC = () => {
     title: "로그인",
     content: "login",
   }))}
-  const handleLogoutClick = () => {
+  const handleLogoutClick =  async () => {
     const name = "session_id"
     document.cookie = name +  '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    setLogin(false)
+    await setLogin(false)
+    await queryClient.resetQueries({queryKey: ['user']})
+  }
+  if (status === 'error') {
+    location.reload()
+    /* eslint no-restricted-globals: ["off"] */
   }
   return (
     <StyledNav>
       <LeftArea>
-        <StyledA href='#'>
+        <StyledA href='/'>
           <Icon>
             account_balance
           </Icon>
           <span>자산 관리</span>
         </StyledA>
       </LeftArea>
-
-
+      
       <RightArea>
 
         {islogined ? 

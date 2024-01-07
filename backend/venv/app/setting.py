@@ -5,4 +5,4 @@ class Flag(Enum):
     DEV = 0
     OPERATION = 1
 
-CURRENT_FLAG : Flag = Flag.DEV
+CURRENT_FLAG : Flag = Flag.OPERATION

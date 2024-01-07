@@ -9,18 +9,17 @@ import {  useMyCoinsCurrentValue } from "./coin"
 import { useMyCashCurrentValue } from "./cash"
 import { Ratio,calcPercentage } from "../domain/domain"
 
+import { useUserInfo } from "./user"
 
 type AssetsString = "stock" | "coin" | "cash"
 export const useMyAssets = ( asset:AssetsString) => {
-    const loginCookie = document.cookie.split(';').find((cookie) => {
-      return cookie.includes("session_id")
-    })
-    return useQuery({
-      queryKey: ['myAssets',asset],
+  const {data: userInfo, status: userState}= useUserInfo()
+  return useQuery({
+      queryKey: ['myAssets',userInfo?.id, asset],
       queryFn: async () : Promise<ResponseData<MyCashAPI | MyCoinAPI | MyStockAPI>> => {
         const data = await getMyAssets(asset) 
         return data
-      }, enabled : !!loginCookie
+      }, enabled : userState === 'success' && !!userInfo.id
     })
 }
 
@@ -29,6 +28,7 @@ export const useMyAssetsRatio = () : Ratio[] => {
   const stocksCurVal = useMyStockCurrentValue()
   const coinsCurVal = useMyCoinsCurrentValue()
   const cashCurVal = useMyCashCurrentValue()
+
   const total = stocksCurVal + coinsCurVal + cashCurVal
   const stockRatio = calcPercentage(stocksCurVal, total)
   const coinsRatio = calcPercentage(coinsCurVal,total)

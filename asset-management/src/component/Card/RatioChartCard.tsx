@@ -4,9 +4,10 @@ import { ObjectToNivoPieChartData } from '../../utill/NivoPieChart'
 import styled from 'styled-components'
 import PieChart from '../PieChart'
 import { Ratio } from '../../domain/domain'
+import { MyRatioAPI } from '../../api/ratio'
 
 interface RatioChart {
-    ratios ?: Ratio[];
+    ratios ?: Ratio[] | MyRatioAPI[];
     title?: string;
     theme ?: {};
 }
@@ -35,7 +36,7 @@ const StyledDiv = styled.div`
 const RatioChartCard : React.FC<RatioChart> = (props) => {
     const {ratios,title} = props
     
-    const targetRatioForChart = ratios?.map(ratio => ObjectToNivoPieChartData(ratio))
+    const targetRatioForChart = ratios?.map((ratio : Ratio | MyRatioAPI) => ObjectToNivoPieChartData(ratio))
     
   return (
     <Card title={title}>

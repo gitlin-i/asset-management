@@ -101,7 +101,7 @@ const CoinEditableCard :React.FC= (props) => {
     })
     const cashMutation = useMyAssetsMutation("cash")
     const {data:exchangeRate, status} = useExchangeRate(DEFAULT_EXCHANGERATE)
-    const handleSaveClick = async (e : any) => {
+    const handleSaveClick = (e : any) => {
         const isMyCash = myCash?.find((cashInMyAssets) => cashInMyAssets.currency === params.currency )
 
         const cash = {
@@ -120,7 +120,7 @@ const CoinEditableCard :React.FC= (props) => {
           })
         }
     }
-    const handleDeleteClick =async (e: any) => {
+    const handleDeleteClick = (e: any) => {
 
       const isMyCash = myCash?.find((cashInMyAssets) => cashInMyAssets.currency === params.currency)
       const cash = {

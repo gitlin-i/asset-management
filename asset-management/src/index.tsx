@@ -15,6 +15,7 @@ import CoinPage from './component/page/CoinPage';
 import CashPage from './component/page/CashPage';
 import JoinPage from './component/page/JoinPage';
 import TestingPage from './component/page/TestingPage';
+import TestingPage2 from './component/page/TestingPage2';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/test",
-    element: <TestingPage />
+    element: <TestingPage2 />
   }
 ]);
 

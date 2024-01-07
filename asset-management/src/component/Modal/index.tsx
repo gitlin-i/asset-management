@@ -27,7 +27,8 @@ const StyledModal = styled.div`
         width:30vw;
     }
     border-radius:1rem;
-    background-color:white;
+    background-color:${props => props.theme.color.card };
+    color:${props => props.theme.color.font };
     border: none;
 `
 const ModalHeader = styled.header`
@@ -71,7 +72,8 @@ const RestyledButton = styled(Button)`
         background-color:#dcdcdc;
         box-shadow:none;
     }
-    color:black;
+    color:${props => props.theme.color.font };
+    background-color: ${props => props.theme.color.card };
 `
 const H5 = styled.h5`
     display:inline-block;
