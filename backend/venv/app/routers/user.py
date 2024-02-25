@@ -1,33 +1,38 @@
 
+
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from domain.schema.user import UserIn, UserOut
-from database import SessionLocal
+from fastapi import APIRouter, Cookie,  HTTPException, Response
+
 from service.user_service import UserService
+from domain.schema.user import UserIn, LoginUser,User
 router = APIRouter(
     prefix="/user"
 )
 
-def get_db() :
-    db = SessionLocal()
+@router.post("/register")
+def  register_user(user: UserIn):
     try:
-        yield db
-    finally:
-        db.close()
-
-@router.post("",response_model= UserOut )
-async def create_user(user : UserIn, db: Session = Depends(get_db)):
-    result = UserService().register_user(db,user)
-    return result
-
-@router.get("",response_model= UserOut) 
-async def read_user_by_id(id: str, db: Session = Depends(get_db)):
-    result = UserService().find_user(db,id)
-    if result is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return result
+        create_result = UserService.register_user(user)
+    except ValueError as e:
+        raise HTTPException(400,detail=e.args) from e
+    return {"output" : create_result}
 
 
+@router.post("/login")
+def login_user(user: LoginUser, response:Response):
+    try:
+        uuid = UserService.login(user)
+    except ValueError as e:
+        raise HTTPException(400,detail=e.args) from e
+    response.set_cookie(key="session_id",value=uuid)
+    return {"output": "success!"}
 
 
+@router.get("/info", response_model=User)
+def user_info(session_id : Annotated[str| None, Cookie()] = None ):
+    info = UserService.info(session_id)
+    return info
+    
+
+
+    

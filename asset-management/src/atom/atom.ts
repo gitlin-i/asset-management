@@ -1,13 +1,6 @@
 import {atom} from "recoil"
-import { Assets } from "../domain/Domain"
-export const assetsState = atom<Assets>({
-    key: "assetsState",
-    default: {
-        stocks: [],
-        cash: [],
-        coins: [],
-    }
-})
+import { lightTheme } from "../theme"
+
 
 export const modalState = atom({
     key: "modalState",
@@ -16,4 +9,16 @@ export const modalState = atom({
         content : "",
         title : "",
     }
+})
+
+export const themeState = atom({
+    key: "themeState",
+    default: lightTheme
+})
+
+export const loginState = atom({
+    key: "loginState",
+    default: !!document.cookie.split(';').find((cookie) => {
+        return cookie.includes("session_id")
+    })
 })

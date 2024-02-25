@@ -1,4 +1,5 @@
-import { Currency } from "./Domain";
+import { Currency } from "./currency";
+
 
 export class Price {
     private _code : string;
@@ -38,3 +39,4 @@ export const isPrice = (object: Object) => {
     '_currency' in object) return true
     return false
 }
+

@@ -1,14 +1,13 @@
 # syntax=docker/dockerfile:1
-   
-FROM node:18-alpine AS build
-WORKDIR /asset-management
-COPY . .
-RUN yarn install --production
-RUN yarn build
 
+# 로컬에서 빌드로 전환
 
-FROM nginx:1.25-alpine
-COPY --from=build /asset-management/build /usr/share/nginx/html
+FROM nginx:stable-alpine
 
+COPY /build /usr/share/nginx/html
+
+# nginx.conf 로컬 볼륨연결
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 
 

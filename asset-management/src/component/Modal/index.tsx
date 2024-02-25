@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Button from '../Button';
 import { useRecoilState } from 'recoil';
@@ -17,9 +17,18 @@ const StyledModal = styled.div`
     /* transform: translate(-50%, -50%); */
     z-index: 11;
     width: 50vw;
-
+    @media screen and (min-width: ${props => props.theme.breakPoint.ms}){
+        width:80vw;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.t}){
+        width:50vw;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.ll}){
+        width:30vw;
+    }
     border-radius:1rem;
-    background-color:white;
+    background-color:${props => props.theme.color.card };
+    color:${props => props.theme.color.font };
     border: none;
 `
 const ModalHeader = styled.header`
@@ -58,12 +67,13 @@ const RestyledButton = styled(Button)`
     padding:0;
     margin-right:1rem;
     border-radius:2rem;
-    
+    border: 1px solid #aaaaaa;
     :hover{
         background-color:#dcdcdc;
         box-shadow:none;
     }
-    color:black;
+    color:${props => props.theme.color.font };
+    background-color: ${props => props.theme.color.card };
 `
 const H5 = styled.h5`
     display:inline-block;

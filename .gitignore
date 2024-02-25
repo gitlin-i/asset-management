@@ -42,3 +42,11 @@ __pycache__/
 [Ll]ib/
 [Ss]cripts/
 pyvenv.cfg
+
+#
+/backend/venv/app/korea_investment_token.py
+/backend/venv/app/t.py
+/backend/venv/app/temp/*
+/backend/venv/app/secret/*
+
+*.pem

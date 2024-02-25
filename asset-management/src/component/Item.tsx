@@ -7,17 +7,18 @@ export interface ItemProps{
     image ?: string;
     leftupText ?:string | number;
     leftdownText?:string | number;
-    rightmiddleText?: string | number;
-    altText ?: string;
+    rightUpText ?: string | number;
+    rightDownText ?: string | number;
+    altImageByText ?: string;
+    $imageRadius ?: string | number;
 }
 const StyledItem = styled.li`
     list-style : none;
-
     height:100%;
     min-height:2rem;
     border-radius: 1rem;
     &:hover{
-        background-color: #e6e6e6;
+        background-color: ${props => props.theme.color.hover};
     }
     padding: 0.5rem;
     overflow:hidden;
@@ -26,11 +27,11 @@ const StyledItem = styled.li`
     justify-content: space-between;
 
 `
-const ImageLayout = styled.div`
+const ImageLayout = styled.div<ItemProps>`
     display:inline-block;
     width:3rem;
     height: 3rem;
-    border-radius : 50%;
+    border-radius : ${props => props.$imageRadius ? props.$imageRadius : "50%"};
     overflow:hidden;
     position:relative;
     padding: 0;
@@ -64,23 +65,63 @@ const TextBox = styled.div`
     vertical-align:top;
     margin-left:0.5rem;
 `
-const UpText = styled.p`
+const UpText = styled.span`
     display:inline-block;
     position:relative;
     margin: 0;
-
+    max-width: 5rem;
     max-height:24px;
-
+    
     white-space: nowrap; 
     overflow-x:hidden;
     text-overflow: ellipsis; 
 
-    @media screen and (max-width: 420px) {
+    @media screen and (min-width: ${props => props.theme.breakPoint.mm }) {
         max-width: 7rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.ml }) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc(${props => props.theme.breakPoint.ml } + 100px) ) {
+        max-width: 18rem;
+    }
+    @media screen and (min-width: 625px ) {
+        max-width: 25rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.t } ) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.t } + 150px) ) {
+        max-width: 15rem;
+    }
+    @media screen and (min-width: ${props => props.theme.breakPoint.l } ) {
+        max-width: 12rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 150px) ) {
+        max-width: 15rem;
+    }
+
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.l } + 300px) ) {
+        max-width: 19rem;
+    }
+    @media screen and (min-width:  calc(${props => props.theme.breakPoint.ll}) ) {
+        max-width: 10rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 150px) ) {
+        max-width: 14rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 350px) ) {
+        max-width: 17rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 500px) ) {
+        max-width: 20rem;
+    }
+    @media screen and (min-width: calc( ${props => props.theme.breakPoint.ll } + 800px) ) {
+        max-width: 25rem;
     }
 
 `
-const DownText = styled.p`
+const DownText = styled.span`
     display: inline-block;
     position: relative;
     font-size:12px;
@@ -88,13 +129,7 @@ const DownText = styled.p`
     margin: 0;
     
 ` 
-const MiddleText = styled.p`
-    display:inline-block;
-    position:relative;
-    margin: 0;
-    max-height:18px;
-    
-`
+
 const Left = styled.div`
     height: 3rem;
     margin-left:1rem;
@@ -103,30 +138,36 @@ const Right = styled(Left)`
     margin:0;
     position:relative;
     right:2rem;
+    text-align:right;
 
 `
 
 const Item : React.FC<ItemProps> = (props) => {
-    const {image,leftdownText,leftupText,rightmiddleText, altText: altImage} = props
+    const {image,leftdownText,leftupText,
+      rightUpText, rightDownText, altImageByText,$imageRadius: imageRadius,
+    } = props
   return (
     <StyledItem>
         <Left>
             {image &&
-            <ImageLayout>
+            <ImageLayout $imageRadius={imageRadius}>
                 <StyledImg src={image} />
             </ImageLayout>}
-            {!image && altImage &&
+            {!image && altImageByText &&
                 <ImageLayout>
-                    <StyledText>{altImage}</StyledText>
-                </ImageLayout>
-            }
+                    <StyledText>{altImageByText}</StyledText>
+                </ImageLayout>}
+                
             <TextBox>
                 <UpText>{leftupText}</UpText>
                 <DownText>{leftdownText}</DownText>
             </TextBox>
         </Left>
         <Right>
-            <MiddleText>{rightmiddleText}</MiddleText>
+            <TextBox>
+                <UpText>{rightUpText}</UpText>
+                <DownText>{rightDownText}</DownText>
+            </TextBox>
         </Right>
     </StyledItem>
   )

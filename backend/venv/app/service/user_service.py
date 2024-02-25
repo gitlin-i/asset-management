@@ -1,45 +1,54 @@
 
-from abc import ABCMeta, abstractmethod
-from domain.schema.user import UserIn, UserOut
-from sqlalchemy.orm import Session
+from uuid import UUID
+from domain.schema.user import UserIn,User
 from bcrypt import gensalt, hashpw, checkpw
 from repository.user_repository import UserRepositorty
-class UserBase(metaclass= ABCMeta):
+from service.web_session_service import WebSessionService
+from fastapi import HTTPException
 
-    @abstractmethod
-    def register_user():
-        pass
-    @abstractmethod
-    def find_user():
-        pass
 
-class UserService(UserBase):
+class UserService:
 
-    def hash_password(self, password: str) -> bytes:
+    @classmethod
+    def hash_password(password: str) -> bytes:
         encoded_password = password.encode("utf-8")
         salt = gensalt()
         hashed_passowrd = hashpw(encoded_password, salt)
         return hashed_passowrd
-    def verify_password(self, password:str, hashed_password: bytes):
-        return checkpw(password.encode(encoding="utf-8"),hashed_password)
+    @classmethod
+    def verify_password(cls,plain_password:str, hashed_password: bytes) -> bool:
+        if isinstance(plain_password, str):
+            return checkpw(plain_password.encode(encoding="utf-8"),hashed_password)
+        return checkpw(plain_password,hashed_password)
     
-    def find_user(self, db : Session ,id : str):
-        try:
-            user = UserRepositorty(session=db).read_user_by_id(id)
-            print("#####")
-            print(user)
-            print(type(user))
-        except:
-            raise RuntimeError(user)
-        return user
+    @classmethod
+    def login(cls, user:UserIn) -> UUID:
+        user_secret = UserRepositorty.read(user.id)
+        if not user_secret:
+            raise ValueError("id가 존재하지 않습니다.")
+        is_verified = cls.verify_password(user.password, user_secret.password.get_secret_value())
+        if not is_verified:
+            raise ValueError("비밀번호가 일치하지 않습니다.")
+        
+        created_session_uuid = WebSessionService.register_web_session(user.id)
+        return created_session_uuid
+        
+    @classmethod
+    def info(cls, session_id : UUID):
+        user_id = WebSessionService.find_user_id(session_id)
+        user_info = UserRepositorty.read(user_id)
+        return User(**user_info.dict())
 
-    def register_user(self, db: Session, user:UserIn):
-        repo = UserRepositorty(session=db)
-        already_exist = repo.read_user_by_id(user.id)
-        if (already_exist):
-            raise RuntimeError("이미 존재하는 아이디")
-        user.password = self.hash_password(user.password)
-        result = repo.create_user(user=user)
-        return result
+
+    @classmethod
+    def register_user(cls,user:UserIn) -> bool:
+        already_exist = UserRepositorty.read(user.id)
+        if already_exist:
+            raise ValueError("이미 존재하는 ID입니다.")
+        
+        create_result = UserRepositorty.create(user)
+        return create_result
+    
+    
     
     

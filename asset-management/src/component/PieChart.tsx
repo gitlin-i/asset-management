@@ -1,51 +1,89 @@
-import React from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartData } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import React from 'react'
+import { PieCustomLayer, ResponsivePie } from '@nivo/pie'
+import { NivoPieChartData } from '../utill/NivoPieChart'
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-interface ChartProps {
-  data : Array<{}>;
+interface PieChartProps {
+    data: NivoPieChartData[];
+    title?: string; 
+    centerX?: number;
+    centerY?: number; 
 }
 
-const PieChart : React.FC<ChartProps> = ({data}) => {
-
-  const chartData : ChartData<'pie',{}[]> = {
-    labels: data.map((obj)=> {
-      return Object.keys(obj)
-    }),
-    datasets: [
-      {
-        label: '%',
-        data: data.map((obj)=>{
-          const valArray = Object.values(obj)
-          return valArray.flat()
-        }) ,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  return (
-    <React.Fragment>
-      <Pie data={chartData} />
-    </React.Fragment>
-  )
+const PieChart : React.FC<PieChartProps> = ({data, title}) => {
+    const centerTitleLayer : PieCustomLayer<NivoPieChartData> = ({centerX, centerY} ) => (
+        <text
+        x={centerX}
+        y={centerY}
+        textAnchor='middle'
+        dominantBaseline='central'
+        style={{ fontSize: '12px', fontWeight: 'bold' }}
+        >
+            {title}
+        </text>
+    )
+    return (<ResponsivePie
+        layers={['arcLinkLabels', 'arcs', 'arcLabels', 'legends',centerTitleLayer] }
+        data={data}
+        margin={{ top: 40, right: 20, bottom: 30, left: 80 }}
+        valueFormat=" >-,"
+        innerRadius={0.5}
+        padAngle={0.7}
+        cornerRadius={3}
+        activeOuterRadiusOffset={8}
+        borderWidth={1}
+        borderColor={{
+            from: 'color',
+            modifiers: [
+                [
+                    'darker',
+                    0.2
+                ]
+            ]
+        }}
+        sortByValue={true}
+        enableArcLinkLabels={false}
+        arcLinkLabelsSkipAngle={10}
+        arcLinkLabelsTextColor="#333333"
+        arcLinkLabelsThickness={2}
+        arcLinkLabelsColor={{ from: 'color' }}
+        arcLabelsSkipAngle={10}
+        arcLabelsTextColor={{
+            from: 'color',
+            modifiers: [
+                [
+                    'darker',
+                    2
+                ]
+            ]
+        }}
+        
+        colors={{scheme :'category10'}}
+        legends={[
+            {
+                anchor: 'top-left',
+                direction: 'column',
+                justify: false,
+                translateX: -56,
+                translateY: -20,
+                itemsSpacing: 0,
+                itemWidth: 100,
+                itemHeight: 18,
+                itemTextColor: '#999',
+                itemDirection: 'left-to-right',
+                itemOpacity: 1,
+                symbolSize: 18,
+                symbolShape: 'circle',
+                effects: [
+                    {
+                        on: 'hover',
+                        style: {
+                            itemTextColor: '#000'
+                        }
+                    }
+                ]
+            }
+        ]}
+    />)
 }
 
 

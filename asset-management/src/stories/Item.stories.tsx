@@ -2,8 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import Item  from '../component/Item';
 import styled from 'styled-components';
-import { MyStock } from '../domain/stock';
-import { Currency } from '../domain/Domain';
+
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Item> = {
@@ -33,7 +32,7 @@ export const addImage: Story = {
       image: process.env.PUBLIC_URL + '/JohnCliftonBogle.webp',
       leftdownText : 22,
       leftupText: "비욘드 미트",
-      rightmiddleText : 10.63,
+      rightUpText : 10.63,
       
     },
     render: (args) => (
@@ -41,7 +40,7 @@ export const addImage: Story = {
           <Item image={args.image} 
           leftupText={args.leftupText}
           leftdownText={args.leftdownText}
-          rightmiddleText={args.rightmiddleText}></Item>
+          rightUpText={args.rightUpText}></Item>
         </StyledUl>
     ),
 
@@ -56,7 +55,7 @@ export const NoneImage: Story = {
           <Item 
           leftupText={args.leftupText}
           leftdownText={args.leftdownText}
-          rightmiddleText={args.rightmiddleText}></Item>
+          rightUpText={args.rightUpText}></Item>
         </StyledUl>
     )
 };

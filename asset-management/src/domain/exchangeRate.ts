@@ -1,6 +1,7 @@
-import { Currency } from "./Domain";
+import { Currency } from "./currency"
 
-class ExchangeRate {
+
+export class ExchangeRate {
     private _From : Currency
     private _To : Currency
     private _Rate : number
@@ -11,13 +12,19 @@ class ExchangeRate {
 
     }
 
+    get from() : Currency{
+        return this._From
+    }
+    get to() : Currency {
+        return this._To
+    }
     get rate() : number{
         return this._Rate
     }
     set setRate(exchangeRate : number) {
         this._Rate = exchangeRate
     }
-
+    
     exchange(value : number) : string {
         return `${this._From} => ${this._To} : ${this._Rate * value}`
     }
