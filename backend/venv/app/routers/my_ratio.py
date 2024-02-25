@@ -1,12 +1,20 @@
 
 from decimal import Decimal
-from fastapi import APIRouter, Cookie, HTTPException
+from fastapi import APIRouter, Cookie, Depends, HTTPException
 from service.my_ratio_service import MyRatioService
 from domain.schema.my_ratio import MyRatioIn, asset_to_int_mapper, MyRatioForUpdate,Category
+from routers.my_asset import CommonSession
 from typing import Annotated
 router = APIRouter(
     prefix="/my-ratio"
 )
+
+
+# def ratio_service(session: CommonSession):
+
+#     return MyRatioService(session)
+
+# RatioService = Annotated[MyRatioService, Depends(ratio_service)]
 #get
 @router.get("",tags=["my-ratio"])
 def my_ratio(session_id : Annotated[str| None, Cookie()] = None ):

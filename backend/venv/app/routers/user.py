@@ -13,9 +13,9 @@ router = APIRouter(
 def  register_user(user: UserIn):
     try:
         create_result = UserService.register_user(user)
-    except:
-        raise HTTPException(400,detail="wrong request.")
-    return {"create_result" : create_result}
+    except ValueError as e:
+        raise HTTPException(400,detail=e.args) from e
+    return {"output" : create_result}
 
 
 @router.post("/login")

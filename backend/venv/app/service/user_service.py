@@ -30,7 +30,6 @@ class UserService:
         if not is_verified:
             raise ValueError("비밀번호가 일치하지 않습니다.")
         
-
         created_session_uuid = WebSessionService.register_web_session(user.id)
         return created_session_uuid
         
@@ -45,7 +44,7 @@ class UserService:
     def register_user(cls,user:UserIn) -> bool:
         already_exist = UserRepositorty.read(user.id)
         if already_exist:
-            raise HTTPException(status_code=400, detail="이미 존재하는 아이디입니다.")
+            raise ValueError("이미 존재하는 ID입니다.")
         
         create_result = UserRepositorty.create(user)
         return create_result

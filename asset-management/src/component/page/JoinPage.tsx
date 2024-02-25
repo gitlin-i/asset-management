@@ -7,6 +7,7 @@ import Input from '../Input'
 import Button from '../Button'
 import { MY_API } from '../../api'
 import { useNavigate } from 'react-router-dom'
+import { AxiosError } from 'axios'
 
 
 const StyledDiv = styled.div`
@@ -107,7 +108,10 @@ const JoinPage = () => {
       const response = await MY_API.post(`/user/register`,formData)
       navigator(-1);
     } catch (error) {
-      alert("회원가입 실패" + error)
+      if (error instanceof AxiosError){
+        alert("회원가입 실패: " + error.response?.data.detail)
+      }
+
     }
   }
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

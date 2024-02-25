@@ -133,10 +133,10 @@ const Header : React.FC = () => {
         </IconButton> }
 
         
-          {status === 'success' ? 
-          <AccountInfo>
-          {`hello! ${data.name}`}
-          </AccountInfo> :``}
+        {status === 'success' ? 
+        <AccountInfo>
+        {`hello! ${data.name}`}
+        </AccountInfo> :``}
         
         
         <ThemeChangeButton />

@@ -50,6 +50,7 @@ def test_exchange_rate_repo_read(exchange_rate_repo_test_row):
     read_result = ExchangeRateRepository.read("TEST")
     mapping_result = ExchangeRate(**read_result[0].__dict__)
     assert mapping_result == exchange_rate_repo_test_row
+    assert 1 == 0
 
 def test_exchange_rate_repo_update_read(exchange_rate_repo_update_test_row):
     read_result = ExchangeRateRepository.read("TEST")

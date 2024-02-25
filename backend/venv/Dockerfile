@@ -8,6 +8,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/* 
 RUN pip install -r /fastapi/requirements.txt
 # RUN pip install --no-cache-dir --upgrade -r /fastapi/requirements.txt
+RUN pip install uvloop
 COPY ./app /fastapi/app
 WORKDIR /fastapi/app
 EXPOSE 8123

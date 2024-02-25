@@ -1,9 +1,6 @@
 from uuid import UUID, uuid4
 from repository.web_session_repository import WebSessionRepositorty
-from database import SessionLocal
-from sqlalchemy.orm import Session
 from domain.schema.web_session import WebSession, WebSessionWithDate
-from fastapi import Depends
 from exception.exception import LoginSessionException
 
 

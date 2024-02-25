@@ -14,7 +14,7 @@ operation_database_url = database_url_generator("mysql+mysqldb","3306","operatio
 test_database_url = database_url_generator("mysql+mysqldb","3306","test","app_server1","appserverqhdks123",aws_endpoint)
 
 url = test_database_url if CURRENT_FLAG == Flag.OPERATION else local_dev_database_url
-engine = create_engine(url,echo=True)
+engine = create_engine(url,echo=True,pool_pre_ping=True)
 
 SessionLocal = sessionmaker(engine,autoflush=False,autocommit=False)
 

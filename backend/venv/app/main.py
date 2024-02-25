@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from routers import stock, exchange,user, my_asset, my_ratio
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -65,9 +66,10 @@ elif CURRENT_FLAG == Flag.DEV:
 async def lifespan(app : FastAPI):
     # 최초 실행 작업
     ExchangeService.init_exchange_rate()
+    ExchangeService.update_exchange_rate()
     scheduler.start()
     yield
-    # 정리
+    # 정리함수
     scheduler.shutdown()
 
 
@@ -111,5 +113,11 @@ for router in routers:
 async def login_exception_handler(request: Request, e: LoginSessionException):
     response = JSONResponse(content="Session is wrong...",status_code=401)
     response.delete_cookie("session_id")
+    return response
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, e: RequestValidationError):
+    print(e)
+    response = JSONResponse(content={"detail":str(e)}, status_code=422)
     return response
     

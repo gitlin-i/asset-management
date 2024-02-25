@@ -79,8 +79,9 @@ export const useMyRatioMutation = () => {
       let message
       if (typeof response?.data.detail === 'string'){
         message = response.data.detail
+      } else {
+        message = response?.data.detail[0].msg
       }
-      message = response?.data.detail[0].msg
       alert(message)
     }
   })
