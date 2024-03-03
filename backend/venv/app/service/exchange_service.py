@@ -61,7 +61,8 @@ class ExchangeService:
     def update_exchange_rate(cls) -> bool:
         exchange_rate_list = get_exchange_rate()
         if not exchange_rate_list:
-            raise ValueError("empty list")
+            # raise ValueError("empty list")
+            print("업데이트할 환율 정보 없음.")
         def replace(target) :
             target['deal_bas_r'] = target['deal_bas_r'].replace(",","")
             return target

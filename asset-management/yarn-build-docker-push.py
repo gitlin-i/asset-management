@@ -7,7 +7,7 @@ tag_name = docker_hub_name + "/" + image_name
 
 def frontend_yarn_build():
     try:
-        result = subprocess.run("yarn build --production",shell=True, check=True)
+        result = subprocess.run("yarn build",shell=True, check=True)
         print("Yarn build successfully built!!")
         return result
     except subprocess.CalledProcessError as e:

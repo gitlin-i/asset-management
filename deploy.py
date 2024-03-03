@@ -1,10 +1,10 @@
 import paramiko
 import os
 
-aws_endpoint = "ec2-13-125-237-137.ap-northeast-2.compute.amazonaws.com"
+aws_endpoint = "ec2-3-34-4-136.ap-northeast-2.compute.amazonaws.com"
 path = "./"
-key = "asset-management-1.pem"
-user = "ec2-user"
+key = "asset-management.pem"
+user = "ubuntu"
 frontend_docker_image = "jindev24/assets-management"
 backend_docker_image = "jindev24/assets-management-back"
 
